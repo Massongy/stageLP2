@@ -1,0 +1,4 @@
+-r base.txt
+gunicorn
+ipython
+django-debug-toolbar

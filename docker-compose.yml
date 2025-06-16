@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-qualilead}
+      POSTGRES_USER: ${POSTGRES_USER:-qualilead}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-qualilead}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks: [qualilead]
+
+  redis:
+    image: redis:7-alpine
+    networks: [qualilead]
+
+  backend:
+    build: ./backend
+    expose:
+      - "8000"
+    command: >
+      sh -c "python manage.py makemigrations users &&
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+      - ./static_volume:/app/staticfiles  # 👈 assure la persistance
+    env_file: .env
+    depends_on: [db, redis]
+    networks: [qualilead]
+
+  frontend:
+    build: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    expose:
+      - 5173
+    networks: [qualilead]
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./compose/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./compose/dev/nginx/.htpasswd:/etc/nginx/.htpasswd
+      - ./static_volume:/app/staticfiles
+    depends_on:
+      - backend
+      - frontend
+    networks: [qualilead]
+
+volumes:
+  db_data:
+  static_volume:
+
+networks:
+  qualilead:
