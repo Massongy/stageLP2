@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import Box from '@mui/material/Box';
+import { Button } from '@mui/material';
 
 function UserManagement() {
   const [users, setUsers] = useState([])
@@ -109,9 +111,68 @@ function UserManagement() {
   if (!hasPermission) return <p>⛔ Accès refusé.</p>
 
   return (
-      <div className="p-4">
-        <h2>Gestion des utilisateurs</h2>
-        <button onClick={handleAdd}>➕ Ajouter un utilisateur</button>
+      <Box className="container-gestion-compte">
+        <Box className="header-gestion-compte">
+          <Box className="titre-gestion-compte"> Gestion du compte</Box>
+        </Box>
+        
+        <Box className="titre-info-admin-gestion-compte">
+          <Box className="titre-info-admin-gestion-compte">Informations de mon compte administrateur</Box>
+          <Box className="info-admin">
+            <Box className="container-infos">
+              <Box className="container-infos-1">Nom et prénom : </Box>
+              <Box className="container-infos-2">Bergounioux Thomas </Box>
+            </Box>
+            
+            <Box className="container-infos">
+              <Box className="container-infos-1">Email : </Box>
+              <Box className="container-infos-2">Bergounioux@Thomas </Box>
+            </Box>
+
+            <Box className="container-infos">
+              <Box className="container-infos-1"> Mot de passe </Box>
+              <Box className="container-infos-2">****** </Box>
+            </Box>
+            
+          </Box>
+        </Box>
+
+        <Box className="titre-info-utilisateur-gestion-compte">
+          <Box className="titre-info-utilisateur-gestion-compte">Mes utilisateurs</Box>
+          <Box className="info-utilisateurs">
+            <Box className="container-infos">
+              <Box className="container-infos-1">Nom et prénom : </Box>
+              <Box className="container-infos-2">Bergounioux Thomas </Box>
+            </Box>
+            
+            <Box className="container-infos">
+              <Box className="container-infos-1">Email : </Box>
+              <Box className="container-infos-2">Bergounioux@Thomas </Box>
+            </Box>
+
+            <Box className="container-infos">
+              <Box className="container-infos-1"> Mot de passe </Box>
+              <Box className="container-infos-2">****** </Box>
+            </Box>
+
+            <Box className="container-infos">
+              <Box className="container-infos-1">Nom et prénom : </Box>
+              <Box className="container-infos-2">Bergounioux Thomas </Box>
+            </Box>
+            
+            <Box className="container-infos">
+              <Box className="container-infos-1">Email : </Box>
+              <Box className="container-infos-2">Bergounioux@Thomas </Box>
+            </Box>
+
+            <Box className="container-infos">
+              <Box className="container-infos-1"> Mot de passe </Box>
+              <Box className="container-infos-2">****** </Box>
+            </Box>
+          </Box>
+
+        </Box>
+        <Button onClick={handleAdd} className>➕ Ajouter un utilisateur</Button>
 
         {showForm && (
             <form onSubmit={handleSubmit} style={{ margin: '1rem 0', border: '1px solid #ccc', padding: '1rem' }}>
@@ -159,7 +220,7 @@ function UserManagement() {
           ))}
           </tbody>
         </table>
-      </div>
+      </Box>
   )
 }
 

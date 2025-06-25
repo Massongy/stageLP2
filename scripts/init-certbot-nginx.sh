@@ -33,7 +33,7 @@ docker run --rm \
   -v "$(pwd)/certbot/conf:/etc/letsencrypt" \
   certbot/certbot certonly \
   --webroot -w /var/www/certbot \
-  -d $DOMAIN \
+  -d $DOMAIN  -d www.greathire.com -d greathire.com\
   --email $EMAIL \
   --agree-tos --no-eff-email
 

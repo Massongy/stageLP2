@@ -49,6 +49,7 @@ function Profile() {
         <p>Chargement...</p>
       )}
     </div>
+    
   )
 }
 

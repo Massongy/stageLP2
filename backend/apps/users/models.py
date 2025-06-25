@@ -21,6 +21,8 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        if not extra_fields.get("first_name") or not extra_fields.get("last_name"):
+            raise ValueError("Superuser must have first_name and last_name")
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 

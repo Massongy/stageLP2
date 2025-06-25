@@ -48,4 +48,4 @@ case "$ENVIRONMENT" in
 esac
 
 # Lancer Docker Compose avec les bons fichiers
-docker-compose -f $COMPOSE_FILE -f $COMPOSE_OVERRIDE --env-file $ENV_FILE up -d --build
+docker compose -f $COMPOSE_FILE -f $COMPOSE_OVERRIDE --env-file $ENV_FILE up -d --build

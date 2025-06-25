@@ -30,9 +30,9 @@ const rawRows = [
 ];
 
 
-export default function DataTable({ onPreview, openedRowId}) {
-  console.log(onPreview);
-  console.log(openedRowId);
+export default function DataTable({ onPreview, openedRowId, filterModel, onFilterModelChange}) {
+  
+
 
  const columns = React.useMemo(() => [
     {
@@ -60,11 +60,12 @@ align: 'center',
         Référence
         <DropdownButton 
           options={[
-          { label: 'Option 1', value: 'option1' },  
-          { label: 'Option 2', value: 'option2' },
-          { label: 'Option 3', value: 'option3' }, ]}
-          
-          onSelect={(value) => console.log(value)}
+              { label: 'Tous', value: '' },
+              { label: 'Chaud', value: 'Chaud' },
+              { label: 'Tiède', value: 'Tiède' },
+              { label: 'Froid', value: 'Froid' },
+            ]}
+            
           />
        
       </Box>
@@ -76,23 +77,28 @@ align: 'center',
   },
   { field: 'demande', headerName: 'Lien de la demande',  headerAlign: 'center', width: 180, align: 'center', sortable: false, filterable: false, disableColumnMenu: true },
   { field: 'scoring', headerName: 'Scoring',  headerAlign: 'center', width: 120, align: 'center', sortable: false, filterable: false, disableColumnMenu: true },
-  {
+   {
     field: 'potentiel',
     headerName: 'Potentiel',
-     headerAlign: 'center',
     width: 180,
-    align: 'center',
     renderHeader: () => (
       <Box className="th-cell-dropdown">
         Potentiel
-        <DropdownButton className="dropdown-button"
+        <DropdownButton
           options={[
-          { label: 'Option 1', value: 'option1' },  
-          { label: 'Tiède', value: 'option2' },
-          { label: 'Froid', value: 'option3' }, ]}
-          
-          onSelect={(value) => console.log(value)}
-          />
+            { label: 'Tous', value: '' },
+            { label: 'Chaud', value: 'chaud' },
+            { label: 'Tiède', value: 'tiède' },
+            { label: 'Froid', value: 'froid' },
+          ]}
+          onSelect={(value) => {
+            onFilterModelChange({
+              items: value
+                ? [{ id: 1, field: 'potentiel', operator: 'equals', value }]
+                : []
+            });
+          }}
+        />
       </Box>
     ),
     sortable: false,
@@ -114,7 +120,7 @@ align: 'center',
           { label: 'En cours', value: 'option2' },
            ]}
           
-          onSelect={(value) => console.log(value)}
+        
           />
       </Box>
     ),
@@ -161,7 +167,8 @@ className="icone-datatable" />
   const updatedRows = rawRows.map((r) => ({ ...r, onPreview }));
   return (
     <Paper elevation={2} sx={{ height: '100%', width: '100%' }}>
-      <DataGrid rows={updatedRows} columns={columns} pageSize={5} disableRowSelectionOnClick className="datatable"/>
+      <DataGrid rows={updatedRows} columns={columns} filterModel={filterModel}
+        onFilterModelChange={onFilterModelChange} pageSize={5} disableRowSelectionOnClick className="datatable"/>
     </Paper>
   );
 }
