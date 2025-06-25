@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'apps.users',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -107,4 +108,22 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+CSRF_TRUSTED_ORIGINS = [
+    "https://qualilead.options.net",
+]
+CORS_ALLOW_ORIGINS = [
+    "https://qualilead.options.net",
+]
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Format : Bearer <token>'
+        }
+    },
+    'USE_SESSION_AUTH': False,  # Désactiver auth par session si tu n'utilises pas le login Django classique
+
 }

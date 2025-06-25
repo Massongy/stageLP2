@@ -1,0 +1,7 @@
+services:
+  nginx:
+    environment:
+      - VIRTUAL_HOST=localhost
+    volumes:
+      - ./compose/local/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./compose/local/nginx/.htpasswd:/etc/nginx/.htpasswd

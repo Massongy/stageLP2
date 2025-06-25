@@ -1,0 +1,12 @@
+services:
+  nginx:
+    environment:
+      - VIRTUAL_HOST=qualilead.options.net
+    volumes:
+      - ./compose/prod/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./compose/prod/nginx/.htpasswd:/etc/nginx/.htpasswd
+
+  certbot:
+    environment:
+      - HOST_PROD=qualilead.options.net
+      - EMAIL_ADMIN=admin.web@options.net

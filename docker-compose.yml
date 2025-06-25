@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
+    container_name: db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-qualilead}
       POSTGRES_USER: ${POSTGRES_USER:-qualilead}
@@ -15,42 +16,79 @@ services:
 
   backend:
     build: ./backend
+    container_name: backend
     expose:
       - "8000"
-    command: >
-      sh -c "python manage.py makemigrations users &&
-             python manage.py migrate &&
-             python manage.py collectstatic --noinput &&
-             python manage.py runserver 0.0.0.0:8000"
+    command: /entrypoint.sh
     volumes:
       - ./backend:/app
       - ./static_volume:/app/staticfiles  # 👈 assure la persistance
     env_file: .env
     depends_on: [db, redis]
     networks: [qualilead]
+    
 
   frontend:
     build: ./frontend
+    container_name: frontend
     command: npm run dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./frontend:/app
       - /app/node_modules
     expose:
       - 5173
     networks: [qualilead]
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
 
   nginx:
     image: nginx:1.25-alpine
+    container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./compose/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./compose/dev/nginx/.htpasswd:/etc/nginx/.htpasswd
       - ./static_volume:/app/staticfiles
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - backend
       - frontend
     networks: [qualilead]
+
+  certbot:
+    image: certbot/certbot:v2.10.0      # image officielle mise à jour
+    container_name: certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: ""
+    command:
+      - /bin/sh
+      - -c
+      - |
+        if [ ! -f /etc/letsencrypt/live/${HOST_PROD:-qualilead}/fullchain.pem ]; then
+          certbot certonly \
+            --webroot \
+            --webroot-path /var/www/certbot \
+            --email ${EMAIL_ADMIN:-qualilead} \
+            --agree-tos \
+            --no-eff-email \
+            -d ${HOST_PROD:-qualilead} ;
+        fi
+        echo "0 3 * * * certbot renew --webroot -w /var/www/certbot --quiet --post-hook 'nginx -s reload'" > /etc/crontabs/root
+        crond -f
+    restart: unless-stopped
 
 volumes:
   db_data:

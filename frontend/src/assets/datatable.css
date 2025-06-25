@@ -1,0 +1,53 @@
+
+.datatable {
+    border: none !important;
+  box-shadow: none !important;
+  overflow-y: auto;
+}
+
+
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within {
+  outline: none !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
+  outline: none !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnSeparator {
+  display: none;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnHeaders .MuiDataGrid-columnSeparator {
+  display: none;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+  font-size:larger !important;
+}
+
+.th-cell-dropdown {
+font-size: larger !important;
+
+
+}
+
+.MuiDataGrid-cell {
+  font-weight: bold;
+  font-size:larger;
+}
+
+.dropdown-button {
+    color: black;
+    
+}
+
+.icone-datatable {
+
+    font-size: 20px;
+    
+}
+
+.icone-datatable-info {
+    color: #d5c2ae;
+}

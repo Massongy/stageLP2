@@ -4,8 +4,11 @@ from .models import User
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
-from .serializers import ChangePasswordSerializer, UserSerializer
+from .serializers import ChangePasswordSerializer, UserSerializer, GroupSerializer
 from django.conf import settings
+from django.contrib.auth.models import Group
+from .permissions import IsSuperUserOrCreator
+
 
 
 class UserDetail(generics.RetrieveAPIView):
@@ -33,10 +36,16 @@ class ChangePasswordView(generics.UpdateAPIView):
         update_session_auth_hash(request, user)
         return Response({'detail': 'Password updated successfully'}, status=status.HTTP_200_OK)
 
-class UserCreateView(generics.CreateAPIView):
-    queryset = User.objects.all()
+
+class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]  # ou IsAdminUser
+    permission_classes = [permissions.IsAuthenticated, IsSuperUserOrCreator]
+
+    def get_queryset(self):
+            user = self.request.user
+            if user.is_superuser:
+                return User.objects.all()
+            return User.objects.filter(created_by=user)
 
     def perform_create(self, serializer):
         # 1. Générer un mot de passe sécurisé
@@ -54,7 +63,7 @@ class UserCreateView(generics.CreateAPIView):
                 f"Email : {user.email}\n"
                 f"Mot de passe provisoire : {password}\n\n"
                 "Merci de vous connecter et de changer votre mot de passe dès votre première connexion.\n"
-                "Lien de connexion : http://188.165.234.16/login\n\n"
+                "Lien de connexion : https://qualilead.options.net/login\n\n"
                 "L’équipe Qualilead"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
@@ -62,15 +71,8 @@ class UserCreateView(generics.CreateAPIView):
             fail_silently=False,
         )
 
-class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
+
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_superuser:
-            return user.objects.all()
-        return user.objects.filter(created_by=user)
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)

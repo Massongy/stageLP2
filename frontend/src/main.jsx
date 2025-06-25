@@ -9,6 +9,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import ChangePassword from './pages/ChangePassword'
+import Edition from './pages/Edition'
 import UserManagement from './pages/UserManagement'
 import PrivateRoute from './components/PrivateRoute'
 
@@ -44,6 +45,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                       </PrivateRoute>
                   }
               />
+              <Route
+                 path="/edition/:clientId"
+                 element={
+                     <PrivateRoute>
+                        <Edition />
+                     </PrivateRoute>
+                 }
+             />
               <Route path="*" element={<Navigate to="/" />} />
           </Routes>
       </BrowserRouter>

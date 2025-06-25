@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import Button from '@mui/material/Button';
+import '../assets/header.css' 
+import logo from '../assets/Logo_Options_Footer.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { jwtDecode } from 'jwt-decode';
 
-function Header() {
+function Header() { 
+
+
+const [username, setUsername] = useState(null)
   const navigate = useNavigate()
   const [isLogged, setIsLogged] = useState(false)
 
     useEffect(() => {
         const token = localStorage.getItem('access')
-        setIsLogged(!!token)
+         console.log('Token brut :', token);
+        const logged = !!token
+        setIsLogged(logged)
+
+         if (logged) {
+          
+      try {
+        const decoded = jwtDecode(token)
+        console.log('Decoded token:', decoded)
+        setUsername(decoded.username || decoded.sub || decoded.name)
+      } catch (error) {
+        console.error('Token invalide', error)
+      }
+    }
     }, [])
   const handleLogout = () => {
     localStorage.clear()
@@ -16,18 +38,33 @@ function Header() {
     if (!isLogged) return null
 
   return (
-    <header style={{ backgroundColor: '#f2f2f2', padding: '1rem', display: 'flex', justifyContent: 'space-between' }}>
-      <div>
-        <Link to="/" style={{ marginRight: '1rem' }}>Accueil</Link>
-        <Link to="/profile" style={{ marginRight: '1rem' }}>Profil</Link>
-        <Link to="/change-password" style={{ marginRight: '1rem' }}>Changer mot de passe</Link>
-        <Link to="/users" style={{ marginRight: '1rem' }}>Utilisateurs</Link>
-        <Link to="/users" style={{ marginRight: '1rem' }}>Devis</Link>
+   
+    <header>
+      <div className="left"> 
+        <button className="boutton-search">
+          <FontAwesomeIcon icon={faMagnifyingGlass} />          
+        </button>
       </div>
-      <div>
-        <button onClick={handleLogout}>Déconnexion</button>
-      </div>
+  
+      <div className="left"><button className="bouton-actualiser">Actualiser les demandes</button> </div>
+      <div className="center"><img src={logo} alt="Logo" className="logo-header"/></div>
+        
+      <Button className="bouton-utilisateur"
+      component={Link}
+                to={`/profile`}
+                variant="contained"
+      >
+        <div className="right nom-utilisateur-header"> Bonjour <span style={{ fontWeight: 500 }}>{username}</span></div>
+        <div className="right logo-utilisateur-header">
+          <FontAwesomeIcon icon={faUser} />
+        </div>
+      </Button>
+      
+        
+
     </header>
+    
+    
   )
 }
 

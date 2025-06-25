@@ -1,0 +1,112 @@
+header {
+   background-color: #d5c2ae;
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 100%;
+height: 100px;
+
+}
+.left {
+  flex: 0 1 auto;
+}
+
+.center {
+  flex: 1;
+  text-align: center;
+}
+
+.right {
+  flex: 0 1 auto;
+}
+
+.icon-circle {
+  display: inline-block;
+  border: none;
+  color:#d5c2ae;
+  font-size: 24px;
+  -webkit-text-stroke: 1px white;
+  
+}
+
+.boutton-search{
+    display: inline-block;
+    border: none;
+    outline: none;
+    height: 47px;
+    width: 47px;
+    border-radius: 50%;
+    margin-right: 20px;
+    margin-left: 40px;
+    background-color: white;
+    color:#d5c2ae;
+
+}
+.bouton-actualiser {
+
+    display: inline-block;
+    height: 47px;
+    width: 314px;
+    text-align: center;
+    background-color: white;
+    color:#d5c2ae;
+    border-radius: 25px;
+    font-weight: 500;
+    text-transform: uppercase;
+    border:none;
+    font-size: 16px;
+    
+}
+
+.logo-header {
+    display: inline-block;
+    max-width: 250px;
+    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(0deg);
+
+}
+
+.nom-utilisateur-header {
+    display: inline-block;
+    margin-right: 20px;
+    color: white;
+    font-size: 18px;
+    
+
+}
+
+.logo-utilisateur-header {
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    
+    border: none;
+    outline: none;
+    height: 47px;
+    width: 47px;
+    border-radius: 50%;
+    background-color: white;
+    color: #d5c2ae;
+
+}
+
+.icon-user{
+    background-color: white;
+  border-radius: 50%;
+  -webkit-text-stroke: 1px white;
+  transform: scale(2.7);
+   
+}
+
+.bouton-utilisateur {
+    display: flex !important;
+    width:300px !important;
+    align-items: center !important;
+    text-align: center !important;
+    border:none !important;
+    margin-right: 40px !important;
+    background-color: #d5c2ae !important;
+    box-shadow: none !important;
+
+
+}
+
