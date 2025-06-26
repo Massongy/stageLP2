@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import DataTable from '../components/ui/datatable.jsx';
 import PreviewTabs from '../components/ui/preview.jsx';
+import { RemoveScrollBar } from 'react-remove-scroll-bar';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+
 
 export default function Dashboard() {
 
@@ -20,8 +22,10 @@ export default function Dashboard() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh' }}>
-      <Box sx={{ width: 1175 }}>
+    <>
+    <RemoveScrollBar />
+    <Box sx={{ display: 'flex', width: 1920, height: 950}}>
+      <Box sx={{ width: 1178 }}>
 
       {// passe la fonction handle preview en paramètre de la propriété onPreviewd
       }
@@ -30,11 +34,13 @@ export default function Dashboard() {
           onFilterModelChange={setFilterModel}
           pageSize={5}
           disableRowSelectionOnClick
+          
    />
       </Box>
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{  width: 740, height: 950 }}>
         <PreviewTabs openedRowId={openedRowId}  />
       </Box>
     </Box>
+    </>
   );
 }

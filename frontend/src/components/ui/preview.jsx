@@ -30,8 +30,8 @@ export default function PreviewTabs({ openedRowId }) {
         <Button component={Link}
           to={`/edition/${openedRowId}`}
           variant="contained"
-          
-          sx={{ color: 'white', backgroundColor: 'blue', borderRadius: "25px", width: '100%'}}> éditer</Button>
+          className="bouton-editer"
+          > éditer</Button>
         {/*ici il faut récupérer les infos du client et les passer dans les props de FicheClient */}
         <FicheClient reference={openedRowId} className="fiche-info"/>
     </Box>
