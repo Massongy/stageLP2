@@ -1,0 +1,1 @@
+print("Questionnaire app initialized")

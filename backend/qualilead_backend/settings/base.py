@@ -18,7 +18,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'apps.users',
+    'apps.quotes',
+    'apps.questionnaire',
     'drf_yasg',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

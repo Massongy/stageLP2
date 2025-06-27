@@ -6,3 +6,4 @@ django-cors-headers
 ipython
 django-debug-toolbar
 drf-yasg
+django_extensions
