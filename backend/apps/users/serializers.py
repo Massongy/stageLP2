@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import password_validation
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Permission
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -29,8 +29,3 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         password_validation.validate_password(value, self.context['request'].user)
         return value
-
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = ['id', 'name']
