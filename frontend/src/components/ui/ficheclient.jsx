@@ -10,10 +10,10 @@ export default function FicheClient({
     <Card className="fiche-info" >
       <CardHeader className="fiche-info-title"
         title={
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <Typography variant="subtitle1">Référence : {reference}
+          <Box className="fiche-info-title-content" >
+            <Typography className="fiche-info-title-content-text">Référence : {reference}
             </Typography>
-            <Typography variant="subtitle1"> Scoring :
+            <Typography className="fiche-info-title-content-text"> Scoring :
             </Typography>
           </Box>
         }
@@ -27,20 +27,20 @@ export default function FicheClient({
 
           <Box className="fiche-info-bloc-1-row">
             <Box>
-              <Typography><strong>Nom et prénom :</strong> Thomas </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Nom et prénom :</strong> Thomas </Typography>
             </Box> 
             <Box sx={{ textAlign: 'right' }}>
-              <Typography><strong>Numéro :</strong></Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Numéro :</strong></Typography>
             </Box>
           </Box>
 
           <Box className="fiche-info-bloc-1-row">
             <Box >
-              <Typography><strong>Date du 1er appel :</strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Date du 1er appel :</strong> </Typography>
             </Box> 
 
             <Box sx={{ textAlign: 'right' }}>
-              <Typography><strong> Nombre d'appels :
+              <Typography className="fiche-info-blocs-text"><strong> Nombre d'appels :
               </strong></Typography>  
             </Box>
           </Box>
@@ -48,10 +48,10 @@ export default function FicheClient({
           <Box className="fiche-info-bloc-1-row">
 
             <Box>
-              <Typography><strong>Date du dernier appel :</strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Date du dernier appel :</strong> </Typography>
             </Box>
             <Box>  
-              <Typography><strong>Semaine N°: </strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Semaine N°: </strong> </Typography>
             </Box>
           </Box>
           
@@ -70,22 +70,24 @@ export default function FicheClient({
             Voir la demande
           </Link>
         </Box>
+        
+        
         {/* Troisième sous-bloc */}
         <Box className="fiche-info-bloc-3">
-          <Box className="questionnaire">
+          
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Avez-vous déjà fait appel à Options ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Avez-vous déjà fait appel à Options ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
-                <Typography>Non</Typography>  
+                <Typography >Non</Typography>  
               </Box>
             </Box>
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Votre évènement est-il à titre particulier ou professionnel ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Votre évènement est-il à titre particulier ou professionnel ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
                 <Typography>Particulier</Typography>  
@@ -94,7 +96,7 @@ export default function FicheClient({
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>La date de votre évènement est-elle fixée ?  </Typography>
+                <Typography className="fiche-info-blocs-text">La date de votre évènement est-elle fixée ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
                 <Typography>Non</Typography>  
@@ -103,7 +105,7 @@ export default function FicheClient({
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Si oui, quelle date ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Si oui, quelle date ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
                 <Typography>14/07/2025</Typography>  
@@ -112,7 +114,7 @@ export default function FicheClient({
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Le lieu de votre évènement est-il réservé ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Le lieu de votre évènement est-il réservé ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
                 <Typography>Non</Typography>  
@@ -121,27 +123,35 @@ export default function FicheClient({
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Pouvez-vous donner une fourchette de votre budget ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Pouvez-vous donner une fourchette de votre budget ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite">
-                <Typography><strong>Non</strong><br /></Typography>  
+                <Typography className="fiche-info-blocs-text"><strong>Non</strong><br /></Typography>  
               </Box>
             </Box>
 
             <Box className="questionnaire-box">
               <Box className="questionnaire-box-gauche">
-                <Typography>Souhaitez-vous qu'un conseiller clientèle vous rappelle ?  </Typography>
+                <Typography className="fiche-info-blocs-text">Souhaitez-vous qu'un conseiller clientèle vous rappelle ?  </Typography>
               </Box>
               <Box className="questionnaire-box-droite ">
-                <Typography>Oui</Typography>  
+                <Typography className="fiche-info-blocs-text">Oui</Typography>  
               </Box>
             </Box>
-            
-            
-          </Box>
           
         </Box>
-      </CardContent>
+    
+        <Box className="fiche-info-bloc-4-commentaire">
+          <Box className="fiche-info-blocs-text">
+            Commentaire :
+          </Box>
+          <Box className="retour-commentaire"> 
+            <Typography className="retour-commentaire-text">Le client souhaite que la récupération se fasse le dimanche 20 juillet...
+          </Typography>
+          </Box>
+        </Box>
+
+        </CardContent>
       <CardActions />
     </Card>
   );
