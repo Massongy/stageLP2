@@ -9,7 +9,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 class ReponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reponse
-        fields = ['Questionnaire', 'question', 'value']  # Specify the fields you want to include
+        fields = '__all__'  # Specify the fields you want to include
   
   
 class QuestionnaireSerializer(serializers.ModelSerializer):

@@ -3,11 +3,12 @@ from django.conf import settings
 
 
 # Create your models here.
-class Status(models.Model):
+class Status (models.Model):
     name = models.CharField(max_length=50)
-
+    reference_id_SI = models.IntegerField(null=True, blank=True)
     def __str__(self):
         return self.name
+
 
 
 class Quote(models.Model):
@@ -28,10 +29,6 @@ class Quote(models.Model):
     reference_id_SI = models.IntegerField(null=True, blank=True)
     
 
-
-
-
-
     def __str__(self):
         return f"Quote #{self.id} - {self.reference}"
 
@@ -42,24 +39,14 @@ class Comment(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     
-class Status (models.Model):
-    name = models.CharField(max_length=50)
-    reference_id_SI = models.IntegerField(null=True, blank=True)
-    def __str__(self):
-        return self.name
 
 class QuoteUserLog(models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, related_name='user_logs')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL)
+    quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, null=True, related_name='user_logs')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     action = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
     
     
-class QuoteUserLog(models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='user_logs')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    action = models.CharField(max_length=100)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class QuoteLock (models.Model):
