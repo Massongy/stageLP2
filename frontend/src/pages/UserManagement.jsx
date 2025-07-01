@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
 import { Button } from '@mui/material';
+import InfoCompte from '../components/ui/infocompte.jsx';
 import '../assets/UserManagement.css'
 
 function UserManagement() {
@@ -12,17 +13,22 @@ function UserManagement() {
   const [editUserId, setEditUserId] = useState(null)
   const [availableGroups, setAvailableGroups] = useState([])
   const [createdBy, setCreatedBy] = useState([])
+  const [profile, setProfile] = useState(null); //recupération données profile
 
   const token = localStorage.getItem('access')
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const profileRes = await fetch('/api/users/me/', {
+        const profileRes = await fetch('api/users/me/', {
           headers: { Authorization: `Bearer ${token}` }
         })
+
         const profile = await profileRes.json()
+        console.log(profile);
+        setProfile(profile);
         setCreatedBy(profile.id)
+
         if (!profile.permissions?.includes('view_user')) {
           setHasPermission(false)
           return
@@ -30,8 +36,8 @@ function UserManagement() {
         setHasPermission(true)
 
         const [userRes, groupRes] = await Promise.all([
-          fetch('/api/users/users', { headers: { Authorization: `Bearer ${token}` } }),
-          fetch('/api/groups/', { headers: { Authorization: `Bearer ${token}` } }),
+          fetch('/api/users/users', { headers: { Authorization: `Bearer ${token}` } }), // il faut ici le bon edpoint pour obtenir la liste users
+          fetch('/api/groups/', { headers: { Authorization: `Bearer ${token}` } }), // il faut ici le bon endpoitn pour récupérer les groupes
         ])
 
         const usersData = await userRes.json()
@@ -120,61 +126,17 @@ function UserManagement() {
         <Box className="info-admin-gestion-compte">
           <Box className="titre-info-admin-gestion-compte">Informations de mon compte administrateur</Box>
           
+         <InfoCompte nom={profile.last_name} prenom={profile.first_name} motdepasse="..." email={profile.email}/>
           
-          <Box className="info-admin">
-              <Box className="container-infos">
-                <Box className="container-infos-1">Nom et prénom : </Box>
-                <Box className="container-infos-2">Bergounioux Thomas </Box>
-              </Box>
-            
-              <Box className="container-infos">
-                <Box className="container-infos-1">Email : </Box>
-                <Box className="container-infos-2">Bergounioux@Thomas </Box>
-              </Box>
-
-              <Box className="container-infos">
-                <Box className="container-infos-1"> Mot de passe </Box>
-                <Box className="container-infos-2">****** </Box>
-              </Box>
-            
-          </Box>
         </Box>
 <Box className="info-utilisateur-gestion-compte">
-        <Box className="titre-info-utilisateur-gestion-compte">
+        
           <Box className="titre-info-utilisateur-gestion-compte">Mes utilisateurs</Box>
-          <Box className="info-utilisateurs">
-            <Box className="container-infos">
-              <Box className="container-infos-1">Nom et prénom : </Box>
-              <Box className="container-infos-2">Bergounioux Thomas </Box>
-            </Box>
-            
-            <Box className="container-infos">
-              <Box className="container-infos-1">Email : </Box>
-              <Box className="container-infos-2">Bergounioux@Thomas </Box>
-            </Box>
+         
+<InfoCompte nom="Degas" prenom="Paul" motdepasse="sss" email="k@k"/>
+            <InfoCompte nom="Degas" prenom="Paul" motdepasse="sss" email="k@k"/>
 
-            <Box className="container-infos">
-              <Box className="container-infos-1"> Mot de passe </Box>
-              <Box className="container-infos-2">****** </Box>
-            </Box>
-
-            <Box className="container-infos">
-              <Box className="container-infos-1">Nom et prénom : </Box>
-              <Box className="container-infos-2">Bergounioux Thomas </Box>
-            </Box>
-            
-            <Box className="container-infos">
-              <Box className="container-infos-1">Email : </Box>
-              <Box className="container-infos-2">Bergounioux@Thomas </Box>
-            </Box>
-
-            <Box className="container-infos">
-              <Box className="container-infos-1"> Mot de passe </Box>
-              <Box className="container-infos-2">****** </Box>
-            </Box>
-          </Box>
-
-        </Box>
+        <InfoCompte nom="Degas" prenom="Paul" motdepasse="sss" email="k@k"/>
     </Box>
         
         <Button onClick={handleAdd} className>➕ Ajouter un utilisateur</Button>

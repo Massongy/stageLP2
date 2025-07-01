@@ -23,19 +23,18 @@ export default function Dashboard() {
 
   return (
     <>
-    <RemoveScrollBar />
+   
     <Box sx={{ display: 'flex', width: 1920, height: 950}}>
-      <Box sx={{ width: 1178 }}>
+      <Box sx={{ width: 1178, height: 950 }}>
 
       {// passe la fonction handle preview en paramètre de la propriété onPreviewd
       }
         <DataTable onPreview={handlePreview} openedRowId={openedRowId}   
-  filterModel={filterModel}
+          filterModel={filterModel}
           onFilterModelChange={setFilterModel}
-          pageSize={5}
           disableRowSelectionOnClick
           
-   />
+      />
       </Box>
       <Box sx={{  width: 740, height: 950 }}>
         <PreviewTabs openedRowId={openedRowId}  />
