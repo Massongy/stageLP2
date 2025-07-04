@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
@@ -49,7 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   }
               />
               <Route
-                 path="/edition/:clientId"
+                 path="/edition/:reference"
                  element={
                      <PrivateRoute>
                         <Edition />

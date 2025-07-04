@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 1920px;
+    
     background-color: white;
     
 }
@@ -63,7 +63,7 @@
     background-color: #F5F2EE;
     padding: 8px;
     width: 100%;
-     display: flex 
+     display: flex ;
 
 }
 

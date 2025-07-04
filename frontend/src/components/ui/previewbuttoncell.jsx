@@ -5,7 +5,7 @@ import { faCircleArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export default function PreviewButtonCell({ row, isOpen, onToggle }) {
   const handleClick = () => {
-    onToggle(row.id);
+    onToggle(row);
   };
 
   return (

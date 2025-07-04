@@ -1,20 +1,53 @@
 .header {
-   background-color: #D4C7B5;
-display: flex;
-flex-direction: row;
-align-items: center;
-width: 1920px;
-height: 100px;
-
-}
-.left-header {
-  
+  background-color: #D4C7B5;
+  overflow: visible;
+  padding: 15px 0; /* Ajout de padding pour mobile */
 }
 
 .logo {
   flex: 1;
-  margin-left: 394px;
+}
+
+/* Responsive - Desktop */
+@media (min-width: 768px) {
+  .logo {
+    margin-left: 170px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 767px) {
+  .logo {
+    margin-left: 0;
+  }
   
+  .header {
+    padding: 10px 0;
+  }
+  
+  /* Ajustements pour les boutons sur mobile */
+  .boutton-search {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+  
+  .bouton-actualiser {
+    width: 250px !important; /* Réduit la largeur sur mobile */
+    font-size: 14px !important;
+  }
+  
+  .bouton-utilisateur {
+    width: 280px !important; /* Réduit la largeur sur mobile */
+    margin-right: 10px !important;
+  }
+  
+  .nom-utilisateur-header {
+    font-size: 16px !important;
+  }
+  
+  .logo-header {
+    max-width: 200px !important; /* Logo plus petit sur mobile */
+  }
 }
 
 .right {
@@ -24,96 +57,112 @@ height: 100px;
 .icon-circle {
   display: inline-block;
   border: none;
-  color:#D4C7B5;
+  color: #D4C7B5;
   font-size: 24px;
   -webkit-text-stroke: 1px white;
+}
+
+.boutton-search {
+  display: inline-block;
+  border: none;
+  outline: none;
+  height: 47px;
+  width: 47px;
+  border-radius: 50%;
+  margin-right: 20px;
+  margin-left: 40px;
+  background-color: white;
+  color: #D4C7B5;
+}
+
+.bouton-actualiser {
+  display: inline-block;
+  height: 47px;
+  width: 314px;
+  text-align: center;
+  background-color: white;
+ 
+  border-radius: 25px;
+  font-weight: 500;
+  text-transform: uppercase;
+  border: none;
   
 }
 
-.boutton-search{
-    display: inline-block;
-    border: none;
-    outline: none;
-    height: 47px;
-    width: 47px;
-    border-radius: 50%;
-    margin-right: 20px;
-    margin-left: 40px;
-    background-color: white;
-    color:#D4C7B5;
-
-}
-.bouton-actualiser {
-
-    display: inline-block;
-    height: 47px;
-    width: 314px;
-    text-align: center;
-    background-color: white;
-    color:#D4C7B5;
-    border-radius: 25px;
-    font-weight: 500;
-    text-transform: uppercase;
-    border:none;
-    font-size: 16px;
-    
-}
-
 .logo-header {
-    display: inline-block;
-    max-width: 250px;
-    
-    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(0deg);
-
+  display: inline-block;
+  max-width: 250px;
+  filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(0deg);
 }
 
 .nom-utilisateur-header {
-    display: inline-block;
-    margin-right: 20px;
-    color: white;
-    font-size: 17px;
-    text-transform: capitalize ;
-   font-weight: normal;
-    
-    
-
+  display: inline-block;
+  margin-right: 20px;
+  color: white;
+  font-size: 17px;
+  text-transform: capitalize;
+  font-weight: normal;
 }
-
 
 #nom-user {
   font-weight: bold;
 }
 
 .logo-utilisateur-header {
-    display: flex;
-    justify-content:center;
-    align-items:center;
-    
-    border: none;
-    outline: none;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    background-color: white;
-    color: #D4C7B5;
-   
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: white;
+  color: #D4C7B5;
 }
-
-
-
-
 
 .bouton-utilisateur {
-    display: flex !important;
-    width:300px !important;
-    align-items: center !important;
-    text-align: center !important;
-    border:none !important;
-    margin-right: 40px !important;
-    background-color: #D4C7B5 !important;
-    box-shadow: none !important;
-
-
+  display: flex !important;
+  width: 300px !important;
+  align-items: center !important;
+  text-align: center !important;
+  border: none !important;
+  margin-right: 40px !important;
+  background-color: #D4C7B5 !important;
+  box-shadow: none !important;
 }
 
+/* Enlever la flèche du dropdown */
+.bouton-utilisateur::after {
+  display: none !important;
+}
+
+/* Styles pour le dropdown menu */
+.dropdown-menu-custom {
+  right: 0 !important;
+  left: auto !important;
+  min-width: 200px;
+  margin-top: 5px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive - Dropdown sur mobile */
+@media (max-width: 767px) {
+  .dropdown-menu-custom {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+  }
+}
+
+/* S'assurer que le container parent permet le débordement */
+.container-fluid {
+  overflow: visible !important;
+}
+
+/* Style pour la colonne contenant le dropdown */
+.col-xs-4:last-child {
+  position: relative;
+  overflow: visible;
+}
