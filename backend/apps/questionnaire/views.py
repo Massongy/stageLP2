@@ -29,7 +29,6 @@ class QuestionViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
     
     
 
-
 class ReponseViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
     queryset = Reponse.objects.all()  # Use the through model for the ManyToMany relationship
     serializer_class = ReponseSerializer

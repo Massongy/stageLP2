@@ -77,10 +77,3 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
         
     
-class QuestionnaireList(APIView):
-    def get(self, request):
-        return Response({"message": "Questionnaire list works!"})
-
-class QuestionnaireDetail(APIView):
-    def get(self, request, pk):
-        return Response({"message": f"Questionnaire detail works for ID {pk}!"})
