@@ -41,15 +41,18 @@ class UserCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         # 1. Générer un mot de passe sécurisé
+        print(f"Creating user with no superadmin status")       
         password = secrets.token_urlsafe(10)
         user = serializer.save()
         user.set_password(password)
+        user.is_active = True  # TODO : Set to false and activate on password changed Désactiver le compte par défaut
         user.save()
 
         # 2. Envoyer un email de bienvenue
-        send_mail(
-            subject="Bienvenue sur Qualilead",
-            message=(
+        try:
+            send_mail(
+                subject="Bienvenue sur Qualilead",
+                message=(
                 f"Bonjour {user.first_name},\n\n"
                 f"Votre compte a été créé avec succès.\n"
                 f"Email : {user.email}\n"
@@ -62,6 +65,10 @@ class UserCreateView(generics.CreateAPIView):
             recipient_list=[user.email],
             fail_silently=False,
         )
+        except Exception as e:
+            # Gérer l'erreur d'envoi d'email
+            print(f"Erreur lors de l'envoi de l'email : {e}")
+            # Vous pouvez aussi lever une exception ou enregistrer l'erreur dans un log
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -76,4 +83,11 @@ class UserViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
         
-    
+        
+class MyUsersView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Return users created by the current user
+        return User.objects.filter(created_by=self.request.user)

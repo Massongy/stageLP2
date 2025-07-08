@@ -13,14 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'first_name', 'last_name', 'groups', 'permissions')
 
     def get_permissions(self, user):
+    
             # Permissions individuelles
-            user_perms = set(user.user_permissions.values_list('codename', flat=True))
+        user_perms = set(user.user_permissions.values_list('codename', flat=True))
             # Permissions via groupes
-            group_perms = set(
+        group_perms = set(
                 Permission.objects.filter(group__user=user).values_list('codename', flat=True)
-            )
-
-            return sorted(user_perms.union(group_perms))
+        )
+        return sorted(user_perms.union(group_perms))
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
@@ -29,3 +29,11 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         password_validation.validate_password(value, self.context['request'].user)
         return value
+
+class MyUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        serializers = UserSerializer
+
+  

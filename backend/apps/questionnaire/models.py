@@ -9,6 +9,7 @@ class Questionnaire(models.Model):
     score = models.IntegerField(default=0)
     potential = models.CharField(blank=True, null=True, max_length=100) 
     opName = models.CharField(max_length=255, blank=True, null=True)   
+
     def __str__(self):
         return f"Questionnaire for {self.quote}"
 
@@ -34,7 +35,13 @@ class GivenAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.SET_NULL, null=True, blank=True )
     answer = models.ForeignKey(Reponse, on_delete=models.SET_NULL, null=True, blank=True)
     
-    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['questionnaire', 'question'],
+                name='unique_answer_per_question_per_questionnaire'
+            )
+        ]
 
     def __str__(self):
         return f"{self.question}: {self.answer}"
