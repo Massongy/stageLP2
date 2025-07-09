@@ -1,6 +1,11 @@
 .header {
   background-color: #D4C7B5;
   overflow: visible;
+  width: 100%;
+  min-height: 100px;
+  height: auto;
+  
+  
 }
 
 .logo {
@@ -124,4 +129,17 @@
 .col-xs-4:last-child {
   position: relative;
   overflow: visible;
+}
+
+/* Ajout crucial pour le comportement responsive */
+.header .row {
+  min-height: 100px;
+  height: auto;
+}
+
+/* Adaptation mobile */
+@media (max-width: 767.98px) {
+  .header, .header .row {
+    min-height: 150px; /* Augmente seulement la hauteur minimale */
+  }
 }

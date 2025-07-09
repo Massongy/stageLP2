@@ -3,8 +3,13 @@ import { Box, TextField, Select, MenuItem, InputLabel, FormControl, IconButton }
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import "react-datepicker/dist/react-datepicker.css";
-import '../../assets/InfoDemande.css';
-import '../../assets/Theme.css';
+import '../../assets/infodemande.css';
+import '../../assets/style.css';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/fr';
 
 export default function InfoDemande({ data, onDataChange }) {
   // Key mapping (renames keys for display)
@@ -84,68 +89,104 @@ export default function InfoDemande({ data, onDataChange }) {
           .filter(([key]) => allowedFields.includes(key))
           .map(([key, value]) => (
             <div key={key} className="col-md-4 mb-3">
-              <Box className="blocinfo">
-                <Box className="titre3">{key}:</Box>
+              <Box className="bloc-titre-champ">
+                <Box className="titre3">
+                  {key}:
+                </Box>
+                
                 <Box className="champ">
-                  {key === 'Date du 1er appel' || key === 'Date du dernier appel' ? (
-                    <TextField
-                      type="date"
-                      value={formatDateForInput(value)}
-                      onChange={(e) => handleDateChange(key, e.target.value)}
-                      disabled={!isEditable(key)}
-                      sx={{ 
-                        backgroundColor: isEditable(key) ? 'white' : '#f5f5f5',
-                        '& .MuiInputBase-input': {
-                          color: isEditable(key) ? '#333' : '#666'
-                        }
-                      }}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  ) : key === "Nombre d'appels" ? (
-                    <Box display="flex" alignItems="center">
-                      <IconButton 
+                     {key === 'Date du 1er appel' || key === 'Date du dernier appel' ? (
+                      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+                      <DatePicker
+                        value={value ? dayjs(value) : null}
+                        onChange={(newValue) => handleDateChange(key, newValue ? newValue.format('YYYY-MM-DD') : '')}
+                        format="DD/MM/YYYY"
+                        disabled={!isEditable(key)}
+                        slotProps={{
+                          textField: {
+                            size: 'small',
+                            sx: { 
+                              backgroundColor: isEditable(key) ? 'white' : '#f5f5f5',
+                              '& .MuiInputBase-input': {
+                                color: isEditable(key) ? '#333' : '#666'
+                              }
+                            },
+                            placeholder: 'JJ/MM/AAAA',
+                          },
+                        }}
+                        InputLabelProps={{ shrink: true }}
+                      />
+                      </LocalizationProvider>
+                        ) : key === "Nombre d'appels" ? (
+                      <Box display="flex" alignItems="center" sx={{ width: '100%' }}>
+                      
+                      <IconButton
                         onClick={() => handleCallsChange('decrease')}
                         disabled={!isEditable(key) || !value || value <= 0}
-                        sx={{ color: isEditable(key) ? 'inherit' : '#999' }}
+                        sx={{
+                          color: '#656565', // couleur normale
+                          '& .MuiSvgIcon-root': { color: '#656565' },
+                          
+                          '&.Mui-disabled .MuiSvgIcon-root': { color: '#bbb' }
+                        
+                        }}
                       >
                         <RemoveIcon />
                       </IconButton>
+
                       <TextField
                         value={value || 0}
                         onChange={(e) => handleFieldChange(key, parseInt(e.target.value) || 0)}
                         type="number"
                         inputProps={{ min: 0 }}
                         disabled={!isEditable(key)}
-                        sx={{ 
-                          mx: 1, 
-                          backgroundColor: isEditable(key) ? 'white' : '#f5f5f5',
+                        variant="outlined"
+                        sx={{
+                          mx: 1,
+                          flex: '1 1 auto',
+                          '& fieldset': { border: 'none' },
+                          '& .MuiInputBase-root': {
+                            height: '40px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          },
                           '& .MuiInputBase-input': {
-                            color: isEditable(key) ? '#333' : '#666'
+                            textAlign: 'center',
+                            padding: 0,
+                            color: '#656565',             // couleur du nombre
+                          },
+                          '& .MuiInputBase-input.Mui-disabled': {
+                            WebkitTextFillColor: '#656565', // assure la couleur si désactivé
                           }
                         }}
                       />
-                      <IconButton 
+
+                      <IconButton
                         onClick={() => handleCallsChange('increase')}
                         disabled={!isEditable(key)}
-                        sx={{ color: isEditable(key) ? 'inherit' : '#999' }}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </Box>
-                  ) : (
-                    <TextField
-                      value={value || ''}
-                      onChange={(e) => handleFieldChange(key, e.target.value)}
-                      fullWidth
-                      disabled={!isEditable(key)}
-                      sx={{ 
-                        backgroundColor: isEditable(key) ? 'white' : '#f5f5f5',
-                        '& .MuiInputBase-input': {
-                          color: isEditable(key) ? '#333' : '#666'
-                        }
-                      }}
-                    />
-                  )}
+                        sx={{
+                          color: '#656565', // couleur normale
+                          '& .MuiSvgIcon-root': { color: '#656565' },
+                          
+                          '&.Mui-disabled .MuiSvgIcon-root': { color: '#bbb' }
+                        }}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+               
+
+                    ) : (
+                      <TextField className="champ"
+                        value={value || ''}
+                        onChange={(e) => handleFieldChange(key, e.target.value)}
+                        fullWidth
+                        disabled={!isEditable(key)}
+                      
+                        
+                      />
+                    )}
                 </Box>
               </Box>
             </div>

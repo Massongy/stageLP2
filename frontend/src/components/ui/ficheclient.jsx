@@ -4,6 +4,7 @@ import { Card, CardHeader, CardContent, CardActions, Typography, Box, Link } fro
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Commentaire from './Commentaire.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../assets/commentaire.css'
 import {useQuotesQuotes} from '../../hooks/useQuotesQuotes';
 import {authFetch} from '../../services/auth.js'
 
@@ -75,12 +76,7 @@ export default function FicheClient({reference}) {
           
 
         </Box>
-      
-
-
-      
-          
-       
+    
         {/* Deuxième sous-bloc */}
         <Box className="fiche-info-bloc-2">
           <Link className="lien-voir-demande" href="#">
@@ -158,7 +154,8 @@ export default function FicheClient({reference}) {
           
         </Box>
     <Box>
-        <Commentaire commentaire="Le clien souhaite que la récupération se fasse..."/>
+        <Commentaire className="champ" value="" 
+  onChange={() => {}} editable = {false}/>
      </Box>
         </CardContent>
       <CardActions />

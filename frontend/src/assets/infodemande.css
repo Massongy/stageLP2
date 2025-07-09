@@ -1,9 +1,4 @@
-.blocinfo {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Empêche débordement */
-  max-width: 100%;
-}
+
 
 .blocinfo-demande-texte .MuiOutlinedInput-root {
   height: 40px;
@@ -60,3 +55,37 @@
 .reponse-option.calendrier {
   padding: 0px;
 }
+
+/*suppression du bouton d'incrémentation au survol de la zone de saise dans le champ textfiled de type number */
+
+ input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+   input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+ .MuiInputBase-root.Mui-disabled {
+  height: 40px; /* Ajuste la hauteur selon tes besoins */
+  border: none !important; /* Supprime les bordures */
+  background-color: #f5f5f5; /* Optionnel : ajoute une couleur de fond */
+}
+
+
+
+
+
+
+
+.css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root {
+
+ border: none !important; /* Supprime la bordure */
+  background-color: transparent !important; /* Optionnel : rend le fond transparent */
+  height: 40px !important;
+
+}
+
+
