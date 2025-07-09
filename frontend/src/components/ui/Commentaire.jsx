@@ -1,11 +1,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardHeader, CardContent, CardActions, Typography, Box, Link } from '@mui/material';
+import { TextField, Card, CardHeader, CardContent, CardActions, Typography, Box, Link } from '@mui/material';
 import '../../assets/Theme.css';
 import '../../assets/Commentaire.css';
 
-export default function Commentaire({commentaire}) {
+export default function Commentaire({value, onChange}) {
 
 
 return (
@@ -13,10 +13,12 @@ return (
           <Box className="titre3">
             Commentaire :
           </Box>
-          <Box className="texte2 champ">
-            <Typography className=""> {commentaire}
-          </Typography>
-          </Box>
+        
+            <TextField className="texte2 champ" multiline value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Écrivez votre commentaire ici..." >
+          </TextField>
+          
         </Box>
         )
 }

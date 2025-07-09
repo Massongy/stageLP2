@@ -8,17 +8,13 @@
 
 .bouton-fermer-edition {
 
-    width: 238px !important;
-    margin-left: 10% !important;
     
     
 }
 
 .bouton-enregistrer-edition {
 
-    max-width: 718px !important;
-    margin-left: 30% !important;
-    margin-top: 24px !important;
+   
     
     
     
@@ -27,21 +23,18 @@
 display:flex;
 justify-content: center;
 align-items: center;
-margin-left: 390px;
 
 
 }
 
 .sous-titre-edition-1 {
    
-    margin-left: 805px;
     margin-top: 30px;
     
 }
 
 .sous-titre-edition-2 {
  
-    margin-left: 839px;
     margin-top: 30px;
     margin-bottom: 20px;
     

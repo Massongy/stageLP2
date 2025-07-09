@@ -16,8 +16,6 @@ function Header() {
   
   const user = useCurrentUser();
   
-  console.log(user?.first_name);
-  
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,7 +49,7 @@ function Header() {
   if (!isLogged) return null;
 
   return (
-    <Container fluid className="header">
+    <Container fluid className="header" width= "100%">
       <Row className="align-items-center">
         {/* Section boutons - première ligne sur mobile */}
         <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">

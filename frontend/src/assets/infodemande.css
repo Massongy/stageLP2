@@ -1,18 +1,9 @@
 .blocinfo {
-
-        display: flex;
-    
-    flex-direction:column;
-    margin: 42px;
-    width: 409px;
-   
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Empêche débordement */
+  max-width: 100%;
 }
-
-
-
-
-
-
 
 .blocinfo-demande-texte .MuiOutlinedInput-root {
   height: 40px;
@@ -20,8 +11,10 @@
   display: flex;
   align-items: center;
   border: none !important;
-  
-
+  max-width: 100%; /* Empêche débordement */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .blocinfo-demande-texte .MuiOutlinedInput-root fieldset {
@@ -42,25 +35,27 @@
   line-height: 40px !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .css-1hrl22c-MuiFormControl-root-MuiTextField-root .MuiOutlinedInput-root {
-    background-color: #F5F2EE !important;
-    width: 409px;
-    height: 40px;
-    border: none !important;
-    border-radius: 0px !important;
-}   
-
-
-
+  background-color: #F5F2EE !important;
+  height: 40px;
+  border: none !important;
+  border-radius: 0px !important;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root fieldset,
 .css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root .MuiOutlinedInput-notchedOutline {
   border: none !important;
 }
-
-
 
 .reponse-option.calendrier {
   padding: 0px;

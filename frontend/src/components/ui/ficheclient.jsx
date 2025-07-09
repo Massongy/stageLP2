@@ -4,7 +4,25 @@ import { Card, CardHeader, CardContent, CardActions, Typography, Box, Link } fro
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Commentaire from './Commentaire.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {useQuotesQuotes} from '../../hooks/useQuotesQuotes';
+import {authFetch} from '../../services/auth.js'
+
+
 export default function FicheClient({reference}) {
+
+
+//récupération des données avec le hook useQuotesQuotes
+  const { quotes:tableData, loading, error } = useQuotesQuotes();
+ 
+  const selectedQuote = tableData?.find(quote => 
+      quote.reference_id_SI === reference || 
+      quote.reference_id_SI?.toString() === reference
+    );
+    console.log(selectedQuote)
+;
+
+
+
   return (
     <Card className="fiche-info" >
       <CardHeader className="fiche-info-title"
@@ -12,7 +30,7 @@ export default function FicheClient({reference}) {
           <Box className="fiche-info-title-content" >
             <Typography className="fiche-info-title-content-text">Référence : {reference}
             </Typography>
-            <Typography className="fiche-info-title-content-text"> Scoring :
+            <Typography className="fiche-info-title-content-text"> Scoring : 
             </Typography>
           </Box>
         }
@@ -26,31 +44,31 @@ export default function FicheClient({reference}) {
 
           <Box className="fiche-info-bloc-1-row">
             <Box>
-              <Typography className="fiche-info-blocs-text"><strong>Nom et prénom :</strong> Thomas </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Nom et prénom :</strong> {selectedQuote?.lastname ?? 'Inconnu'} {selectedQuote?.firstname ?? 'Inconnu'}</Typography>
             </Box> 
             <Box sx={{ textAlign: 'right' }}>
-              <Typography className="fiche-info-blocs-text"><strong>Numéro :</strong></Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Numéro :</strong> {selectedQuote?.phone ?? 'Inconnu'}</Typography>
             </Box>
           </Box>
 
           <Box className="fiche-info-bloc-1-row">
             <Box >
-              <Typography className="fiche-info-blocs-text"><strong>Date du 1er appel :</strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Date du 1er appel :</strong> {selectedQuote?.date_first_call ?? 'Inconnu'} </Typography>
             </Box> 
 
             <Box sx={{ textAlign: 'right' }}>
               <Typography className="fiche-info-blocs-text"><strong> Nombre d'appels :
-              </strong></Typography>  
+              </strong> {selectedQuote?.call_count ?? 'Inconnu'}</Typography>  
             </Box>
           </Box>
 
           <Box className="fiche-info-bloc-1-row">
 
             <Box>
-              <Typography className="fiche-info-blocs-text"><strong>Date du dernier appel :</strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Date du dernier appel :</strong> {selectedQuote?.date_last_call ?? 'Inconnu'} </Typography>
             </Box>
             <Box>  
-              <Typography className="fiche-info-blocs-text"><strong>Semaine N°: </strong> </Typography>
+              <Typography className="fiche-info-blocs-text"><strong>Semaine N°: </strong> {selectedQuote?.weeknumber ?? 'Inconnu'}</Typography>
             </Box>
           </Box>
           

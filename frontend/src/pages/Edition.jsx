@@ -1,157 +1,136 @@
-import React, { useState } from 'react';
-import { Button, Box, Alert, CircularProgress } from '@mui/material';
+import React, { useState , useEffect} from 'react';
+import {
+  Button,
+  Box,
+  Alert,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogActions
+} from '@mui/material';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import InfoDemande from '../components/ui/InfoDemande.jsx';
 import Commentaire from '../components/ui/Commentaire.jsx';
 import QuestionsScoring from '../components/ui/QuestionsScoring.jsx';
 import '../assets/edition.css';
-import '../assets/Theme.css'
+import '../assets/Theme.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {useQuotesQuotes} from '../hooks/useQuotesQuotes';
+import {authFetch} from '../services/auth.js'
+
 
 export default function Edition() {
-  const {reference} = useParams();
-  console.log(reference);
-  const navigate = useNavigate();
 
-  // Données statiques pour InfoDemande en attendant le fetch quotes/quotes/{}
-  
-const userData = [
+//récupération des données avec le hook useQuotesQuotes
+  const { quotes:tableData, loading, error } = useQuotesQuotes();
+  const { reference } = useParams();
+  const selectedQuote = tableData?.find(quote => 
+      quote.reference_id_SI === reference || 
+      quote.reference_id_SI?.toString() === reference
+    );
     
- { cle:  "id", valeurs: ['0']},
- { cle:  "order_id", valeurs: ['string']},
-  { cle: "reference", valeurs: ['string']},
-  { cle: "firstname", valeurs: ['string']},
- { cle:  "lastname", valeurs: ['string']},
- { cle:  "phone", valeurs: ['string']},
- { cle:  "customer_email", valeurs: ['user@example.com']},
- { cle:  "weeknumber", valeurs:  [reference]},
- { cle:  "call_count", valeurs:  [reference]},
- { cle:  "date_first_call", valeurs: ['2025-07-04T13:02:59.789Z']},
- { cle:  "date_last_call", valeurs: ['2025-07-04T13:02:59.789Z']},
- { cle:  "created_at", valeurs: ['2025-07-04T13:02:59.789Z']},
-{ cle:   "updated_at", valeurs: ['2025-07-04T13:02:59.789Z']},
- { cle:  "idEtablissement", valeurs: ['strin']},
- { cle:  "reference_id_SI", valeurs: [reference]},
- { cle: "status", valeurs: ['0']}
+  const [commentaire, setCommentaire] = useState("");
+  const handleCommentaireChange = (newValue) => {
+    setCommentaire(newValue);
+  };
 
-  ];
-  
-
-  // États existants
+  const navigate = useNavigate();
   const [blocInfoData, setBlocInfoData] = useState(null);
   const [questionnaireData, setQuestionnaireData] = useState({});
-  
-  // Nouveaux états pour la gestion de l'envoi
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState('success'); // 'success' | 'error'
+  const [messageType, setMessageType] = useState('success');
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const handleInfoDatachange = (updatedData) => {
-    setBlocInfoData(updatedData);
-  };
+  const handleInfoDatachange = setBlocInfoData;
+  const handleQuestionDatachange = setQuestionnaireData;
 
-  const handleQuestionDatachange = (updatedData) => {
-    setQuestionnaireData(updatedData);
-  };
-
-  // Fonction pour envoyer les données à l'API
-  const handleSaveData = async () => {
-    setIsLoading(true);
-    setMessage(null);
-
-    try {
-      // Préparer les données à envoyer
-      const dataToSend = {
-        reference: reference,
-        informations: blocInfoData,
-        questionnaire: questionnaireData,
-        timestamp: new Date().toISOString(),
-      };
-
-      console.log('Envoi des données:', dataToSend);
-
-      // Appel à votre API
-      const response = await fetch('/api/clients/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Ajoutez vos headers d'authentification si nécessaire
-          // 'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Réponse de l\'API:', result);
-
-      // Succès
-      setMessage('Données enregistrées avec succès !');
-      setMessageType('success');
-
-      // Optionnel : rediriger après un délai
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-
-    } catch (error) {
-      console.error('Erreur lors de l\'enregistrement:', error);
-      setMessage(`Erreur lors de l'enregistrement: ${error.message}`);
-      setMessageType('error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Validation des données avant envoi
   const validateData = () => {
     if (!blocInfoData || Object.keys(blocInfoData).length === 0) {
       setMessage('Veuillez remplir les informations de la demande.');
       setMessageType('error');
       return false;
     }
-
     if (!questionnaireData || Object.keys(questionnaireData).length === 0) {
       setMessage('Veuillez répondre aux questions de scoring.');
       setMessageType('error');
       return false;
     }
-
     return true;
   };
 
-  // Gestionnaire du bouton Enregistrer
-  const handleEnregistrer = () => {
-    if (validateData()) {
-      handleSaveData();
+  const handleSaveData = async () => {
+    setIsLoading(true);
+    setMessage(null);
+    try {
+
+      /*ici il faut faire attention à bien vérifier le formatage des données en fonction de ce que doit recevoir l'api: notamment 
+      il y a trop de chanes renvoyées dans le blocInfoData puisqu'il y a toutes les données du quote
+*/
+      const dataToSend = {
+        reference,
+        informations: blocInfoData,
+        questionnaire: questionnaireData,
+        commentaire: commentaire,
+      };
+
+      //vérification que les données sont bien en stock
+      console.log('données à envoyer: ', dataToSend);
+
+      const response = await authFetch(`/api/questionnaire/questionnaires/${selectedQuote.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend)
+      });
+      if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+      const result = await response.json();
+      setMessage('Données enregistrées avec succès !');
+      setMessageType('success');
+      setTimeout(() => navigate('/'), 2000);
+    } catch (error) {
+      setMessage(`Erreur lors de l'enregistrement: ${error.message}`);
+      setMessageType('error');
+  
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleEnregistrer = () => {
+    if (validateData()) handleSaveData();
+  };
+
+  const handleCloseClick = () => {
+    setConfirmOpen(true);
+  };
+  const handleConfirmClose = () => {
+    setConfirmOpen(false);
+    navigate('/');
+  };
+  const handleCancelClose = () => {
+    setConfirmOpen(false);
   };
 
   return (
     <>
       <Box className="container-edition">
         <Box className="ligne-1-edition">
-          <>
-            <Button
-              component={Link}
-              to={`/`}
-              variant="contained"
-              className="bouton-editer bouton-fermer-edition"
-              disabled={isLoading}
-            >
-              Fermer
-            </Button>
-            <Box className="titre1 titre-edition">{`Demande ${reference}`}</Box>
-          </>
+          <Button
+            component={Link}
+            to="#"
+            variant="contained"
+            className="bouton-editer bouton-fermer-edition"
+            disabled={isLoading}
+            onClick={handleCloseClick}
+          >
+            Fermer
+          </Button>
+          <Box className="titre1 titre-edition">{`Demande ${reference}`}</Box>
         </Box>
 
-        {/* Affichage des messages */}
         {message && (
-          <Alert 
-            severity={messageType} 
+          <Alert
+            severity={messageType}
             onClose={() => setMessage(null)}
             sx={{ mb: 2 }}
           >
@@ -160,18 +139,13 @@ const userData = [
         )}
 
         <Box className="titre2 sous-titre-edition-1">Information de la demande</Box>
-        <Box>
-          <InfoDemande data={userData} onDataChange={handleInfoDatachange} />
-        </Box>
+        <InfoDemande data={selectedQuote ? [selectedQuote] : []} onDataChange={handleInfoDatachange} />
 
         <Box className="titre2 sous-titre-edition-2">Questions de scoring</Box>
-        <Box className="container-question-scoring-edition">
-          <QuestionsScoring onDataChange={handleQuestionDatachange} />
-        </Box>
+        <QuestionsScoring onDataChange={handleQuestionDatachange} />
 
-        <Box>
-          <Commentaire commentaire="Le client veut que..." />
-        </Box>
+        <Box><Commentaire  value={commentaire} 
+          onChange={handleCommentaireChange} /></Box>
 
         <Button
           variant="contained"
@@ -183,6 +157,17 @@ const userData = [
           {isLoading ? 'Enregistrement...' : 'Enregistrer'}
         </Button>
       </Box>
+
+      {/* Boîte de dialogue de confirmation */}
+      <Dialog open={confirmOpen} onClose={handleCancelClose}>
+        <DialogTitle>Vous êtes sur le point de fermer la demande N° {reference} sans avoir enregistré vos modifications, souhaitez-vous confirmer cette action  ?</DialogTitle>
+        <DialogActions>
+          <Button className="bouton-editer bouton-fermer-edition" onClick={handleCancelClose}>Annuler</Button>
+          <Button className="bouton-editer bouton-fermer-edition" onClick={handleConfirmClose} color="primary" variant="contained">
+            Confirmer
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

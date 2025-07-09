@@ -4,15 +4,14 @@
   display: flex;
   flex-direction: row ;
   flex-wrap: wrap;
- margin-left: 100px;
- margin-right: 100px;
+
 }
 
 /* Style de chaque bloc de question + réponses */
 .container-demande {
   display: flex;
   flex-direction: column; /* La question et les réponses sont empilées verticalement */
-  margin: 8px;
+
    
 }
 
