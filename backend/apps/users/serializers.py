@@ -37,3 +37,11 @@ class MyUserSerializer(serializers.ModelSerializer):
         serializers = UserSerializer
 
   
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'created_by', 'groups')
+        extra_kwargs = {
+            'created_by': {'read_only': True}  # Prevent passing it from the client
+        }
+    

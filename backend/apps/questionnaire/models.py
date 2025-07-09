@@ -22,13 +22,13 @@ class Question(models.Model):
 
 class Reponse(models.Model):
     
-    question = models.OneToOneField(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='reponses')
     value = models.TextField()
     score = models.IntegerField(default=0)
     reference_id_SI = models.IntegerField(null=True, blank=True)
     
     def __str__(self):
-        return f"{self.question.label}: {self.value}"
+        return f"{self.value}"
 
 class GivenAnswer(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.SET_NULL, null=True, related_name='given_answers')
