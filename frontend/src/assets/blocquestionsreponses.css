@@ -69,3 +69,10 @@ background-color: white;
   font-family: 'Segoe UI', sans-serif !important;
   font-size: 14px !important;
 }
+
+.date-scoring .MuiPickersSectionList-root, 
+.date-scoring .MuiPickersInputBase-input,
+.date-scoring .MuiOutlinedInput-input {
+  color: #D4C7B5 !important;
+  font-size: 14px !important;
+}
