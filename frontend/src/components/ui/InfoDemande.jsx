@@ -54,7 +54,8 @@ export default function InfoDemande({ data, onDataChange }) {
   ];
 
   const editableFields = [
-    "Semaine N°", "Nombre d'appels",
+    "Prénom", "Nom", "Numéro de téléphone", 
+    "Email", "Semaine N°", "Nombre d'appels",
     "Date du 1er appel", "Date du dernier appel"
   ];
 

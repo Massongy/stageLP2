@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@mui/material/Button';
 import logoOptions from '@/assets/logo-options.png';
 import logoAcceor from '@/assets/logo-acceor.png';
