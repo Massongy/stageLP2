@@ -3,7 +3,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function DropdownButton({ options, onSelect }) {
+export default function DropDownButton({ options, onSelect }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
