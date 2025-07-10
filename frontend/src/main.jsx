@@ -3,7 +3,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Header from './components/Header'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 import '@/assets/index.css'
 import Login from './pages/Login'

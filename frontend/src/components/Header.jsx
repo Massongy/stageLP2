@@ -15,7 +15,6 @@ function Header() {
 const [anchorEl, setAnchorEl] = useState(null);
 const open = Boolean(anchorEl);
     const user = useCurrentUser();
-    console.log(user?.first_name);
     const handleMenuOpen = (event) => {
   setAnchorEl(event.currentTarget);
 };
