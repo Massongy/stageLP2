@@ -3,8 +3,8 @@ import { Box, useTheme, useMediaQuery } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUnlock, faArrowUpRightFromSquare, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
-import DropdownButton from './Dropdownbutton';
-import PreviewButtonCell from './Previewbuttoncell';
+import DropdownButton from './DropdownButton';
+import PreviewButtonCell from './PreviewButtonCell';
 import '../../assets/DataTable.css';
 
 
