@@ -28,7 +28,14 @@
   color: white;
 }
 
+.css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root {
+border: 1px solid #D4C7B5 !important;
+height: 34px !important; 
 
+background-color: white;
+
+
+}
 
 .css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root {
 border: 1px solid #D4C7B5 !important;
@@ -39,32 +46,26 @@ background-color: white;
 
 }
 
-/*modification du texte date*/
-
-.css-gfka5e-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
-  color: #D4C7B5 !important;
-  font-family: 'Segoe UI', sans-serif !important;
-  font-size: 14px !important;
-
-}
-
-
-.css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
-
-  color: #D4C7B5 !important;
-  font-family: 'Segoe UI', sans-serif !important;
-  font-size: 14px !important;
-}
-
-
-/*modification couleur icone date*/
+.date-scoring /*modification couleur icone date*/
 .css-1umw9bq-MuiSvgIcon-root {
 
   color: #D4C7B5 !important;
 }
 
-.css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
+.date-scoring .css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
 
   color: #D4C7B5 !important;
 }
- 
+
+.css-ni0mq9-MuiFormControl-root-MuiPickersTextField-root {
+
+  border: none !important;
+  width: 100%;
+}
+
+.date-scoring .css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
+
+  color: #D4C7B5 !important;
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 14px !important;
+}

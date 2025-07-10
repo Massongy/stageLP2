@@ -23,9 +23,9 @@ export default function Commentaire({value, onChange, editable = true}) {
 
           />
         ) : (
-          <Box className="texte2 champ champ-commentaire">
-            {value || "A récupérer"}
-          </Box>
+          <TextField className="texte2 champ champ-commentaire"
+             value={value || "coucou"}>
+         </TextField>
         )}
     </Box>
   )
