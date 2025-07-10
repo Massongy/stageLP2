@@ -96,11 +96,13 @@ function Header() {
             </Dropdown.Item>
             <Dropdown.Item as={Link} to="/profile" onClick={handleMenuClose}>
               Mon profil
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/Users" onClick={handleMenuClose}>
-              Gestion du compte
-            </Dropdown.Item>
-            <Dropdown.Item onClick={handleLogout}>
+            </Dropdown.Item> {/* 
+            {user?.permissions?.includes('') && (*/}
+                  <Dropdown.Item as={Link} to="/Users" onClick={handleMenuClose}>               
+                    Gestion du compte             
+                  </Dropdown.Item>
+                {/*)}*/}
+                          <Dropdown.Item onClick={handleLogout}>
               Déconnexion
             </Dropdown.Item>
           </Dropdown.Menu>
