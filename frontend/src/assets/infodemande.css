@@ -1,49 +1,67 @@
-/* Conteneur principal des questions + réponses */
-.info-demande {
-  
-  display: flex;
-  flex-direction: row ;
-  flex-wrap: wrap;
- margin-left: 100px;
- margin-right: 100px;
-}
+.blocinfo {
 
-/* Style de chaque bloc de question + réponses */
-.container-demande {
-  display: flex;
-  flex-direction: column; /* La question et les réponses seront empilées verticalement */
-  margin: 8px;
+        display: flex;
+    
+    flex-direction:column;
+    margin: 42px;
+    width: 409px;
    
 }
 
-/* Style pour la question */
-.container-demande-1 {
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 10px; /* Espacement entre la question et les réponses */
-  white-space: nowrap;
-}
 
-/* Style pour les réponses */
-.container-demande-2 {
+
+
+
+
+
+.blocinfo-demande-texte .MuiOutlinedInput-root {
+  height: 40px;
+  font-size: 12px !important;
   display: flex;
-
-  gap: 10px;  /* Espacement entre les réponses */
+  align-items: center;
+  border: none !important;
   
+
 }
 
-/* Style de chaque réponse */
-.reponse-option {
-   
-  padding: 8px;
-  color: #D4C7B5;
-  border:1px solid #D4C7B5;
-  flex-shrink: 0;
-  white-space: nowrap;
+.blocinfo-demande-texte .MuiOutlinedInput-root fieldset {
+  border: none !important;
 }
 
-.reponse-option:hover  {
-  padding: 8px;
-  background-color:#D4C7B5;
-  color: white;
+.blocinfo-demande-texte .MuiOutlinedInput-root fieldset legend {
+  display: none;
+}
+
+.blocinfo-demande-texte .MuiInputLabel-root {
+  display: none;
+}
+
+.blocinfo-demande-texte .MuiSelect-root,
+.blocinfo-demande-texte .MuiSelect-select {
+  height: 40px;
+  line-height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.css-1hrl22c-MuiFormControl-root-MuiTextField-root .MuiOutlinedInput-root {
+    background-color: #F5F2EE !important;
+    width: 409px;
+    height: 40px;
+    border: none !important;
+    border-radius: 0px !important;
+}   
+
+
+
+
+.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root fieldset,
+.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+
+
+.reponse-option.calendrier {
+  padding: 0px;
 }

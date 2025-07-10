@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardHeader, CardContent, CardActions, Typography, Box, Link } from '@mui/material';
-
-export default function FicheClient({
-  reference,
- 
-}) {
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Commentaire from './Commentaire.jsx';
+import 'bootstrap/dist/css/bootstrap.min.css';
+export default function FicheClient({reference}) {
   return (
     <Card className="fiche-info" >
       <CardHeader className="fiche-info-title"
@@ -140,17 +139,9 @@ export default function FicheClient({
             </Box>
           
         </Box>
-    
-        <Box className="fiche-info-bloc-4-commentaire">
-          <Box className="fiche-info-blocs-text">
-            Commentaire :
-          </Box>
-          <Box className="retour-commentaire"> 
-            <Typography className="retour-commentaire-text">Le client souhaite que la récupération se fasse le dimanche 20 juillet...
-          </Typography>
-          </Box>
-        </Box>
-
+    <Box>
+        <Commentaire commentaire="Le clien souhaite que la récupération se fasse..."/>
+     </Box>
         </CardContent>
       <CardActions />
     </Card>
