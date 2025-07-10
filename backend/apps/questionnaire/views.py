@@ -1,8 +1,9 @@
 from rest_framework import viewsets
-from .models import Question, Reponse, Questionnaire
-from .serializers import QuestionSerializer, ReponseSerializer, QuestionnaireSerializer
+from .models import Question, Reponse, Questionnaire, GivenAnswer
+from .serializers import QuestionSerializer, ReponseSerializer, QuestionnaireSerializer, GivenAnswerSerializer, GivenAnswersInputSerializer
+from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
-
+from drf_yasg import openapi
 
 class QuestionnaireViewSet(viewsets.GenericViewSet, viewsets.mixins.RetrieveModelMixin, viewsets.mixins.UpdateModelMixin):
     queryset = Questionnaire.objects.all()
@@ -27,9 +28,6 @@ class QuestionViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
 
     
     
-    
-
-
 class ReponseViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
     queryset = Reponse.objects.all()  # Use the through model for the ManyToMany relationship
     serializer_class = ReponseSerializer
@@ -43,3 +41,79 @@ class ReponseViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
     
+
+class GivenAnswerViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixin):
+    """
+    Viewset for managing given answers.
+    """
+    queryset = GivenAnswer.objects.all()  # Use the through model for the ManyToMany relationship
+    serializer_class = GivenAnswerSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return GivenAnswersInputSerializer
+        return GivenAnswerSerializer
+
+    def get_tags(self):
+        return ["questions - reponses"]
+    
+    def get_view_name(self):
+        return "questions - reponses"
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        id_param = self.request.query_params.get('questionnaire_id')
+        if id_param:
+            return queryset.filter(questionnaire_id=id_param)
+        return queryset
+    
+    #TODO : Add routing URL to find by ID
+    @swagger_auto_schema(
+        tags=["questions - reponses"],
+        manual_parameters=[
+            openapi.Parameter(
+                'questionnaire_id', openapi.IN_QUERY,
+                description="Filter by Questionnaire ID",
+                type=openapi.TYPE_INTEGER
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=["questions - reponses"],
+        operation_description="Custom create method for GivenAnswer.",
+        request_body=GivenAnswersInputSerializer,
+        responses={201: GivenAnswersInputSerializer, 400: "Bad Request"}
+    )
+    def create(self, request, *args, **kwargs):
+        """
+        Custom create method for GivenAnswer.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+            
+        
+        questionnaire = serializer.validated_data['questionnaire']
+        reponse = serializer.validated_data['answer']
+        question = reponse.question
+       
+        existing = GivenAnswer.objects.filter(questionnaire=questionnaire, question=question).first()
+        
+        if existing : 
+            existing.answer = reponse
+            existing.question = question
+            existing.save()
+            res_serializer = GivenAnswerSerializer(existing)
+            return Response(res_serializer.data, status=200)
+        else : 
+            res = self.perform_create(serializer, question=question)
+            res_serializer = GivenAnswerSerializer(res)
+            return Response(res_serializer.data, status=201)
+    
+    def perform_create(self, serializer, question):
+        serializer.save(question=question)
+        return serializer.instance 
+  
+  

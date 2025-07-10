@@ -41,10 +41,18 @@ class Comment(models.Model):
     
 
 class QuoteUserLog(models.Model):
+    ACTION_CHOICES = (
+        ('created', 'Created'),
+        ('updated', 'Updated'),
+        ('retrieved', 'Retrieved'),
+        ('deleted', 'Deleted'),
+    )
+
     quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, null=True, related_name='user_logs')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-    action = models.CharField(max_length=100)
+    action = models.CharField(max_length=100, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField(blank=True, null=True)
     
     
 

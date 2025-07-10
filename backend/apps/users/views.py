@@ -4,9 +4,11 @@ from .models import User
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
-from .serializers import ChangePasswordSerializer, UserSerializer
+from .serializers import ChangePasswordSerializer, UserSerializer, UserCreateSerializer
 from django.conf import settings
 from rest_framework.views import APIView
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
 
 class UserDetail(generics.RetrieveAPIView):
@@ -36,20 +38,24 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
     permission_classes = [permissions.IsAuthenticated]  # ou IsAdminUser
 
     def perform_create(self, serializer):
         # 1. Générer un mot de passe sécurisé
+        print(f"Creating user with no superadmin status")       
         password = secrets.token_urlsafe(10)
-        user = serializer.save()
+        user = serializer.save(created_by=self.request.user)
         user.set_password(password)
+        user.is_active = True  # TODO : Set to false and activate on password changed Désactiver le compte par défaut
         user.save()
+    
 
         # 2. Envoyer un email de bienvenue
-        send_mail(
-            subject="Bienvenue sur Qualilead",
-            message=(
+        try:
+            send_mail(
+                subject="Bienvenue sur Qualilead",
+                message=(
                 f"Bonjour {user.first_name},\n\n"
                 f"Votre compte a été créé avec succès.\n"
                 f"Email : {user.email}\n"
@@ -62,6 +68,10 @@ class UserCreateView(generics.CreateAPIView):
             recipient_list=[user.email],
             fail_silently=False,
         )
+        except Exception as e:
+            # Gérer l'erreur d'envoi d'email
+            print(f"Erreur lors de l'envoi de l'email : {e}")
+            # Vous pouvez aussi lever une exception ou enregistrer l'erreur dans un log
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -76,11 +86,57 @@ class UserViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
         
+        
+class MyUsersView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
     
-class QuestionnaireList(APIView):
-    def get(self, request):
-        return Response({"message": "Questionnaire list works!"})
 
-class QuestionnaireDetail(APIView):
-    def get(self, request, pk):
-        return Response({"message": f"Questionnaire detail works for ID {pk}!"})
+    def get_queryset(self):
+        # Return users created by the current user
+        return User.objects.filter(created_by=self.request.user)
+    
+    
+
+class UserDelete(generics.DestroyAPIView): 
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+    lookup_field = 'id'
+    queryset = User.objects.all()
+    
+    @swagger_auto_schema(
+        tags=["users"],
+        operation_description="Deactivate (soft‑delete) a user by ID",
+        manual_parameters=[
+            openapi.Parameter(
+                name="id",
+                in_=openapi.IN_PATH,
+                description="ID of the user to deactivate",
+                type=openapi.TYPE_INTEGER,
+                required=True
+            )
+        ],
+        responses={
+            204: "User deactivated successfully",
+            404: "User not found"
+        }
+    )
+    def destroy(self, request, *args, **kwargs):
+        user_id = kwargs.get('id')
+        try : 
+            user = self.get_queryset().get(id=user_id)
+           
+        except User.DoesNotExist: 
+            return Response({"detail" : "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if self.request.user != user.created_by and not self.request.user.is_superuser : 
+            raise Exception("Vous ne pouvez pas supprimer cet utilisateur.")
+        
+        user.is_active = False
+        user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
+
+            
+    
+

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Question, Reponse, Questionnaire
+from .models import Question, Reponse, Questionnaire, GivenAnswer
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,9 +12,61 @@ class ReponseSerializer(serializers.ModelSerializer):
         fields = '__all__'  # Specify the fields you want to include
   
   
-class QuestionnaireSerializer(serializers.ModelSerializer):
-    responses = ReponseSerializer(many=True, read_only=True)  # Use related_name here
+  
+  
+class QuestionLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'label']  # or whatever your label field is called
 
+class ReponseLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reponse
+        fields = ['id', 'value']  # or the appropriate field
+
+
+class GivenAnswersInputSerializer(serializers.ModelSerializer):    
+    question = serializers.SerializerMethodField(read_only=True)
+ 
+    class Meta:
+        model = GivenAnswer
+        fields = ['answer', 'questionnaire', 'question']
+        read_only_fields = ['question']
+            
+    def get_question(self, obj):
+        print("get_Question serializer called")
+        if obj.answer and obj.answer.question:
+            print("question exists :"  + obj.answer.question)
+            return {
+                'id': obj.answer.question.id,
+                'label': obj.answer.question.label
+            }
+        return None
+        
+        
+class QuestionnaireLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionnaire
+        fields = ['id', 'quote', 'score'] 
+        # Specify the fields you want to include
+        
+        
+class GivenAnswerSerializer(serializers.ModelSerializer):
+    question = QuestionLabelSerializer(read_only=True)
+    answer = ReponseLabelSerializer(read_only=True)
+    questionnaire = QuestionnaireLabelSerializer(read_only=True)
+
+    class Meta:
+        model = GivenAnswer  # Use the through model for the ManyToMany relationship
+        fields = ['question', 'answer', 'questionnaire']  # Specify the fields you want to include
+    
+  
+
+        
+class QuestionnaireSerializer(serializers.ModelSerializer):
+
+    given_answers = GivenAnswerSerializer(many=True, read_only=True)  # Use related_name here
     class Meta:
         model = Questionnaire
         fields = '__all__'
+        
