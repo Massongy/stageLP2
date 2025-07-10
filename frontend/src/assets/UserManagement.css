@@ -3,25 +3,26 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 1914px;
+    width: 1920px;
+    background-color: white;
+    
 }
 
 
 .titre-gestion-compte {
     display:flex;
-    color: #d5c2ae;
+    color: #D4C7B5;
     text-transform: uppercase;
     margin: 62px;
     font-size: 25px;
-    font-weight: 7px;
-
-
-
+    font-weight: 500;
 
 }
 .container-infos {
 
     display: flex;
+    color: #656565;
+    
 }
 
 
@@ -31,13 +32,15 @@
     flex-direction: column;
     align-items: center;
     
+    
 }
 
 .titre-info-admin-gestion-compte {
 
     display:flex;
-    color: #d5c2ae;
+    color: #D4C7B5;
     text-transform: uppercase;
+    font-weight: 500 ;
 }
 
 .info-admin {
@@ -53,23 +56,32 @@
     flex-direction:column;
     margin: 42px;
 }
-
+.container-infos-1 {
+    font-weight: 500 !important;
+}
 .container-infos-2 {
-    background-color:#d5c2ae;
-    width: 275px;
+    background-color: #F5F2EE;
     padding: 8px;
+    width: 100%;
+     display: flex 
 
 }
 
-.titre-info-utilisateur-gestion-compte{
 
-    display:flex;
-    color: #d5c2ae;
-    text-transform: uppercase;
-}
+
 
 .info-utilisateur-gestion-compte {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
+
+.titre-info-utilisateur-gestion-compte{
+
+    display:flex;
+    color: #D4C7B5;
+    text-transform: uppercase;
+    font-weight: 500 ;
+}
+

@@ -1,17 +1,24 @@
 
 .datatable {
-    border: none !important;
+  border: none !important;
   box-shadow: none !important;
-  overflow-y: auto;
+  overflow-x: hidden !important;
   scrollbar-color: #D4C7B5 #F5F2EE;
+  
 }
 
-.datatable::-webkit-scrollbar-button {
+.datatable .MuiDataGrid-virtualScroller {
+  overflow-x: hidden !important;
+}
+
+.datatable .MuiDataGrid-virtualScroller::-webkit-scrollbar-button {
   display: none !important;
 }
-.MuiDataGrid-virtualScroller {
-  overflow-x: scroll !important;
-}
+
+/* Cache totalement la scrollbar horizontale */
+.datatable .MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  height: 0 !important;}
+
 
 .MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within {
   outline: none !important;
