@@ -5,13 +5,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
-import '../../assets/Theme.css';
-import '../../assets/QuestionsReponses.css';
+import '../../assets/style.css';
+import '../../assets/blocquestionsreponses.css';
 
 // Configuration de dayjs en français
 dayjs.locale('fr');
 
-export default function QuestionsReponses({
+export default function BlocQuestionsReponses({
   question,
   reponses,
   questionId,
@@ -40,12 +40,16 @@ export default function QuestionsReponses({
   };
 
   return (
-    <Box className="info-demande">
-      <Box className="container-demande">
-        <Box className="titre3 container-demande-1">{question}</Box>
-        <Box className="container-demande-2">
+    
+      <Box className="bloc-titre-champ">
+        
+        
+        <Box className="titre3">{question}</Box>
+       
+       
+        <Box className="champ champ-scoring">
           {showDatePicker ? (
-            <Box className="reponse-option calendrier">
+            <Box >
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
                 <DatePicker
                   value={selectedDate}  // Ici, selectedDate est un objet dayjs ou null
@@ -66,7 +70,7 @@ export default function QuestionsReponses({
           ) : (
             reponses &&
             reponses.map((reponse, index) => (
-              <Box key={index} className="texte2 reponse-option">
+              <Box key={index} className="texte2 bouton-reponse">
                 <label>
                   <input
                     type="radio"
@@ -83,6 +87,6 @@ export default function QuestionsReponses({
           )}
         </Box>
       </Box>
-    </Box>
+    
   );
 }

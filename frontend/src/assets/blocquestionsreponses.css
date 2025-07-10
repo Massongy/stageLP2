@@ -1,0 +1,70 @@
+
+
+/*adaptation du champ pour les questions-scoring */
+.champ-scoring {
+
+  background-color: white;
+}
+
+/* Style de chaque réponse */
+.bouton-reponse {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding-left: 23px;
+   padding-right: 23px;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   height: 34px;
+
+  color: #D4C7B5;
+  border:1px solid #D4C7B5;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.bouton-reponse:hover  {
+  background-color:#D4C7B5;
+  color: white;
+}
+
+
+
+.css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root {
+border: 1px solid #D4C7B5 !important;
+height: 34px !important; 
+
+background-color: white;
+
+
+}
+
+/*modification du texte date*/
+
+.css-gfka5e-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
+  color: #D4C7B5 !important;
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 14px !important;
+
+}
+
+
+.css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
+
+  color: #D4C7B5 !important;
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 14px !important;
+}
+
+
+/*modification couleur icone date*/
+.css-1umw9bq-MuiSvgIcon-root {
+
+  color: #D4C7B5 !important;
+}
+
+.css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
+
+  color: #D4C7B5 !important;
+}
+ 

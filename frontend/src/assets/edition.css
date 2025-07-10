@@ -7,18 +7,20 @@
 }
 
 .bouton-fermer-edition {
-
-    width: 238px !important;
-    margin-left: 10% !important;
+ text-decoration: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 67%;
     
     
 }
 
-.bouton-enregistrer-edition {
+.bouton-enregistrer {
 
-    max-width: 718px !important;
-    margin-left: 30% !important;
-    margin-top: 24px !important;
+   width: 48%;
+     margin-left: auto;
+  margin-right: auto;
     
     
     
@@ -27,21 +29,18 @@
 display:flex;
 justify-content: center;
 align-items: center;
-margin-left: 390px;
 
 
 }
 
 .sous-titre-edition-1 {
    
-    margin-left: 805px;
     margin-top: 30px;
     
 }
 
 .sous-titre-edition-2 {
  
-    margin-left: 839px;
     margin-top: 30px;
     margin-bottom: 20px;
     
@@ -52,4 +51,35 @@ margin-left: 390px;
     display: flex;
     flex-direction: row; 
     flex-wrap: wrap;
+}
+
+
+.custom-alert {
+  background-color: #ffebee !important; /* Fond rouge clair */
+  color: #d32f2f !important; /* Texte rouge foncé */
+  font-size: 1.2rem !important; /* Taille de police augmentée */
+  text-align: center !important; /* Centrage du texte */
+  border: 1px solid #f44336 !important; /* Bordure rouge */
+  border-radius: 8px !important;
+  padding: 15px !important;
+  margin: 0 auto !important; /* Centrage horizontal */
+  max-width: 80% !important; /* Largeur contrôlée */
+}
+
+.custom-alert .alert-dismissible .btn-close {
+  filter: brightness(0) saturate(100%) invert(25%) sepia(98%) saturate(2475%) hue-rotate(347deg) brightness(89%) contrast(91%) !important;
+}
+
+.custom-alert::before {
+  content: "!" !important; /* Point d'exclamation */
+  display: inline-block !important;
+  font-size: 1.8rem !important;
+  font-weight: bold !important;
+  margin-right: 10px !important;
+  vertical-align: middle !important;
+  color: #d32f2f !important;
+}
+
+.MuiAlert-icon .css-1ckov0h-MuiSvgIcon-root {
+  display: none !important;
 }

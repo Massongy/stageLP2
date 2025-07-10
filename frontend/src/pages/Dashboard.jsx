@@ -3,90 +3,20 @@ import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import DataTable from '../components/ui/DataTable.jsx';
 import PreviewTabs from '../components/ui/PreviewTabs.jsx';
+import {useQuotesQuotes} from '../hooks/useQuotesQuotes';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-
 export default function Dashboard() {
-
-  
   const [selectedReference, setSelectedReference] = useState(null);
   const [openedRowRef, setOpenedRowRef] = useState(null); // état pour l'état du bouton
   const [filterModel, setFilterModel] = React.useState({ items: [] }); // gérer état filtre
-  const [tableData, setTableData] = useState([]); // Nouvel état pour les données
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Simulation de la réponse API (à remplacer par la vraie API)
-        const res = [
-          {
-            "id": 1,
-            "order_id": "string",
-            "reference": "string1",
-            "firstname": "string",
-            "lastname": "string",
-            "phone": "string",
-            "customer_email": "user@example.com",
-            "weeknumber": 2147483647,
-            "call_count": 2147483647,
-            "date_first_call": "2025-07-03T15:07:18.733Z",
-            "date_last_call": "2025-07-03T15:07:18.733Z",
-            "created_at": "2025-07-03T15:07:18.733Z",
-            "updated_at": "2025-07-03T15:07:18.733Z",
-            "idEtablissement": "strin",
-            "reference_id_SI": 2147483647,
-            "status": 0
-          },
-          {
-            "id": 2,
-            "order_id": "string",
-            "reference": "string2",
-            "firstname": "string",
-            "lastname": "string",
-            "phone": "string",
-            "customer_email": "user@example.com",
-            "weeknumber": 2147483647,
-            "call_count": 2147483647,
-            "date_first_call": "2025-07-03T15:07:18.733Z",
-            "date_last_call": "2025-07-03T15:07:18.733Z",
-            "created_at": "2025-07-03T15:07:18.733Z",
-            "updated_at": "2025-07-03T15:07:18.733Z",
-            "idEtablissement": "strin",
-            "reference_id_SI": 2147483648,
-            "status": 0
-          },
-          {
-            "id": 3,
-            "order_id": "string",
-            "reference": "string2",
-            "firstname": "string",
-            "lastname": "string",
-            "phone": "string",
-            "customer_email": "user@example.com",
-            "weeknumber": 2147483647,
-            "call_count": 2147483647,
-            "date_first_call": "2025-07-03T15:07:18.733Z",
-            "date_last_call": "2025-07-03T15:07:18.733Z",
-            "created_at": "2025-07-03T15:07:18.733Z",
-            "updated_at": "2025-07-03T15:07:18.733Z",
-            "idEtablissement": "strin",
-            "reference_id_SI": 2147483649,
-            "status": 0
-          }
-        ];
+  //récupération des données avec le hook useQuotesQuotes
 
-        console.log('Données reçues:', res);
-        setTableData(res);
+  const { quotes:tableData, loading, error } = useQuotesQuotes();
+ 
 
-      } catch (error) {
-        console.error('Erreur de chargement des données :', error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  
   const handlePreview = (row) => {
     const reference = row.reference_id_SI;
     setSelectedReference(reference);
@@ -94,27 +24,45 @@ export default function Dashboard() {
   };
 
   return (
-    <>
-   
-    <Box sx={{display: 'flex', width: '100%' }}>
-      <Box sx={{width: '65%' }}>
-
-      {// passe la fonction handle preview en paramètre de la propriété onPreviewd
-      }
-        <DataTable 
-        data={tableData}
-        onPreview={handlePreview}
-        openedRowRef={openedRowRef}   
-        filterModel={filterModel}
-        onFilterModelChange={setFilterModel}
-        disableRowSelectionOnClick
+    <Box sx={{ width: '100%', p: 2 }}>
+      <div className="container-fluid">
+        <div className="row">
+          {/* Tableau - Prend toute la largeur sur mobile, 8 colonnes sur desktop */}
+          <div className="col-12 col-lg-8 mb-3 mb-lg-0">
+            <Box sx={{ 
+              width: '100%',
+              '& .MuiDataGrid-root': {
+                borderRadius: 1,
+                border: 'none',
+              }
+            }}>
+              <DataTable
+                //passe les données concernant les quotes
+                data={tableData}
+                // passe la fonction handle preview en paramètre de la propriété onPreview
+                onPreview={handlePreview}
+                openedRowRef={openedRowRef}
+                filterModel={filterModel}
+                onFilterModelChange={setFilterModel}
+                disableRowSelectionOnClick
+              />
+            </Box>
+          </div>
           
-      />
-      </Box>
-      <Box sx={{width: '35%' }}>
-        <PreviewTabs openedRowRef={openedRowRef}  />
-      </Box>
+          {/* Preview - Passe en dessous sur mobile, 4 colonnes sur desktop */}
+          <div className="col-12 col-lg-4">
+            <Box sx={{ 
+              width: '100%',
+              height: '100%',
+              '& .MuiTabs-root': {
+                borderRadius: 1,
+              }
+            }}>
+              <PreviewTabs openedRowRef={openedRowRef} />
+            </Box>
+          </div>
+        </div>
+      </div>
     </Box>
-    </>
   );
 }
