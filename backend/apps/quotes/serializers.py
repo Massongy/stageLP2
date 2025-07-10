@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Quote
+from .models import Quote, QuoteUserLog
 
 
 class QuoteSerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class QuoteSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data['updated_by'] = self.context['request'].user
         return super().update(instance, validated_data)
+    
+class QuoteUserLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuoteUserLog
+        fields = '__all__'
+        read_only_fields = ('timestamp', 'user', 'action')

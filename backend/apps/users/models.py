@@ -6,10 +6,13 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
+       
         if not email:
             raise ValueError('Email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
+        if extra_fields.get('is_superuser') is False:
+            user.is_active = False
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -46,6 +49,14 @@ class User(AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = UserManager()
+    
+    class Meta:
+        permissions = [
+            ("can_create_acceor_user" , "Can create Acceor user"),
+            ("can_create_acceor_admin", "Can create Acceor Admin"),
+            ("can_create_options_user", "Can create Options user"), 
+            ("can_create_options_admin", "Can create Options admin")
+        ]
 
     def __str__(self):
         return self.email

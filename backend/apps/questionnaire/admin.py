@@ -5,11 +5,15 @@ class GivenAnswersInline(admin.TabularInline):  # Or admin.StackedInline
     model = GivenAnswer 
     extra = 0  # No extra empty rows by default
     
+class ReponsesInline(admin.TabularInline): 
+    model = Reponse
+    extra = 0
 
 # Register your models here.
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'label')
+    list_display = ('id', 'label', 'order')
+    inlines = [ReponsesInline]
 
 @admin.register(Reponse)
 class ReponseAdmin(admin.ModelAdmin):
@@ -34,3 +38,4 @@ class GivenAnswerAdmin(admin.ModelAdmin):
     list_display = ('id', 'questionnaire', 'question', 'answer')
     list_filter = ('questionnaire', 'question', 'answer')
     search_fields = ('question__label', 'answer__value')
+    
