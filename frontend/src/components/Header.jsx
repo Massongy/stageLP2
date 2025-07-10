@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Dropdown, Row, Col, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import '../assets/Header.css';
+import '../assets/header.css';
 import logo from '../assets/Logo_Options_Footer.svg';
 import { jwtDecode } from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

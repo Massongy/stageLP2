@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUnlock, faArrowUpRightFromSquare, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import DropdownButton from './DropdownButton';
 import PreviewButtonCell from './PreviewButtonCell';
-import '../../assets/DataTable.css';
+import '../../assets/datatable.css';
 
 
 export default function DataTable({data, onPreview, openedRowRef, filterModel, onFilterModelChange }) {

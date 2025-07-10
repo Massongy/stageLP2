@@ -3,7 +3,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import  '../../assets/PreviewTabs.css'
+import  '../../assets/previewtabs.css'
 import FicheClient from './FicheClient.jsx'; 
 
 export default function PreviewTabs({ openedRowRef }) {
