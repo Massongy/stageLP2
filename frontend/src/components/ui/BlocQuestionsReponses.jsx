@@ -51,7 +51,7 @@ export default function BlocQuestionsReponses({
           {showDatePicker ? (
             <Box >
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                <DatePicker
+                <DatePicker className="date-scoring"
                   value={selectedDate}  // Ici, selectedDate est un objet dayjs ou null
                   onChange={handleDateChange}
                   format="DD/MM/YYYY"
@@ -63,6 +63,7 @@ export default function BlocQuestionsReponses({
                       placeholder: 'JJ/MM/AAAA',
                     },
                   }}
+                  
                   minDate={dayjs()}
                 />
               </LocalizationProvider>

@@ -97,7 +97,7 @@ export default function InfoDemande({ data, onDataChange }) {
                 <Box className="champ">
                      {key === 'Date du 1er appel' || key === 'Date du dernier appel' ? (
                       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                      <DatePicker
+                      <DatePicker className="date-infodemande"
                         value={value ? dayjs(value) : null}
                         onChange={(newValue) => handleDateChange(key, newValue ? newValue.format('YYYY-MM-DD') : '')}
                         format="DD/MM/YYYY"
