@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
-import QuestionsReponses from './QuestionsReponses';
+import BlocQuestionsReponses from './BlocQuestionsReponses';
 import dayjs from 'dayjs';
 
 export default function QuestionsScoring({ onDataChange }) {
@@ -37,9 +37,9 @@ export default function QuestionsScoring({ onDataChange }) {
   };
 
   return (
-    <Box sx={{ width: '80%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+    <Box sx={{  display: 'flex', flexDirection: 'row', flexWrap: 'wrap' , gap: '90px' }}>
       {questionsData.map((item, index) => (
-        <QuestionsReponses
+        <BlocQuestionsReponses
           key={index}
           question={item.question}
           reponses={item.reponses}

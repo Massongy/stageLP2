@@ -1,54 +1,18 @@
 .header {
   background-color: #D4C7B5;
   overflow: visible;
-  padding: 15px 0; /* Ajout de padding pour mobile */
+  width: 100%;
+  min-height: 100px;
+  height: auto;
+  
+  
 }
 
 .logo {
   flex: 1;
 }
 
-/* Responsive - Desktop */
-@media (min-width: 768px) {
-  .logo {
-    margin-left: 170px;
-  }
-}
 
-/* Responsive - Mobile */
-@media (max-width: 767px) {
-  .logo {
-    margin-left: 0;
-  }
-  
-  .header {
-    padding: 10px 0;
-  }
-  
-  /* Ajustements pour les boutons sur mobile */
-  .boutton-search {
-    margin-left: 10px !important;
-    margin-right: 10px !important;
-  }
-  
-  .bouton-actualiser {
-    width: 250px !important; /* Réduit la largeur sur mobile */
-    font-size: 14px !important;
-  }
-  
-  .bouton-utilisateur {
-    width: 280px !important; /* Réduit la largeur sur mobile */
-    margin-right: 10px !important;
-  }
-  
-  .nom-utilisateur-header {
-    font-size: 16px !important;
-  }
-  
-  .logo-header {
-    max-width: 200px !important; /* Logo plus petit sur mobile */
-  }
-}
 
 .right {
   flex: 0 1 auto;
@@ -165,4 +129,17 @@
 .col-xs-4:last-child {
   position: relative;
   overflow: visible;
+}
+
+/* Ajout crucial pour le comportement responsive */
+.header .row {
+  min-height: 100px;
+  height: auto;
+}
+
+/* Adaptation mobile */
+@media (max-width: 767.98px) {
+  .header, .header .row {
+    min-height: 150px; /* Augmente seulement la hauteur minimale */
+  }
 }

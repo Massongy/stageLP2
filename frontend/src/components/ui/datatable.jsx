@@ -25,18 +25,23 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         field: 'lock',
         headerName: '',
         headerAlign: 'center',
-        width: isMobile ? 60 : 100,
+        width: isMobile ? 50 : 80,
+        minWidth: isMobile ? 50 : 80,
+        flex: 0,
         align: 'center',
         renderCell: () => <FontAwesomeIcon icon={faUnlock} className="icone-datatable" />,
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
+        hideable: false,
       },
       {
         field: 'reference_id_SI',
         headerName: 'Référence',
         headerAlign: 'center',
-        width: isMobile ? 80 : isTablet ? 120 : 154,
+        width: isMobile ? 80 : isTablet ? 120 : 150,
+        minWidth: isMobile ? 80 : isTablet ? 120 : 150,
+        flex: 0,
         align: 'center',
         renderHeader: () => (
           <Box className="th-cell-dropdown">
@@ -54,31 +59,40 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
+        hideable: false,
       },
       { 
         field: 'demande', 
         headerName: isMobile ? 'Demande' : 'Lien de la demande', 
         headerAlign: 'center', 
-        width: isMobile ? 120 : isTablet ? 180 : 255, 
+        width: isMobile ? 100 : isTablet ? 150 : 200,
+        minWidth: isMobile ? 100 : isTablet ? 150 : 200,
+        flex: 0,
         align: 'center', 
         sortable: false, 
         filterable: false, 
-        disableColumnMenu: true 
+        disableColumnMenu: true,
+        hideable: false,
       },
       { 
-        field: 'scoring', 
+        field: 'score', 
         headerName: 'Score', 
         headerAlign: 'center', 
-        width: isMobile ? 60 : 102, 
+        width: isMobile ? 60 : 80,
+        minWidth: isMobile ? 60 : 80,
+        flex: 0,
         align: 'center', 
         sortable: false, 
         filterable: false, 
-        disableColumnMenu: true 
+        disableColumnMenu: true,
+        hideable: false,
       },
       {
-        field: 'potentiel',
+        field: 'potential',
         headerName: 'Potentiel',
-        width: isMobile ? 90 : isTablet ? 150 : 205,
+        width: isMobile ? 90 : isTablet ? 120 : 150,
+        minWidth: isMobile ? 90 : isTablet ? 120 : 150,
+        flex: 0,
         renderHeader: () => (
           <Box className="th-cell-dropdown">
             Potentiel
@@ -102,12 +116,15 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
+        hideable: false,
       },
       {
-        field: 'statut',
+        field: 'status',
         headerName: 'Statut',
         headerAlign: 'center',
-        width: isMobile ? 80 : 103,
+        width: isMobile ? 70 : 100,
+        minWidth: isMobile ? 70 : 100,
+        flex: 0,
         align: 'center',
         renderHeader: () => (
           <Box className="th-cell-dropdown">
@@ -123,16 +140,16 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-      }
-    ];
-
-    // Colonnes conditionnelles selon la taille d'écran
-    if (!isMobile) {
-      baseColumns.push({
+        hideable: false,
+      },
+      // Colonne transférer - maintenant toujours présente
+      {
         field: 'transfert',
-        headerName: isTablet ? 'Transf.' : 'Transférer',
+        headerName: isMobile ? 'Transf.' : isTablet ? 'Transf.' : 'Transférer',
         headerAlign: 'center',
-        width: isTablet ? 80 : 154,
+        width: isMobile ? 70 : isTablet ? 80 : 120,
+        minWidth: isMobile ? 70 : isTablet ? 80 : 120,
+        flex: 0,
         align: 'center',
         renderCell: () => (
           <FontAwesomeIcon
@@ -144,33 +161,39 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-      });
-    }
-
-    // Colonne preview toujours présente
-    baseColumns.push({
-      field: 'preview',
-      headerName: '',
-      width: isMobile ? 60 : 102,
-      align: 'center',
-      renderHeader: () => <FontAwesomeIcon icon={faCircleInfo} className="icone-datatable icone-datatable-info" />,
-      renderCell: (params) => (
-        <PreviewButtonCell row={params.row} isOpen={params.row.reference_id_SI === openedRowRef} onToggle={onPreview} />
-      ),
-      sortable: false,
-      filterable: false,
-      disableColumnMenu: true,
-    });
+        hideable: false,
+      },
+      // Colonne preview toujours présente
+      {
+        field: 'preview',
+        headerName: '',
+        width: isMobile ? 50 : 80,
+        minWidth: isMobile ? 50 : 80,
+        flex: 0,
+        align: 'center',
+        renderHeader: () => <FontAwesomeIcon icon={faCircleInfo} className="icone-datatable icone-datatable-info" />,
+        renderCell: (params) => (
+          <PreviewButtonCell row={params.row} isOpen={params.row.reference_id_SI === openedRowRef} onToggle={onPreview} />
+        ),
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        hideable: false,
+      }
+    ];
 
     return baseColumns;
   }, [onPreview, openedRowRef, onFilterModelChange, isMobile, isTablet]);
 
   return (
     <Box sx={{ 
+      display: 'flex',
       width: '100%', 
       height: 400,
+      overflow: 'hidden',
       '& .MuiDataGrid-root': {
         border: 'none',
+        width: '100%',
       },
       '& .MuiDataGrid-cell': {
         borderBottom: 'none',
@@ -206,12 +229,28 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         disableRowSelectionOnClick
         className="datatable"
         sx={{
-          // Scroll horizontal sur mobile
-          '& .MuiDataGrid-virtualScroller': {
-            overflowX: 'auto',
-          },
+          width: '100%',
           // Hauteur adaptative
           height: isMobile ? 300 : isTablet ? 350 : 400,
+          // Activation du défilement horizontal
+          '& .MuiDataGrid-main': {
+            overflow: 'visible',
+          },
+          '& .MuiDataGrid-virtualScroller': {
+            overflowX: 'auto',
+            overflowY: 'auto',
+          },
+          // Permettre aux colonnes de déborder pour activer le scroll horizontal
+          '& .MuiDataGrid-columnHeaders': {
+            minWidth: 'max-content',
+          },
+          '& .MuiDataGrid-row': {
+            minWidth: 'max-content',
+          },
+          // Empêche la réduction forcée des colonnes
+          '& .MuiDataGrid-columnHeader': {
+            minWidth: 'unset !important',
+          },
         }}
       />
     </Box>

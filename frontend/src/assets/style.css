@@ -45,9 +45,29 @@ font-weight: 500 !important;
   font-size: 16px !important;
 }
 
+.bloc-titre-champ {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  
+  
+}
+
+
 .champ {
   background-color: #F5F2EE;
+  display: flex;
+  
+  gap: 20px;
+  height: 40px;
+ 
+  
 }
+
+.css-xrmkj5-MuiInputBase-root-MuiOutlinedInput-root {
+  border: none !important;
+}
+
 .grandtexte{
 
 }

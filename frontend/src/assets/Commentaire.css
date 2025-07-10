@@ -1,6 +1,28 @@
-.container-commentaire {
-display: flex;
-align-items: center;
+.champ-commentaire {
+min-width: 100%;
+min-height: 100px; 
 
 
+
+}
+
+
+
+
+.MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
+  border: none !important; /* Supprime la bordure */
+  background-color: transparent !important; /* Rend le fond transparent */
+  height: 40px !important; /* Définit la hauteur à 40px */
+}
+
+/* Cibler le champ de saisie désactivé */
+.MuiInputBase-input.Mui-disabled {
+  color: #656565; /* Couleur du texte */
+  cursor: not-allowed; /* Change le curseur pour indiquer que le champ est désactivé */
+  background-color: transparent !important; /* Rend le fond transparent */
+}
+
+/* Supprimer la bordure au survol */
+.MuiOutlinedInput-root.Mui-disabled:hover .MuiOutlinedInput-notchedOutline {
+  border: none !important; /* Supprime la bordure au survol */
 }
