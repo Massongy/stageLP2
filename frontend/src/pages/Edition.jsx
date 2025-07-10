@@ -216,23 +216,29 @@ return (
     </Container>
 
     {/* Boîte de dialogue de confirmation */}
-    <Dialog open={confirmOpen} onClose={handleCancelClose}>
-      <DialogTitle>
-        Vous êtes sur le point de fermer la demande N° {reference} sans avoir enregistré vos modifications, souhaitez-vous confirmer cette action ?
+    <Dialog open={confirmOpen} onClose={handleCancelClose} className="boite-dialogue">
+      
+      <div className="dialog-content">
+      <DialogTitle className="dialog-title">
+        Vous êtes sur le point de fermer la demande N° {reference}, sans avoir enregistré vos modifications, souhaitez-vous confirmer cette action ?
       </DialogTitle>
-      <DialogActions>
-        <Button className="bouton-editer bouton-fermer-edition" onClick={handleCancelClose}>
-          Annuler
-        </Button>
+      <DialogActions className="dialog-actions">
+        
         <Button 
-          className="bouton-editer bouton-fermer-edition" 
+          className="bouton-editer  bouton-confirmer" 
           onClick={handleConfirmClose} 
           color="primary" 
           variant="contained"
         >
           Confirmer
         </Button>
+        <Button className="bouton-editer bouton-annuler" onClick={handleCancelClose}>
+          Annuler
+        </Button>
+        
       </DialogActions>
+
+      </div>
     </Dialog>
   </>
 );

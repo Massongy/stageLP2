@@ -57,7 +57,6 @@ font-weight: 500 !important;
 .champ {
   background-color: #F5F2EE;
   display: flex;
-  
   gap: 20px;
   height: 40px;
  
@@ -68,13 +67,8 @@ font-weight: 500 !important;
   border: none !important;
 }
 
-.grandtexte{
 
-}
 
-.petitexte {
-
-}
 
 .bouton {
  height: 47px;
@@ -131,4 +125,75 @@ font-weight: 500 !important;
 }
 
 
+/* Supprimer les bordures pour TOUS les fieldset */
+fieldset {
+  border: none !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+/*boutons boites de dialogues */
+
+.bouton-confirmer, .bouton-annuler {
+
+  width: 100% !important;
+  height: 40px !important;       /* Hauteur fixe réduite */
+  min-height: 36px !important;   /* S'assurer que la hauteur est respectée */
+  display: flex!important;
+  align-items: center!important;          /* Centrage vertical */
+  justify-content: center!important; 
+  
+}
+
+.bouton-annuler {
+  color:#90A5C8 !important;         /* Couleur texte bleu Material-UI */
+  border: 1px solid #90A5C8 !important;  /* Couleur bordure */
+  background-color: white !important; /* Fond blanc */
+  padding: 8px 16px !important;
+  height: 36px !important;
+}
+
+.boite-dialogue .MuiDialog-paper {
+  border: 1px solid #D4C7B5;
+  border-radius: 0;
+  width: 33%;
+  height: auto;
+  min-height: 356px;
+  max-width: none;
+  padding: 0; /* Désactive le padding par défaut de MUI */
+}
+
+.boite-dialogue .MuiDialogTitle-root {
+  font-size: 16px !important; 
+  font-weight: 600 !important;
+  color: #656565;
+  
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centre horizontalement */
+  gap: 10px; /* Espace entre les éléments */
+  padding: 50px; /* Padding général */
+  padding-bottom: 24px; /* Réduit légèrement en bas */
+}
+
+.dialog-title {
+  text-align: center; /* Centre le texte */
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 20px !important; 
+  
+}
+
+.dialog-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
 
