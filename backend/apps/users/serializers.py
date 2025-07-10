@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import Permission
 from .models import User
+from django.contrib.auth.models import Group
 
 class UserSerializer(serializers.ModelSerializer):
     groups = serializers.SlugRelatedField(
@@ -45,3 +46,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'created_by': {'read_only': True}  # Prevent passing it from the client
         }
     
+class GroupSerializer(serializers.ModelSerializer): 
+    class Meta: 
+        model = Group
+        fields = ('id', 'name')

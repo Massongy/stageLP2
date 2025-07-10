@@ -4,12 +4,14 @@ from .models import User
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
-from .serializers import ChangePasswordSerializer, UserSerializer, UserCreateSerializer
+from .serializers import ChangePasswordSerializer, UserSerializer, UserCreateSerializer, GroupSerializer
 from django.conf import settings
 from rest_framework.views import APIView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-
+from django.contrib.auth.models import Group
+from .utils import group_permission_map
+from rest_framework.exceptions import PermissionDenied
 
 class UserDetail(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -41,16 +43,41 @@ class UserCreateView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
     permission_classes = [permissions.IsAuthenticated]  # ou IsAdminUser
 
+    def can_create_user_in_group(self, request_user, target_group_name):
+        print(f'request user : {request_user}')
+        print(f'Target group : {target_group_name}')
+        required_perm = group_permission_map.get(target_group_name)
+        print(f'required perm : {required_perm}')
+        if not required_perm:
+            raise ValueError("Unknown group")
+
+        app_label = 'users'  # Replace with your actual app label
+
+        full_permission = f'{app_label}.{required_perm}'
+        permission = request_user.has_perm(full_permission)
+        if permission :
+            print("Droit de création de l'utilliateur")
+        else : 
+            print("Pas de droit de création d'un utilisateur pour ce groupe")
+        return permission
+    
+
     def perform_create(self, serializer):
-        # 1. Générer un mot de passe sécurisé
+        #1. Verifie la possibilité de créer un utilisateur 
+   
+        target_group_name = self.request.data.get('groups')[0]
+        
+        if not self.can_create_user_in_group(self.request.user, target_group_name):
+            raise PermissionDenied ("Vous n'avez pas la permission de créer un utilisateur dans ce groupe.")
+
+        # 2. Générer un mot de passe sécurisé
         print(f"Creating user with no superadmin status")       
         password = secrets.token_urlsafe(10)
         user = serializer.save(created_by=self.request.user)
         user.set_password(password)
         user.is_active = True  # TODO : Set to false and activate on password changed Désactiver le compte par défaut
         user.save()
-    
-
+        
         # 2. Envoyer un email de bienvenue
         try:
             send_mail(
@@ -72,6 +99,8 @@ class UserCreateView(generics.CreateAPIView):
             # Gérer l'erreur d'envoi d'email
             print(f"Erreur lors de l'envoi de l'email : {e}")
             # Vous pouvez aussi lever une exception ou enregistrer l'erreur dans un log
+            
+    
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -84,6 +113,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return user.objects.filter(created_by=user)
 
     def perform_create(self, serializer):
+        
         serializer.save(created_by=self.request.user)
         
         
@@ -136,7 +166,9 @@ class UserDelete(generics.DestroyAPIView):
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
-
-            
+class UserGroups(generics.ListAPIView): 
+    serializer_class=GroupSerializer
+    permission_classes= [permissions.IsAuthenticated]
     
-
+    def get_queryset(self):
+        return Group.objects.all()

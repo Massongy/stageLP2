@@ -61,3 +61,11 @@ class User(AbstractUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+
+
+group_permission_map = {
+    3: 'can_create_acceor_user',
+    1: 'can_create_acceor_admin',
+   # : 'can_create_options_user',
+    2: 'can_create_options_admin',
+}
