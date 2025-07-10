@@ -35,6 +35,6 @@ class QuoteUserLogAdmin(admin.ModelAdmin):
     
 @admin.register(QuoteLock)
 class QuoteLockAdmin(admin.ModelAdmin):
-    list_display = ('id', 'quote', 'user', 'expireAt')
+    list_display = ('id', 'quote', 'user', 'expire_at')
     search_fields = ('quote__reference', 'user__email')
-    list_filter = ('expireAt',)
+    list_filter = ('expire_at',)

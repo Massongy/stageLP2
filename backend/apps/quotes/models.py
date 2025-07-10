@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 # Create your models here.
@@ -60,7 +61,8 @@ class QuoteUserLog(models.Model):
 class QuoteLock (models.Model):
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='locks')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    expireAt = models.DateTimeField(auto_now_add=True)
+    expire_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now) 
 
     class Meta:
         unique_together = ('quote', 'user')
