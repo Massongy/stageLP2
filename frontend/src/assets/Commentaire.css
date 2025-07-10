@@ -1,23 +1,30 @@
 .champ-commentaire {
 min-width: 100%;
 min-height: 100px; 
-
-
-
 }
 
 
-
-
-
-
-.champ-commentaire .MuiOutlinedInput-root .MuiInputBase-input {
-  font-style: italic;
+/* Version ultra-spécifique qui marchera à coup sûr */
+.champ-commentaire .MuiOutlinedInput-root .MuiInputBase-input,
+.champ-commentaire .MuiOutlinedInput-root input.MuiInputBase-input,
+.champ-commentaire .MuiOutlinedInput-root textarea.MuiInputBase-input {
+  font-style: italic !important;
+  font-size: 14px !important; /* Ajout pour cohérence */
 }
 
-
-/* Alternative plus spécifique si nécessaire */
+/* Pour le mode désactivé */
 .champ-commentaire .MuiOutlinedInput-root.Mui-disabled .MuiInputBase-input {
-  font-style: italic;
-  cursor: not-allowed;
+  font-style: italic !important;
+  cursor: not-allowed !important;
+}
+
+/* Pour le placeholder */
+.champ-commentaire .MuiOutlinedInput-root .MuiInputBase-input::placeholder {
+  font-style: italic !important;
+  opacity: 1 !important;
+}
+
+/* Pour l'état focus (au cas où) */
+.champ-commentaire .MuiOutlinedInput-root.Mui-focused .MuiInputBase-input {
+  font-style: italic !important;
 }

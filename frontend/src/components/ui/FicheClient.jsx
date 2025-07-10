@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Commentaire from './Commentaire.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../assets/commentaire.css'
-import {useQuotesQuotes} from '../../hooks/useQuotesQuotes';
+import {useQuotesQuotes} from '../../hooks/useQuotesQuotes.jsx';
 import {authFetch} from '../../services/auth.js'
 
 
