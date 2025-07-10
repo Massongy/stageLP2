@@ -49,6 +49,14 @@ class User(AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = UserManager()
+    
+    class Meta:
+        permissions = [
+            ("can_create_acceor_user" , "Can create Acceor user"),
+            ("can_create_acceor_admin", "Can create Acceor Admin"),
+            ("can_create_options_user", "Can create Options user"), 
+            ("can_create_options_admin", "Can create Options admin")
+        ]
 
     def __str__(self):
         return self.email

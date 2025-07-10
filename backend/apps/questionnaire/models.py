@@ -17,6 +17,7 @@ class Questionnaire(models.Model):
 class Question(models.Model):
     label = models.CharField(max_length=255)
     reference_id_SI = models.IntegerField(null=True, blank=True)
+    order = models.IntegerField(null=True, blank=True)
     def __str__(self):
         return self.label
 

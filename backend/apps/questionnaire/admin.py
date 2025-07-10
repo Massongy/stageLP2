@@ -12,7 +12,7 @@ class ReponsesInline(admin.TabularInline):
 # Register your models here.
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'label')
+    list_display = ('id', 'label', 'order')
     inlines = [ReponsesInline]
 
 @admin.register(Reponse)

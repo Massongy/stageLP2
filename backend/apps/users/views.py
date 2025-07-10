@@ -129,6 +129,9 @@ class UserDelete(generics.DestroyAPIView):
         except User.DoesNotExist: 
             return Response({"detail" : "User not found"}, status=status.HTTP_404_NOT_FOUND)
         
+        if self.request.user != user.created_by and not self.request.user.is_superuser : 
+            raise Exception("Vous ne pouvez pas supprimer cet utilisateur.")
+        
         user.is_active = False
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
