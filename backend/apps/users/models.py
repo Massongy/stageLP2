@@ -58,7 +58,7 @@ class User(AbstractUser, PermissionsMixin):
             ("can_create_options_admin", "Can create Options admin"), 
             ("can_delete_options_user", "Can delete Options User"), 
             ("can_delete_acceor_user", "Can delete Acceor user"),
-            ("can_view_created_users", "Can view created users")
+            ("can_view_created_users", "Can view created users"),
             ("can_access_user_manage_page", "Can access user manage page")
         ]
 
@@ -70,6 +70,7 @@ class User(AbstractUser, PermissionsMixin):
 group_permission_map = {
     3: 'can_create_acceor_user',
     1: 'can_create_acceor_admin',
+
    # : 'can_create_options_user',
     2: 'can_create_options_admin',
 }
