@@ -116,8 +116,14 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
                     {"detail": f"Quote is currently locked by {lock.user.email}."},
                     status=status.HTTP_423_LOCKED  # 423 Locked
                 )
-            print("Quote locked by current user")           
+            print("Quote locked by current user")      
             lock.delete()  # Remove expired or user's old lock
+            log_quote_action(
+                quote=quote,
+                user=self.request.user,
+                action='unlocked', 
+                details=f"Lock on quote {quote_id} expired"
+            )
         except QuoteLock.DoesNotExist:
             pass
         
@@ -128,6 +134,13 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
             expire_at=expire_at
         )
         serializer = QuoteLockSerializer(lock)
+        
+        log_quote_action(
+            quote=quote,
+            user=self.request.user,
+            action='locked'
+            , details=f"Quote {serializer.instance.id} locked by {self.request.user.email} until {expire_at}"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
        
 class QuoteLockDeleteView(APIView):
@@ -156,7 +169,13 @@ class QuoteLockDeleteView(APIView):
                     print(f'Quote locked by : {quote.lock.user}' )
                     if self.request.user != quote.lock.user: 
                         raise PermissionDenied("You are not authorized to modify this lock.")
-                    quote.lock.delete()                  
+                    quote.lock.delete()    
+                    log_quote_action(
+                        quote=quote,
+                        user=self.request.user,
+                        action='unlocked', 
+                        details=f"Quote {quote.id} unlocked by {self.request.user.email} at {timezone.now()}"
+                    )              
         except QuoteLock.DoesNotExist:
             print(f'No Quote lock for Quote {quote_id}')
             pass

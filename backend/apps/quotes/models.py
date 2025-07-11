@@ -47,6 +47,8 @@ class QuoteUserLog(models.Model):
         ('updated', 'Updated'),
         ('retrieved', 'Retrieved'),
         ('deleted', 'Deleted'),
+        ('locked', 'Locked'), 
+        ('unlocked', 'Unlocked')
     )
 
     quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, null=True, related_name='user_logs')

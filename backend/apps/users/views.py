@@ -10,8 +10,9 @@ from rest_framework.views import APIView
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth.models import Group
-from .utils import group_permission_map
+from .utils import group_permission_map, can_delete_user_from_group_map
 from rest_framework.exceptions import PermissionDenied
+from .permissions import ViewCreatedUserPermission
 
 class UserDetail(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -119,7 +120,7 @@ class UserViewSet(viewsets.ModelViewSet):
         
 class MyUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, ViewCreatedUserPermission]
     
 
     def get_queryset(self):
@@ -151,19 +152,49 @@ class UserDelete(generics.DestroyAPIView):
             404: "User not found"
         }
     )
-    def destroy(self, request, *args, **kwargs):
-        user_id = kwargs.get('id')
-        try : 
-            user = self.get_queryset().get(id=user_id)
-           
+    
+    def can_delete_user_from_group(self, request_user, target_user_group): 
+        print(f'target user gorup : {target_user_group}')
+        required_perm =  can_delete_user_from_group_map.get(target_user_group)
+        print(f'Required perm : {required_perm}')
+        if not required_perm : 
+            raise PermissionDenied("You can not delete a User from this group")
+        
+        app_label = 'users'
+        full_permission = f'{app_label}.{required_perm}'
+        permission = request_user.has_perm(full_permission)
+        
+        if(permission) : 
+            print("Permission to delete")
+        else : 
+            print('Deletion forbidden ')
+        return permission
+        
+    
+    def destroy(self, request,id, *args, **kwargs):
+        
+        try:
+            user = User.objects.get(pk=id)
         except User.DoesNotExist: 
             return Response({"detail" : "User not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        if self.request.user != user.created_by and not self.request.user.is_superuser : 
-            raise Exception("Vous ne pouvez pas supprimer cet utilisateur.")
+        print(user) 
         
-        user.is_active = False
-        user.save()
+        
+        user_groups = user.groups.all()
+        if(user_groups):
+            user_group = user_groups[0]
+        else : 
+            raise ValueError("This user has no group, delete it manually via admin panel")
+        
+      
+        if not self.can_delete_user_from_group(self.request.user, user_group.id):
+            raise PermissionDenied("You do not have permission to delete this user.")
+        else:  
+            user.is_active = False
+            user.save()
+    
+       
         return Response(status=status.HTTP_204_NO_CONTENT)
         
 class UserGroups(generics.ListAPIView): 

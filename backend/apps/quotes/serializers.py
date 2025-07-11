@@ -1,8 +1,15 @@
 from rest_framework import serializers
-from .models import Quote, QuoteUserLog, QuoteLock
+from .models import Quote, QuoteUserLog, QuoteLock, Comment
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'text', 'created_at']
 
 
 class QuoteSerializer(serializers.ModelSerializer):
+    comments = CommentSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Quote
         fields = '__all__'
