@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
-from .views import QuoteViewSet, QuoteUserLogsViewSet, QuoteLockViewSet  # Assuming you have a QuoteViewSet defined in views.py
+from .views import QuoteViewSet, QuoteUserLogsViewSet, QuoteLockViewSet, QuoteLockDeleteView  # Assuming you have a QuoteViewSet defined in views.py
 
 
 router = DefaultRouter()
@@ -10,4 +10,5 @@ router.register(r'quote-lock', QuoteLockViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('quote-lock/<int:quote_id>/', QuoteLockDeleteView.as_view(), name='quote-lock-delete'),
 ]

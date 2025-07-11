@@ -59,7 +59,7 @@ class QuoteUserLog(models.Model):
 
 
 class QuoteLock (models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='locks')
+    quote = models.OneToOneField(Quote, on_delete=models.CASCADE, related_name='lock')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     expire_at = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(default=timezone.now) 
@@ -67,6 +67,9 @@ class QuoteLock (models.Model):
     class Meta:
         unique_together = ('quote', 'user')
 
+    def is_expired(self):
+        return timezone.now() > self.expire_at  
+
     def __str__(self):
-        return f"Lock on Quote #{self.quote.id} by {self.user.username}"
+        return f"Lock on Quote #{self.quote.id} by {self.user.email}"
 

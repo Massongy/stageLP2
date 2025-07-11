@@ -2,10 +2,13 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import viewsets, permissions, mixins, status
+from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied
 from .models import Quote, QuoteUserLog, QuoteLock
 from .serializers import QuoteSerializer, QuoteUserLogSerializer, QuoteLockSerializer
 from .signals import log_quote_action
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
@@ -69,7 +72,6 @@ class QuoteUserLogsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     
     
 class QuoteLockViewSet( mixins.CreateModelMixin,
-    mixins.DestroyModelMixin, mixins.RetrieveModelMixin, mixins.ListModelMixin,
     viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = QuoteLock.objects.all()
@@ -81,6 +83,19 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
     def get_view_name(self):
         return "Quote Lock"
     
+    
+    
+    
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['quote_id'],
+            properties={
+                'quote_id': openapi.Schema(type=openapi.TYPE_STRING, description='ID of the quote'),
+            },
+        ),
+        responses={201: QuoteLockSerializer}
+    )
     def create(self, request):
         quote_id = request.data.get("quote_id")
         if not quote_id:
@@ -98,7 +113,7 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
             if not lock.is_expired() and lock.user != request.user:
                 print(f'Quote {quote_id} is currently locked')
                 return Response(
-                    {"detail": f"Quote is currently locked by {lock.user.username}."},
+                    {"detail": f"Quote is currently locked by {lock.user.email}."},
                     status=status.HTTP_423_LOCKED  # 423 Locked
                 )
             print("Quote locked by current user")           
@@ -114,28 +129,36 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
         )
         serializer = QuoteLockSerializer(lock)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+       
+class QuoteLockDeleteView(APIView):
         
-    def get(self, request, pk):
-        quote = get_object_or_404(Quote, pk=pk)
-
-        # Handle quote locking logic
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name='quote_id',
+                in_=openapi.IN_PATH,
+                type=openapi.TYPE_INTEGER,
+                description='Quote ID',
+                required=True,
+            )
+        ],
+        responses={204: openapi.Response(description="No lock remains for this quote.")}
+    )
+    def delete(self, request, quote_id):
+        
+        
+        print(f'Quote ID : {quote_id}')
+        quote = get_object_or_404(Quote, pk=quote_id)
+        
+      
         try:
-            lock = quote.lock  # Access OneToOneField: quote -> QuoteLock
-            if not lock.is_expired() and lock.user != request.user:
-                return Response(
-                    {"detail": f"Quote is currently locked by {lock.user.username}."},
-                    status=status.HTTP_423_LOCKED  # HTTP 423: Locked
-                )
-            # If lock is expired or belongs to current user, delete it
-            lock.delete()
+            if quote.lock:
+                    print(f'Quote locked by : {quote.lock.user}' )
+                    if self.request.user != quote.lock.user: 
+                        raise PermissionDenied("You are not authorized to modify this lock.")
+                    quote.lock.delete()                  
         except QuoteLock.DoesNotExist:
-            pass  # No lock exists yet — continue normally
+            print(f'No Quote lock for Quote {quote_id}')
+            pass
 
-        serializer = QuoteSerializer(quote)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def delete(self, request, pk):
-        quote = get_object_or_404(Quote, pk=pk)
-
-        quote.delete()
-        return Response({"detail": "Quote deleted with success"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "No lock remains for this quote."}, status=status.HTTP_204_NO_CONTENT)

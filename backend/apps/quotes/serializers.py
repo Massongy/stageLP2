@@ -27,3 +27,4 @@ class QuoteLockSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuoteLock
         fields = '__all__'
+        read_only_fields = ['id', 'quote', 'user', 'expire_at']
