@@ -11,6 +11,7 @@ export default function Users({ datausers = [], handleEdit, handleDelete }) {
     return null;
   }
   return (
+    /* en attente pour filtrer les utilisateurs actif d'un champ de retour actif= true or false */
     <div>
       {datausers.map((user, i) => (
         <Box key={i} className="info-admin">

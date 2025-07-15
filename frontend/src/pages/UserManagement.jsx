@@ -6,10 +6,16 @@ import '../assets/usermanagement.css';
 import '../assets/style.css';
 import { useCreateUser } from '../hooks/useCreateUser';
 import { useMyUsers } from '../hooks/useMyUsers';
+import { useDeleteUser } from '../hooks/useDeleteUser';
 import {authFetch} from '../services/auth.js'
 
 function UserManagement() {
-const { createUser, loading, err } = useCreateUser(); 
+ //récupération des données users  
+  const { users, loading:usersLoading, error:usersError } = useMyUsers();
+  // fonction créer utilisateur
+  const { createUser, loading, err } = useCreateUser(); 
+  //fonction supprimer utilisateur
+  const { deleteUser, loading: deleteLoading, error: deleteError } = useDeleteUser();
 
 
   const [error, setError] = useState('')
@@ -20,10 +26,7 @@ const { createUser, loading, err } = useCreateUser();
   const [availableGroups, setAvailableGroups] = useState([])
   const [createdBy, setCreatedBy] = useState([])
   const [profile, setProfile] = useState(null); //recupération données profile
-  //récupération des données users
-  
-  
-  const { users, loading:usersLoading, error:usersError } = useMyUsers();
+ 
 
   //recuperation données utilisateur actuel
 
@@ -111,28 +114,22 @@ const handleSubmit = async (e) => {
 
 
 
-const handleDelete = async (id) => {
-  if (!window.confirm(`Supprimer l'utilisateur ${id} ?`)) return;
+const handleDelete = async (userId) => {
+  
   
   try {
-    const res = await authFetch(`/users/delete/${id}/`, {
-      method: 'DELETE'
-    });
-
-    if (res.status === 204) {
-      await refetch(); // Recharge les données à jour
-      alert("Suppression réussie");
-    } else {
-      throw new Error(`Erreur ${res.status}`);
+    if (!window.confirm('Êtes-vous sûr ?')) return;
+    
+    const success = await deleteUser(userId);
+    if (success) {
+      alert('Utilisateur supprimé');
     }
   } catch (error) {
-    console.error("Delete error:", error);
-    alert(`Erreur: ${error.message}`);
+    alert('Erreur: ' + error.message);
   }
 };
 
-
-  const dataadmin = profile
+const dataadmin = profile
     ? [{
         email: profile.email,
         first_name: profile.first_name,
@@ -162,6 +159,33 @@ const datausers = users;
     </Box>
         
         <Button onClick={handleAdd} >➕ Ajouter un utilisateur</Button>
+        
+                {showForm && (
+                    <form onSubmit={handleSubmit} style={{ margin: '1rem 0', border: '1px solid #ccc', padding: '1rem' }}>
+                      <input name="first_name" placeholder="Prénom" value={formData.first_name} onChange={handleChange} required />
+                      <input name="last_name" placeholder="Nom" value={formData.last_name} onChange={handleChange} required />
+                      <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+                      <input type="hidden" name="created_by" value={createdBy} onChange={handleChange} required />
+        
+                      <fieldset>
+                        <legend>Groupes :</legend>
+                        {availableGroups.map(g => (
+                          <label key={g.id} style={{ display: 'block' }}>
+                            <input
+                              type="radio"
+                              name="group"  // Le même nom pour tous les boutons radio
+                              value={g.id}
+                              checked={formData.groups.includes(g.id)}
+                              onChange={() => handleGroupToggle(g.id)}
+                            />
+                            {g.name}
+                          </label>
+                        ))}
+                      </fieldset>
+                      <button type="submit">✅ {editUserId ? 'Mettre à jour' : 'Créer'}</button>
+                    </form>
+                )}
+        
 
         
         
