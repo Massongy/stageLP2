@@ -20,9 +20,7 @@ export default function BlocQuestionsReponses({
   selectedDate,
   onReponseChange,
   onDateChange,
-}) 
-
-{
+}) {
   const showDatePicker = isDateInput || question === "Si oui, à quelle date ?";
 
   const handleReponseChange = (reponse) => {
@@ -36,57 +34,52 @@ export default function BlocQuestionsReponses({
     if (onDateChange) {
       onDateChange(newDate ? newDate.format('DD/MM/YYYY') : null);
     }
-    
   };
 
+  // Vérification que reponses est un tableau avant d'utiliser .map()
+  const validReponses = Array.isArray(reponses) ? reponses : [];
+
   return (
-    
-      <Box className="bloc-titre-champ">
-        
-        
-        <Box className="titre3">{question}</Box>
-       
-       
-        <Box className="champ champ-scoring">
-          {showDatePicker ? (
-            <Box >
-              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                <DatePicker className="date-scoring"
-                  value={selectedDate}  // Ici, selectedDate est un objet dayjs ou null
-                  onChange={handleDateChange}
-                  format="DD/MM/YYYY"
-                  slotProps={{
-                    textField: {
-                      size: 'small',
-                      fullWidth: true,
-                      placeholder: 'JJ/MM/AAAA',
-                    },
-                  }}
-                  
-                  minDate={dayjs()}
+    <Box className="bloc-titre-champ">
+      <Box className="titre3">{question}</Box>
+      <Box className="champ champ-scoring">
+        {showDatePicker ? (
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+              <DatePicker
+                className="date-scoring"
+                value={selectedDate} // Ici, selectedDate est un objet dayjs ou null
+                onChange={handleDateChange}
+                format="DD/MM/YYYY"
+                slotProps={{
+                  textField: {
+                    size: 'small',
+                    fullWidth: true,
+                    placeholder: 'JJ/MM/AAAA',
+                  },
+                }}
+                minDate={dayjs()}
+              />
+            </LocalizationProvider>
+          </Box>
+        ) : (
+          validReponses.map((reponse, index) => (
+            <Box key={index} className="texte2 bouton-reponse">
+              <label>
+                <input
+                  type="radio"
+                  name={`reponse-${questionId}`}
+                  value={reponse.value}
+                  checked={selectedReponse === reponse.id}
+                  onChange={() => handleReponseChange(reponse.id)}
+                  style={{ display: 'none' }}
                 />
-              </LocalizationProvider>
+                <span>{reponse.value}</span>
+              </label>
             </Box>
-          ) : (
-            reponses &&
-            reponses.map((reponse, index) => (
-              <Box key={index} className="texte2 bouton-reponse">
-                <label>
-                  <input
-                    type="radio"
-                    name={`reponse-${questionId}`}
-                    value={reponse}
-                    checked={selectedReponse === reponse}
-                    onChange={() => handleReponseChange(reponse)}
-                    style={{ display: 'none' }}
-                  />
-                  <span>{reponse}</span>
-                </label>
-              </Box>
-            ))
-          )}
-        </Box>
+          ))
+        )}
       </Box>
-    
+    </Box>
   );
 }

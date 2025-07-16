@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   Button,
-  Box,
   Alert,
   CircularProgress,
   Dialog,
   DialogTitle,
   DialogActions
 } from '@mui/material';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import InfoDemande from '../components/ui/InfoDemande.jsx';
 import Commentaire from '../components/ui/Commentaire.jsx';
 import QuestionsScoring from '../components/ui/QuestionsScoring.jsx';
@@ -18,9 +17,37 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useQuotesQuotes } from '../hooks/useQuotesQuotes';
 import { useEditQuote } from '../hooks/useEditQuote.jsx';
+import { useQuestionnaireQuestions } from '../hooks/useQuestionnaireQuestions.jsx';
+import { useQuestionnaireReponses } from '../hooks/useQuestionnaireReponses.jsx';
+
 
 export default function Edition() {
-  // Récupération des données avec le hook useQuotesQuotes
+
+  // Fonction pour formater les données info demande selon l'API
+function formatDataInfoForApi(blocInfoData) {
+  return {
+    order_id: blocInfoData.order_id,                    
+    reference: blocInfoData.reference,
+    firstname: blocInfoData.Prénom,
+    lastname: blocInfoData.Nom,
+    phone: blocInfoData["Numéro de téléphone"],
+    customer_email: blocInfoData.Email,
+    weeknumber: parseInt(blocInfoData["Semaine N°"]),
+    call_count: parseInt(blocInfoData["Nombre d'appels"]),
+    date_first_call: blocInfoData["Date du 1er appel"],
+    date_last_call: blocInfoData["Date du dernier appel"],
+    idEtablissement: blocInfoData.idEtablissement,      
+    reference_id_SI: parseInt(blocInfoData.Référence),
+    status: parseInt(blocInfoData.status)               
+  };
+
+}
+
+/*Fonction pour formater les données questionnaire selon l'API
+function formatDataQuestionnaireForApi(questionnaireData) {} */
+
+
+  // Récupération des données quotes avec le hook useQuotesQuotes
   const { quotes: tableData, loading: quotesLoading, error: quotesError } = useQuotesQuotes();
   const { reference } = useParams();
   const selectedQuote = tableData?.find(quote => 
@@ -28,7 +55,13 @@ export default function Edition() {
     quote.reference_id_SI?.toString() === reference
   );
 
-  // Utilisation du hook useEditquote
+  // récupération des données questions du questionnaire avec le hook useQuestionnaireQuestions
+  const { questions: questionnaireQuestions, loading: questionsLoading, error: questionsError } = useQuestionnaireQuestions();
+
+  // récupération des données réponses du questionnaire avec le hook usedQuestionnaireRéponses
+  const { reponses: questionnaireResponses, loading: responsesLoading, error: responsesError } = useQuestionnaireReponses();
+
+  // Utilisation du hook useEditQuote
   const { editQuote, loading: editLoading, error: editError } = useEditQuote();
 
   const [commentaire, setCommentaire] = useState("");
@@ -70,17 +103,17 @@ export default function Edition() {
     }
 
     try {
-      const dataToSend = {
-        reference,
-        informations: blocInfoData,
-        questionnaire: questionnaireData,
-        commentaire: commentaire,
-      };
 
-      console.log('données à envoyer: ', dataToSend);
+   
+      const dataInfoToSend  = formatDataInfoForApi(blocInfoData);
+      console.log('donnée questionnaiers à envoyer' , questionnaireData);
+        
+  
 
-      // Utilisation du hook editquote au lieu de authFetch direct
-      await editQuote(selectedQuote.id, dataToSend);
+    
+
+      // Utilisation du hook editquote 
+      await editQuote(selectedQuote.id, dataInfoToSend);
       
       setMessage('Données enregistrées avec succès !');
       setMessageType('success');
@@ -165,7 +198,7 @@ export default function Edition() {
         <Row className="mb-4">
           <Col xs={12} className="d-flex">
             <div className="d-flex flex-wrap">
-              <QuestionsScoring onDataChange={handleQuestionDatachange} />
+              <QuestionsScoring onDataChange={handleQuestionDatachange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} />
             </div>
           </Col>
         </Row>
