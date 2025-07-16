@@ -70,3 +70,9 @@ class QuestionnaireSerializer(serializers.ModelSerializer):
         model = Questionnaire
         fields = '__all__'
         
+
+
+class QuestionnaireInputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionnaire
+        fields = ['score' , 'potential', 'opName']
