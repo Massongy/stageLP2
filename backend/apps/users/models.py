@@ -55,9 +55,23 @@ class User(AbstractUser, PermissionsMixin):
             ("can_create_acceor_user" , "Can create Acceor user"),
             ("can_create_acceor_admin", "Can create Acceor Admin"),
             ("can_create_options_user", "Can create Options user"), 
-            ("can_create_options_admin", "Can create Options admin")
+            ("can_create_options_admin", "Can create Options admin"), 
+            ("can_delete_options_user", "Can delete Options User"), 
+            ("can_delete_acceor_user", "Can delete Acceor user"),
+            ("can_delete_options_admin", "Can delete Options admin"),
+            ("can_delete_acceor_admin", "Can delete Acceor admin"), 
+            ("can_view_created_users", "Can view created users"),
+            ("can_access_user_manage_page", "Can access user manage page")
         ]
 
     def __str__(self):
         return self.email
 
+
+
+group_permission_map = {
+    3: 'can_create_acceor_user',
+    1: 'can_create_acceor_admin',
+    4 : 'can_create_options_user',
+    2: 'can_create_options_admin',
+}

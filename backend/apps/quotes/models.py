@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 
 # Create your models here.
@@ -46,6 +47,8 @@ class QuoteUserLog(models.Model):
         ('updated', 'Updated'),
         ('retrieved', 'Retrieved'),
         ('deleted', 'Deleted'),
+        ('locked', 'Locked'), 
+        ('unlocked', 'Unlocked')
     )
 
     quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, null=True, related_name='user_logs')
@@ -58,13 +61,17 @@ class QuoteUserLog(models.Model):
 
 
 class QuoteLock (models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='locks')
+    quote = models.OneToOneField(Quote, on_delete=models.CASCADE, related_name='lock')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    expireAt = models.DateTimeField(auto_now_add=True)
+    expire_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now) 
 
     class Meta:
         unique_together = ('quote', 'user')
 
+    def is_expired(self):
+        return timezone.now() > self.expire_at  
+
     def __str__(self):
-        return f"Lock on Quote #{self.quote.id} by {self.user.username}"
+        return f"Lock on Quote #{self.quote.id} by {self.user.email}"
 

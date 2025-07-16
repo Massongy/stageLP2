@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import GroupAdmin as DefaultGroupAdmin
 from .models import User
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
+from django import forms
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
@@ -24,7 +26,20 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ('groups', 'user_permissions',)
 
 
-class GroupAdmin(admin.ModelAdmin):
+class CustomGroupAdminForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=admin.widgets.FilteredSelectMultiple('permissions', is_stacked=False),
+        required=False
+    )
+
+
+class GroupAdmin(DefaultGroupAdmin):
+    form = CustomGroupAdminForm
     list_display = ('id', 'name')
 
 admin.site.unregister(Group)
