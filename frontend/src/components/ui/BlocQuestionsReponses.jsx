@@ -30,6 +30,7 @@ export default function BlocQuestionsReponses({
   };
 
   const handleDateChange = (newDate) => {
+    
     // newDate est un objet dayjs ou null
     if (onDateChange) {
       onDateChange(newDate ? newDate.format('DD/MM/YYYY') : null);
@@ -50,7 +51,7 @@ export default function BlocQuestionsReponses({
                 className="date-scoring"
                 value={selectedDate} // Ici, selectedDate est un objet dayjs ou null
                 onChange={handleDateChange}
-                format="DD/MM/YYYY"
+                inputFormat="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     size: 'small',

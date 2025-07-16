@@ -20,7 +20,10 @@ const [answers, setAnswers] = useState({});
 
   // Décale la remontée des données vers le parent hors du setState
   useEffect(() => {
+console.log("État des réponses mis à jour :", answers);
+
     if (onDataChange) {
+      
       onDataChange(answers);
     }
   }, [answers, onDataChange]);

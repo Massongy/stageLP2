@@ -19,6 +19,7 @@ import { useQuotesQuotes } from '../hooks/useQuotesQuotes';
 import { useEditQuote } from '../hooks/useEditQuote.jsx';
 import { useQuestionnaireQuestions } from '../hooks/useQuestionnaireQuestions.jsx';
 import { useQuestionnaireReponses } from '../hooks/useQuestionnaireReponses.jsx';
+import { usePostGivenAnswers } from '../hooks/usePostGivenAnswers';
 
 
 export default function Edition() {
@@ -43,8 +44,14 @@ function formatDataInfoForApi(blocInfoData) {
 
 }
 
-/*Fonction pour formater les données questionnaire selon l'API
-function formatDataQuestionnaireForApi(questionnaireData) {} */
+//Fonction pour formater les données questionnaire selon l'API
+function formatDataQuestionnaireForApi(questionnaireData, quoteId/*à remplacer par l'ID du questionnaire lié au devis*/) {
+  // Transformer l'objet questionnaireData en un tableau d'objets au format attendu par l'API
+  return Object.entries(questionnaireData).map(([questionId, answerData]) => ({
+    answer: answerData.reponse,  // La réponse sélectionnée
+    questionnaire: quoteId       // L'ID du devis/quote
+  })).filter(item => item.answer !== undefined); // Ne garder que les réponses définies
+}
 
 
   // Récupération des données quotes avec le hook useQuotesQuotes
@@ -63,6 +70,10 @@ function formatDataQuestionnaireForApi(questionnaireData) {} */
 
   // Utilisation du hook useEditQuote
   const { editQuote, loading: editLoading, error: editError } = useEditQuote();
+
+  // Utilisation du hook usePostGivenAnswers
+
+  const { givenAnswers, loading: answersLoading, error: answersError } = usePostGivenAnswers();
 
   const [commentaire, setCommentaire] = useState("");
   const navigate = useNavigate();
@@ -106,14 +117,19 @@ function formatDataQuestionnaireForApi(questionnaireData) {} */
 
    
       const dataInfoToSend  = formatDataInfoForApi(blocInfoData);
-      console.log('donnée questionnaiers à envoyer' , questionnaireData);
-        
+       const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote.id);
+      
+      
+       console.log('donnée questionnaire non formatées à envoyer' , questionnaireData);
+      
+      console.log('donnée questionnaiers formatées à envoyer' , questionnaireDataToSend);
   
 
     
 
       // Utilisation du hook editquote 
       await editQuote(selectedQuote.id, dataInfoToSend);
+       await givenAnswers(questionnaireDataToSend);
       
       setMessage('Données enregistrées avec succès !');
       setMessageType('success');
@@ -149,7 +165,7 @@ function formatDataQuestionnaireForApi(questionnaireData) {} */
     }
   }, [quotesError]);
 
-  const isLoading = quotesLoading || editLoading;
+  const isLoading = quotesLoading || editLoading || answersLoading || questionsLoading || responsesLoading;
 
   return (
     <>
