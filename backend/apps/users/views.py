@@ -4,7 +4,7 @@ from .models import User
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
-from .serializers import ChangePasswordSerializer, UserSerializer, UserCreateSerializer, GroupSerializer
+from .serializers import ChangePasswordSerializer, UserSerializer, UserCreateSerializer, GroupSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from django.conf import settings
 from rest_framework.views import APIView
 from drf_yasg import openapi
@@ -13,6 +13,11 @@ from django.contrib.auth.models import Group
 from .utils import group_permission_map, can_delete_user_from_group_map
 from rest_framework.exceptions import PermissionDenied
 from .permissions import ViewCreatedUserPermission
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode
+
 
 class UserDetail(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -100,35 +105,37 @@ class UserCreateView(generics.CreateAPIView):
             # Gérer l'erreur d'envoi d'email
             print(f"Erreur lors de l'envoi de l'email : {e}")
             # Vous pouvez aussi lever une exception ou enregistrer l'erreur dans un log
-            
-    
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserUpdateView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    lookup_field = 'id'
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_superuser:
-            return user.objects.all()
-        return user.objects.filter(created_by=user)
-
-    def perform_create(self, serializer):
+    def get_object(self):
+        obj = super().get_object()
+        user_id = self.kwargs.get('id')
+        if not self.request.user.is_superuser : 
+            user_list = User.objects.filter(created_by=self.request.user)
+       
+            if not user_list.filter(id=user_id) : 
+                raise PermissionDenied("You are not authorized to update this user.")
         
-        serializer.save(created_by=self.request.user)
-        
-        
-class MyUsersView(generics.ListAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated, ViewCreatedUserPermission]
+        return obj
     
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
-    def get_queryset(self):
-        # Return users created by the current user
-        return User.objects.filter(created_by=self.request.user)
+        return Response({
+            "message": "User updated successfully.",
+            "user": serializer.data
+        }, status=status.HTTP_200_OK)
     
-    
-
+     
 class UserDelete(generics.DestroyAPIView): 
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
@@ -196,10 +203,94 @@ class UserDelete(generics.DestroyAPIView):
     
        
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return user.objects.all()
+        return user.objects.filter(created_by=user)
+
+    def perform_create(self, serializer):
         
+        serializer.save(created_by=self.request.user)
+        
+        
+class MyUsersView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated, ViewCreatedUserPermission]
+    
+
+    def get_queryset(self):
+        # Return users created by the current user
+        return User.objects.filter(created_by=self.request.user)
+    
+    
 class UserGroups(generics.ListAPIView): 
     serializer_class=GroupSerializer
     permission_classes= [permissions.IsAuthenticated]
     
     def get_queryset(self):
         return Group.objects.all()
+    
+    
+class ForgotPasswordView(APIView):
+    permission_classes = [permissions.AllowAny]
+    
+    @swagger_auto_schema(
+        request_body=ForgotPasswordSerializer,
+        responses={200: openapi.Response("Reset email sent")}
+    )
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"message": "If the email exists, a reset link will be sent."}, status=status.HTTP_200_OK)
+
+        token = default_token_generator.make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+
+        reset_url = f"http://yourfrontend.com/reset-password/{uid}/{token}/"
+
+        send_mail(
+            subject="Reset Your Password",
+            message=f"Bonjour {user.first_name},\nVous pouvez changer votre mot de passe en cliquant sur le lien suivant :\n{reset_url}\n\nL’équipe Qualilead",
+            from_email="no-reply@example.com",
+            recipient_list=[user.email],
+        )
+
+        return Response({"message": "If the email exists, a reset link will be sent."}, status=status.HTTP_200_OK)
+
+
+class ResetPasswordView(APIView):
+    permission_classes = [permissions.AllowAny]
+    
+    @swagger_auto_schema(
+        request_body=ResetPasswordSerializer,
+        responses={200: openapi.Response("Password reset successfully")}
+    )
+    def post(self, request, uidb64, token):
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+            return Response({"error": "Invalid or expired reset link."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not default_token_generator.check_token(user, token):
+            return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ResetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+
+        return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)

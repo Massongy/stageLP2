@@ -41,7 +41,7 @@ class MyUserSerializer(serializers.ModelSerializer):
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'created_by', 'groups')
+        fields = ('email', 'first_name', 'last_name', 'created_by', 'groups', 'is_active')
         extra_kwargs = {
             'created_by': {'read_only': True}  # Prevent passing it from the client
         }
@@ -50,3 +50,10 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Group
         fields = ('id', 'name')
+        
+        
+class ForgotPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    
+class ResetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(write_only=True, min_length=8)
