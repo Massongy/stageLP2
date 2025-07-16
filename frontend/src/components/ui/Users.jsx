@@ -1,9 +1,11 @@
 
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 
-export default function Users({ datausers = [] }) {
+export default function Users({ datausers = [], handleEdit, handleDelete }) {
+
+   
   if (!Array.isArray(datausers)) {
     console.error("`datausers` n’est pas un tableau :", datausers);
     return null;
@@ -24,6 +26,16 @@ export default function Users({ datausers = [] }) {
             <Box className="container-infos-1">Email :</Box>
             <Box className="container-infos-2">{user.email}</Box>
           </Box>
+          <Box className="container-infos">
+            <Box className="container-infos-1">Groupe :</Box>
+            <Box className="container-infos-2">{user.groups}</Box>
+          </Box>
+          <Box className="container-infos">
+            <Box className="container-infos-1">Mot de passe</Box>
+            <Box className="container-infos-2">Changer le mot de passe</Box>
+          </Box>
+          <Button onClick={() => handleEdit(user)}>✏️</Button>{' '}
+                  <Button onClick={() => handleDelete(user.id)}>🗑️</Button>
         </Box>
       ))}
     </div>

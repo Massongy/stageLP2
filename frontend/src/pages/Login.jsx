@@ -4,6 +4,9 @@ import { Card, CardContent } from '@/components/ui/Card';
 import Button from '@mui/material/Button';
 import logoOptions from '@/assets/logo-options.png';
 import logoAcceor from '@/assets/logo-acceor.png';
+import '../assets/login.css'
+import '../assets/style.css'
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -31,7 +34,7 @@ export default function Login() {
   };
 
   return (
-          <div className='min-h-screen flex flex-col items-center justify-center bg-[#cdbcaa] px-4'>
+          <div className='min-h-screen flex flex-col items-center justify-center bg-[#cdbcaa] px-4 container-login'>
             <motion.img
             src={logoOptions}
             alt='Options Logo'
