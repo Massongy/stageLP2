@@ -36,7 +36,7 @@ export default function BlocQuestionsReponses({
     if (onDateChange) {
       onDateChange(newDate ? newDate.format('DD/MM/YYYY') : null);
     }
-    console.log('Date sélectionnée formatée:', newDate ? newDate.format('DD/MM/YYYY') : null);
+    
   };
 
   return (
@@ -59,7 +59,6 @@ export default function BlocQuestionsReponses({
                     textField: {
                       size: 'small',
                       fullWidth: true,
-                      error: false,
                       placeholder: 'JJ/MM/AAAA',
                     },
                   }}

@@ -106,13 +106,9 @@ export default function InfoDemande({ data, onDataChange }) {
                         slotProps={{
                           textField: {
                             size: 'small',
-                            sx: { 
-                              backgroundColor: isEditable(key) ? 'white' : '#f5f5f5',
-                              '& .MuiInputBase-input': {
-                                color: isEditable(key) ? '#333' : '#666'
-                              }
-                            },
+                            fullWidth: true,
                             placeholder: 'JJ/MM/AAAA',
+                             sx: { height: '40px' }
                           },
                         }}
                         InputLabelProps={{ shrink: true }}
@@ -125,12 +121,16 @@ export default function InfoDemande({ data, onDataChange }) {
                         onClick={() => handleCallsChange('decrease')}
                         disabled={!isEditable(key) || !value || value <= 0}
                         sx={{
-                          color: '#656565', // couleur normale
-                          '& .MuiSvgIcon-root': { color: '#656565' },
-                          
-                          '&.Mui-disabled .MuiSvgIcon-root': { color: '#bbb' }
                         
-                        }}
+                              color: '#656565',
+                              '& .MuiSvgIcon-root': {
+                                fontSize: '12px', 
+                                ml: '10px',// icône plus petite que "small"
+                              },
+                              '&.Mui-disabled .MuiSvgIcon-root': {
+                                color: '#bbb',
+                              },
+                            }}
                       >
                         <RemoveIcon />
                       </IconButton>
@@ -166,12 +166,17 @@ export default function InfoDemande({ data, onDataChange }) {
                       <IconButton
                         onClick={() => handleCallsChange('increase')}
                         disabled={!isEditable(key)}
-                        sx={{
-                          color: '#656565', // couleur normale
-                          '& .MuiSvgIcon-root': { color: '#656565' },
-                          
-                          '&.Mui-disabled .MuiSvgIcon-root': { color: '#bbb' }
-                        }}
+                       sx={{
+                        
+                              color: '#656565',
+                              '& .MuiSvgIcon-root': {
+                                fontSize: '12px',
+                                 mr: '10px', // icône plus petite que "small"
+                              },
+                              '&.Mui-disabled .MuiSvgIcon-root': {
+                                color: '#bbb',
+                              },
+                            }}
                         >
                           <AddIcon />
                         </IconButton>

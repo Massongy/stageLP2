@@ -52,27 +52,22 @@ background-color: white;
   color: #D4C7B5 !important;
 }
 
-.date-scoring .css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
-
+/*modif de la police */
+.date-scoring .MuiPickersSectionList-root, 
+.date-scoring .MuiPickersInputBase-input,
+.date-scoring .MuiOutlinedInput-input {
   color: #D4C7B5 !important;
-}
-
-.css-ni0mq9-MuiFormControl-root-MuiPickersTextField-root {
-
-  border: none !important;
-  width: 100%;
-}
-
-.date-scoring .css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
-
-  color: #D4C7B5 !important;
-  font-family: 'Segoe UI', sans-serif !important;
-  font-size: 14px !important;
+  font-size: 16px !important;
+  
 }
 
 .date-scoring .MuiPickersSectionList-root, 
 .date-scoring .MuiPickersInputBase-input,
 .date-scoring .MuiOutlinedInput-input {
-  color: #D4C7B5 !important;
-  font-size: 14px !important;
+    color: #D4C7B5 !important;
+    font-size: 16px !important; /* Réduire de 16px à 14px */
+    line-height: 1.2 !important; /* Réduire la hauteur de ligne */
+    padding: 0 !important; /* Supprimer tous les paddings */
 }
+
+

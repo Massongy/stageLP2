@@ -36,26 +36,6 @@
   white-space: nowrap;
 }
 
-.css-1hrl22c-MuiFormControl-root-MuiTextField-root .MuiOutlinedInput-root {
-  background-color: #F5F2EE !important;
-  height: 40px;
-  border: none !important;
-  border-radius: 0px !important;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root fieldset,
-.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-  border: none !important;
-}
-
-.reponse-option.calendrier {
-  padding: 0px;
-}
-
 /*suppression du bouton d'incrémentation au survol de la zone de saise dans le champ textfiled de type number */
 
  input[type="number"]::-webkit-outer-spin-button,
@@ -69,96 +49,27 @@
   }
 
 
-/* Solution globale - Supprimer TOUTES les bordures des inputs */
-* [class*="MuiOutlinedInput-root"] {
-  border: none !important;
-}
-
-* [class*="MuiOutlinedInput-root"] fieldset {
-  border: none !important;
-}
-
-* [class*="MuiOutlinedInput-root"]:hover fieldset {
-  border: none !important;
-}
-
-* [class*="MuiOutlinedInput-root"].Mui-focused fieldset {
-  border: none !important;
-}
-
-* [class*="MuiOutlinedInput-root"].Mui-disabled fieldset {
-  border: none !important;
-}
-
-/* Cibler spécifiquement les DatePicker */
-div[class*="MuiFormControl-root"] .MuiOutlinedInput-root {
-  border: none !important;
-}
-
-div[class*="MuiFormControl-root"] .MuiOutlinedInput-root fieldset {
-  border: none !important;
-}
-
-div[class*="MuiFormControl-root"] .MuiOutlinedInput-root:hover fieldset {
-  border: none !important;
-}
-
-div[class*="MuiFormControl-root"] .MuiOutlinedInput-root.Mui-focused fieldset {
-  border: none !important;
-}
-
-/* Supprimer les bordures pour TOUS les fieldset */
-fieldset {
-  border: none !important;
-}
-
-.MuiOutlinedInput-notchedOutline {
-  border: none !important;
-}
-
-/* Règle ultra-spécifique pour forcer */
-.MuiFormControl-root .MuiInputBase-root.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-  border: none !important;
-}
-
-.MuiFormControl-root .MuiInputBase-root.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-  border: none !important;
-}
-
-.MuiFormControl-root .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border: none !important;
- 
-}
 
 .date-infodemande .css-1umw9bq-MuiSvgIcon-root {
 
   color: #D4C7B5 !important;
  
-  width: 100% !important;
 }
 
-
-
-
-
-/*modification du texte date*/
-
-.date-infodemande .css-gfka5e-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
-  color: #D4C7B5 !important;
-  font-family: 'Segoe UI', sans-serif !important;
-  font-size: 14px !important;
-
-}
 
 
 .date-infodemande .css-15395ss-MuiPickersSectionList-root-MuiPickersInputBase-sectionsContainer-MuiPickersOutlinedInput-sectionsContainer {
 
   color: #656565 !important;
   font-family: 'Segoe UI', sans-serif !important;
-  font-size: 14px !important;
+  font-size: 16x !important;
 }
 
 
 
 
 
+.date-infodemande .css-ni0mq9-MuiFormControl-root-MuiPickersTextField-root .css-ni0mq9-MuiFormControl-root-MuiPickersTextField-root .css-ni0mq9-MuiFormControl-root-MuiPickersTextField-root{
+
+background-color: red !important;
+}
