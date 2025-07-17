@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Quote, QuoteUserLog, QuoteLock, Comment
+from apps.questionnaire.serializers import QuestionnaireIdSerializer
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,9 +8,15 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'text', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
 
+class CommentLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'text']  # or whatever your label field is called
+        read_only_fields = ['id', 'text']  # Make sure to set read-only fields if needed
 
 class QuoteSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=False)
+    comments = CommentLabelSerializer(many=False)
+    questionnaire = QuestionnaireIdSerializer(read_only=True)
     
     class Meta:
         model = Quote
@@ -23,6 +30,8 @@ class QuoteSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data['updated_by'] = self.context['request'].user
         return super().update(instance, validated_data)
+    
+    
     
 class QuoteUserLogSerializer(serializers.ModelSerializer):
     class Meta:

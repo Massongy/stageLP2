@@ -132,6 +132,8 @@ class GivenAnswerViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixi
             items=openapi.Items(type=openapi.TYPE_OBJECT, properties={
                 'answer': openapi.Schema(type=openapi.TYPE_INTEGER, description='Answer ID'),
                 'questionnaire': openapi.Schema(type=openapi.TYPE_INTEGER, description='Questionnaire ID'),
+                'date_answer': openapi.Schema(type=openapi.TYPE_STRING, format=openapi.FORMAT_DATE, description='Date of the answer (only for one question)', example='null')
+            
             }),
             description="List of answers for a questionnaire"
         ),
@@ -143,25 +145,54 @@ class GivenAnswerViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixi
         """
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
-            
+        
         results = []
-        for data in serializer.validated_data: 
-            questionnaire = data['questionnaire']
-            reponse = data['answer']
-            question = reponse.question
+        for data in serializer.validated_data:
+            print(f"Validated data: {data}") 
+            is_date_answer = False
 
-            existing = GivenAnswer.objects.filter(questionnaire=questionnaire, question=question).first()
-            if existing : 
-                existing.answer = reponse
-                existing.question = question
-                existing.save()
-                results.append(existing)
-               
-            else : 
-                new = GivenAnswer.objects.create(answer=reponse,questionnaire=questionnaire,question=question)
-                results.append(new)
-           
+            # Find the question with Date answer
+            date_question = Question.objects.filter(is_date_input=True).first()
+
+            reponse = data['answer']
+            print(f"{reponse}")
+            #reponse = Reponse.objects.filter(id=reponse_id).first()
+
+            if date_question and date_question.id == reponse.question.id:
+                is_date_answer = True
+
+
+            questionnaire = data['questionnaire']
+
+            if is_date_answer:
+                date_prevue = data.get('date_answer', None)
+                print(f"Date question found: {date_question}, date_prevue: {date_prevue}")
+                if not date_prevue:
+                    return Response({"detail": "Date answer is required for date input questions."}, status=status.HTTP_400_BAD_REQUEST)
+                print("Date question found, updating date_answer")
+                questionnaire.date_prevue = data.get('date_answer', None)
+                questionnaire.save()
+            else:
+                print("Non-date question found, using existing logic")
+                question = reponse.question
+                existing = GivenAnswer.objects.filter(
+                    questionnaire=questionnaire,
+                    question=question
+                ).first()
+
+                if existing:
+                    existing.answer = reponse
+                    existing.question = question
+                    existing.save()
+                    results.append(existing)
+                else:
+                    new = GivenAnswer.objects.create(
+                        answer=reponse,
+                        questionnaire=questionnaire,
+                        question=question
+                    )
+                    results.append(new)
+        
         res_serializer = self.get_serializer(results, many=True)
         return Response(res_serializer.data, status=status.HTTP_201_CREATED)
-  
-  
+

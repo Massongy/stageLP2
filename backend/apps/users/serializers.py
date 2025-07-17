@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     permissions = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'groups', 'permissions')
+        fields = ('id', 'email', 'first_name', 'last_name', 'groups', 'permissions', 'is_active')
 
     def get_permissions(self, user):
     
@@ -22,6 +22,26 @@ class UserSerializer(serializers.ModelSerializer):
                 Permission.objects.filter(group__user=user).values_list('codename', flat=True)
         )
         return sorted(user_perms.union(group_perms))
+
+class MyUserSerializer(serializers.ModelSerializer):
+    groups = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field='name'
+    )
+    permissions = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'first_name', 'last_name', 'created_by', 'groups', 'permissions', 'is_active')
+        read_only_fields = ('created_by',)  # Prevent passing it from the client
+        def get_permissions(self, user):
+    
+            # Permissions individuelles
+            user_perms = set(user.user_permissions.values_list('codename', flat=True))
+            # Permissions via groupes
+            group_perms = set(
+                Permission.objects.filter(group__user=user).values_list('codename', flat=True)
+            )
+            return sorted(user_perms.union(group_perms))
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
