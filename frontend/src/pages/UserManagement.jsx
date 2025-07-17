@@ -9,8 +9,16 @@ import { useCreateUser } from '../hooks/useCreateUser';
 import { useMyUsers } from '../hooks/useMyUsers';
 import { useDeleteUser } from '../hooks/useDeleteUser';
 import { useEditUser } from '../hooks/useEditUser';
+import { CircularProgress } from '@mui/material';
 
 function UserManagement() {
+  const [isCreating, setIsCreating] = useState(false);
+const [newUser, setNewUser] = useState({
+  first_name: '',
+  last_name: '',
+  email: '',
+  groups: []
+});
   const { users, loading: usersLoading, error: usersError } = useMyUsers();
   const { createUser, loading: createLoading, err: createError } = useCreateUser();
   const { deleteUser, loading: deleteLoading, error: deleteError } = useDeleteUser();
@@ -69,13 +77,18 @@ function UserManagement() {
   };
 
   const handleAdd = () => {
-    setEditUserId(null);
-    setFormData({ email: '', password: '', first_name: '', last_name: '', created_by: '', groups: [] });
-    setShowForm(true);
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 100);
-  };
+  setIsCreating(true);
+  setNewUser({
+    first_name: '',
+    last_name: '',
+    email: '',
+    groups: []
+  });
+  // Assurez-vous qu'aucune édition n'est en cours
+  setEditUserId(null);
+  setShowForm(false);
+};
+
 
   const handleEdit = (user) => {
     setEditUserId(user.id);
@@ -127,21 +140,20 @@ function UserManagement() {
     }
   };
 
-  const handleConfirmCreate = () => {
-    createUser(pendingData)
-      .then(() => {
-        alert('Utilisateur créé avec succès');
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Erreur lors de la création: ' + err.message);
-      })
-      .finally(() => {
-        setShowForm(false);
-        setShowEmailConfirmation(false);
-        setPendingData(null);
-      });
-  };
+  const handleConfirmCreate = async () => {
+  setIsCreatingUser(true); // Active le loader
+  
+  try {
+    await createUser(pendingData);
+    alert('Utilisateur créé avec succès');
+    setShowEmailConfirmation(false);
+  } catch (err) {
+    console.error(err);
+    alert('Erreur lors de la création: ' + err.message);
+  } finally {
+    setIsCreatingUser(false); // Désactive le loader
+  }
+};
 
   const handleDelete = (userId) => {
     if (!window.confirm('Êtes-vous sûr ?')) return;
@@ -150,13 +162,42 @@ function UserManagement() {
       .catch(err => alert('Erreur: ' + err.message));
   };
 
+  const handleCreationChange = (e) => {
+  const { name, value } = e.target;
+  setNewUser(prev => ({
+    ...prev,
+    [name]: name === 'groups' ? [value] : value
+  }));
+};
+
+const saveNewUser = () => {
+  const dataToSend = {
+    first_name: newUser.first_name,
+    last_name: newUser.last_name,
+    email: newUser.email,
+    groups: [Number(newUser.groups[0])], // Conversion en nombre
+    created_by: createdBy
+  };
+  
+  console.log("Data being sent:", dataToSend); // Pour vérification
+  setPendingData(dataToSend);
+  setShowEmailConfirmation(true);
+};
+
+const cancelCreation = () => {
+  setIsCreating(false);
+};
+
   const dataadmin = profile ? [{
     email: profile.email,
     first_name: profile.first_name,
     last_name: profile.last_name
   }] : [];
 
-  const datausers = users;
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+
+
+const datausers = users;
 
   return (
     <Container fluid className="container-gestion-compte">
@@ -172,7 +213,8 @@ function UserManagement() {
         <Col xs={12}>
           <Box className="info-admin-gestion-compte p-3">
             <Box className="titre2 mb-3">Informations de mon compte administrateur</Box>
-            <Users datausers={dataadmin}/>
+            <Users datausers={dataadmin}
+            />
           </Box>
         </Col>
       </Row>
@@ -188,7 +230,11 @@ function UserManagement() {
       <Row className="mt-2">
         <Col xs={12}>
           <Box className="info-utilisateur-gestion-compte p-3">
-            <Users datausers={datausers} handleEdit={handleEdit} handleDelete={handleDelete}/>
+            <Users datausers={datausers} handleEdit={handleEdit} handleDelete={handleDelete} isCreating={isCreating}
+  creationData={newUser}
+  onCreationChange={handleCreationChange}
+  onSaveNewUser={saveNewUser}
+  onCancelCreation={cancelCreation}/>
           </Box>
         </Col>
       </Row>
@@ -208,9 +254,13 @@ function UserManagement() {
               <span className="text-center text-md-start">Mode édition : modifier les infos dans le formulaire ci-dessous</span>
             </Box>
           ) : (
-            <Button onClick={handleAdd} className="w-100 w-md-auto">
-              ➕ Ajouter un utilisateur
-            </Button>
+           <Button 
+  onClick={handleAdd} 
+  className="custom-add-button w-100 w-md-auto"
+>
+  <span className="custom-add-icon">+</span>
+  <span className="custom-add-text">Ajouter un utilisateur</span>
+</Button>
           )}
         </Col>
       </Row>
@@ -313,11 +363,25 @@ function UserManagement() {
           </DialogTitle>
           
           <DialogActions className="dialog-actions">
-            <Button onClick={handleConfirmCreate} variant="contained" className="bouton-confirmer">
-              Confirmer
-            </Button>
-            <Button onClick={handleCancel}>Annuler</Button>
-          </DialogActions>
+  <Button 
+    onClick={handleConfirmCreate} 
+    variant="contained" 
+    className="bouton-confirmer"
+    disabled={isCreatingUser} // Désactive le bouton pendant le chargement
+  >
+    {isCreatingUser ? (
+      <>
+        <CircularProgress size={24} color="inherit" /> 
+        <span style={{ marginLeft: '8px' }}>Création...</span>
+      </>
+    ) : (
+      'Confirmer'
+    )}
+  </Button>
+  <Button onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser}>
+    Annuler
+  </Button>
+</DialogActions>
         </div>
       </Dialog>
     </Container>
