@@ -1,4 +1,79 @@
 .container-login {
     background-color:#D4C7B5;
+    margin-top: -40px;
 
+}
+
+.titre-login {
+
+  color: white;
+  text-transform: uppercase;
+  font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+  outline: none !important;
+  background-color: white;
+}
+
+.container-login .form-control-personnalise {
+    
+  background-color: white !important; /* Couleur de fond personnalisée */
+  border: 1px solid #D4C7B5 !important; /* Couleur de bordure personnalisée */
+  border-radius: 0px !important; /* Coins arrondis */
+  padding: 1.2rem !important; /* Espacement interne */
+  font-size: 20px !important; /* Taille de police personnalisée */
+  font-style: italic !important; /* Style de police italique */
+  font-weight: 400 !important; /* Poids de police */
+  color: #656565 !important; /* Couleur du texte explicite */
+}
+
+.container-login .form-control-personnalise,
+.container-login .form-control-personnalise:-webkit-autofill,
+.container-login .form-control-personnalise:-webkit-autofill:hover, 
+.container-login .form-control-personnalise:-webkit-autofill:focus {
+  background-color: white !important;
+  border: 1px solid #D4C7B5 !important;
+  border-radius: 0px !important;
+  padding: 1.2rem !important;
+  font-size: 20px !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: #656565  !important; /* Couleur du texte explicite */
+  -webkit-text-fill-color: #656565 !important; /* Spécifique à l'autofill */
+  -webkit-text-size: 20px!important; 
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important; /* "Hack" pour le fond */
+}
+
+.form-label-custom {
+  font-size: 22px !important;
+  color:  #656565 !important;
+  margin: 1rem 0 2rem 0;
+  
+}
+
+.bouton-login {
+     
+  height: 70px !important;       /* Hauteur fixe réduite */
+  display: flex!important;
+  align-items: center!important;          /* Centrage vertical */
+  justify-content: center!important;
+  background-color: #90A5C8 !important;
+  color: white;
+  background-color: #90A5C8 !important;
+  border-radius: 35px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  border: none;
+  margin-bottom: 30px;
+  margin-top: 40px !important;
+  
+}
+
+.img-acceor {
+  width: 10rem !important;
+  padding-top: 2rem !important;
 }

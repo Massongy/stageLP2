@@ -268,13 +268,14 @@ function formatDataQuestionnaireForApi(questionnaireData, quoteId/*à remplacer 
           </DialogTitle>
           <DialogActions className="dialog-actions">
             <Button 
-              className="bouton-editer bouton-confirmer" 
+              className="bouton-confirmer" 
               onClick={handleConfirmClose} 
               variant="contained"
             >
               Confirmer
             </Button>
-            <Button className="bouton-editer bouton-annuler" onClick={handleCancelClose}>
+            <Button className=" bouton-annuler"
+            onClick={handleCancelClose}>
               Annuler
             </Button>
           </DialogActions>
