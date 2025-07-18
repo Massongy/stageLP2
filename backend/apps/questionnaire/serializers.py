@@ -27,10 +27,10 @@ class ReponseLabelSerializer(serializers.ModelSerializer):
 
 class GivenAnswersInputSerializer(serializers.ModelSerializer):    
     question = serializers.SerializerMethodField(read_only=True)
- 
+    date_answer = serializers.DateField(required=False, allow_null=True, format='%Y-%m-%d', input_formats=['%Y-%m-%d'])
     class Meta:
         model = GivenAnswer
-        fields = ['answer', 'questionnaire', 'question']
+        fields = ['answer', 'questionnaire', 'question', '']
         read_only_fields = ['question']
             
     def get_question(self, obj):
@@ -49,6 +49,11 @@ class QuestionnaireLabelSerializer(serializers.ModelSerializer):
         model = Questionnaire
         fields = ['id', 'quote', 'score'] 
         # Specify the fields you want to include
+        
+class QuestionnaireIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Questionnaire
+        fields = ['id']  # Only include the ID field
         
         
 class GivenAnswerSerializer(serializers.ModelSerializer):
