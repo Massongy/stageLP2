@@ -39,33 +39,42 @@ const [newUser, setNewUser] = useState({
   const token = localStorage.getItem('access');
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const profileRes = await fetch('api/users/me/', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const profile = await profileRes.json();
-        setProfile(profile);
-        setCreatedBy(profile.id);
+  const fetchData = async () => {
+    try {
+      const profileRes = await fetch('api/users/me/', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const profile = await profileRes.json();
+      setProfile(profile);
+      setCreatedBy(profile.id);
 
-        if (!profile.permissions?.includes('view_user')) {
-          setHasPermission(false);
-          return;
-        }
-        setHasPermission(true);
+      // Ajoutez cette ligne pour stocker le groupe principal de l'utilisateur
+      const userGroup = profile.groups && profile.groups.length > 0 ? 
+                       (typeof profile.groups[0] === 'object' ? profile.groups[0].id : profile.groups[0]) : 
+                       null;
+      setCurrentUserGroup(userGroup);
 
-        setAvailableGroups([
-          { id: 1, name: 'Gestionnaire Acceor' },
-          { id: 2, name: 'Gestionnaire Options' },
-          { id: 3, name: 'Utilisateur Acceor' },
-          { id: 4, name: 'Utilisateur Options' },
-        ]);
-      } catch (err) {
-        setError('Erreur chargement données');
+      if (!profile.permissions?.includes('view_user')) {
+        setHasPermission(false);
+        return;
       }
-    };
-    fetchData();
-  }, [token]);
+      setHasPermission(true);
+
+      setAvailableGroups([
+        { id: 1, name: 'Gestionnaire Acceor' },
+        { id: 2, name: 'Gestionnaire Options' },
+        { id: 3, name: 'Utilisateur Acceor' },
+        { id: 4, name: 'Utilisateur Options' },
+      ]);
+    } catch (err) {
+      setError('Erreur chargement données');
+    }
+  };
+  fetchData();
+}, [token]);
+
+const [currentUserGroup, setCurrentUserGroup] = useState(null);
+console.log("Current User Group:", currentUserGroup);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -164,10 +173,19 @@ const [newUser, setNewUser] = useState({
 
   const handleCreationChange = (e) => {
   const { name, value } = e.target;
-  setNewUser(prev => ({
-    ...prev,
-    [name]: name === 'groups' ? [value] : value
-  }));
+  
+  setNewUser(prev => {
+    const updated = { ...prev };
+    
+    if (name === 'groups') {
+      updated.groups = Array.isArray(value) ? value : [value].filter(Boolean);
+    } else {
+      updated[name] = value;
+    }
+    
+    console.log('Updated user:', updated); // Pour débogage
+    return updated;
+  });
 };
 
 const saveNewUser = () => {
@@ -213,7 +231,11 @@ const datausers = users;
         <Col xs={12}>
           <Box className="info-admin-gestion-compte p-3">
             <Box className="titre2 mb-3">Informations de mon compte administrateur</Box>
-            <Users datausers={dataadmin}
+            <Users 
+              datausers={dataadmin}
+              isAdminProfile={true}
+              currentUserGroup={currentUserGroup}
+              
             />
           </Box>
         </Col>
@@ -230,11 +252,17 @@ const datausers = users;
       <Row className="mt-2">
         <Col xs={12}>
           <Box className="info-utilisateur-gestion-compte p-3">
-            <Users datausers={datausers} handleEdit={handleEdit} handleDelete={handleDelete} isCreating={isCreating}
-  creationData={newUser}
-  onCreationChange={handleCreationChange}
-  onSaveNewUser={saveNewUser}
-  onCancelCreation={cancelCreation}/>
+            <Users
+              datausers={datausers}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+              isCreating={isCreating}
+              currentUserGroup={currentUserGroup}
+              creationData={newUser}
+              onCreationChange={handleCreationChange}
+              onSaveNewUser={saveNewUser}
+              onCancelCreation={cancelCreation}
+            />
           </Box>
         </Col>
       </Row>
