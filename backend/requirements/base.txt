@@ -7,3 +7,5 @@ ipython
 django-debug-toolbar
 drf-yasg
 django_extensions
+requests
+django-environ

@@ -8,6 +8,8 @@ router.register(r'reponses', ReponseViewSet)  # Assuming you want to use the sam
 router.register(r'questionnaires', QuestionnaireViewSet)  # Registering the Questionnaire viewset
 router.register(r'given-answers', GivenAnswerViewSet, basename='given-answers')  # Registering the GivenAnswer viewset
 
+
+
 urlpatterns = [
     path('', include(router.urls)),
 ]

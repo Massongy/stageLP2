@@ -13,6 +13,10 @@ from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import get_object_or_404
+from .request import QuotesExternalAPIRequest 
+from rest_framework.decorators import action
+import os
+
 
 class QuoteViewSet(mixins.RetrieveModelMixin,  mixins.ListModelMixin,
                    mixins.UpdateModelMixin,
@@ -181,3 +185,31 @@ class QuoteLockDeleteView(APIView):
             pass
 
         return Response({"detail": "No lock remains for this quote."}, status=status.HTTP_204_NO_CONTENT)
+    
+class ExternalAPIQuotesView(viewsets.GenericViewSet):
+    """
+    View to handle external API requests for quotes.
+    """
+    permission_classes = [permissions.AllowAny]  # Allow any user to access this viewset
+    serializer_class = None
+    queryset = None  # No queryset needed for this viewset
+
+    def get_tags(self):
+        return ["eXternal API Quotes"]
+
+    def get_view_name(self):
+        return "eXternal API Quotes"
+    
+
+    @swagger_auto_schema(
+        tags=["external-api"],
+        operation_description="Exchange data with the backend."
+    )
+    
+    
+    @action(detail=False, methods=["get"], url_path="fetch-external-quotes", url_name="fetch_external_quotes")
+    def fetch_external_quotes(self, request):
+        instance = QuotesExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL'))
+        res = instance.fetch_quotes()
+        print(f"Response from external API in view: {res}")
+        return res  # Assuming response is a dict with quotes data
