@@ -43,15 +43,13 @@ function Header() {
 
   const handleLogout = () => {
     localStorage.clear();
+     setIsLogged(false);
     navigate('/login');
   };
 
   if (!isLogged) return null;
 
-  /*persmissions pour afficher le menu gestion*/
-  const needed = ['add_user', 'change_user', 'delete_user', 'view_user'];
 
-  const canShowMenuGestion = needed.every(p => user?.permissions?.includes(p));
 
   return (
   
@@ -103,14 +101,14 @@ function Header() {
             <Dropdown.Item as={Link} to="/profile" onClick={handleMenuClose}>
               Mon profil
             </Dropdown.Item>
-            {canShowMenuGestion && (
-                <Dropdown.Item 
+            
+            <Dropdown.Item 
                   as={Link} to="/Users"
                   onClick={handleMenuClose}
                 >               
                     Gestion du compte             
-                </Dropdown.Item>
-                )}
+            </Dropdown.Item>
+                
             <Dropdown.Item onClick={handleLogout}>
               Déconnexion
             </Dropdown.Item>

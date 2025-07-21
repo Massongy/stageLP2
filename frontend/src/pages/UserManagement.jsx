@@ -10,6 +10,8 @@ import { useMyUsers } from '../hooks/useMyUsers';
 import { useDeleteUser } from '../hooks/useDeleteUser';
 import { useEditUser } from '../hooks/useEditUser';
 import { CircularProgress } from '@mui/material';
+import useCurrentUser from '../hooks/useCurrentUser.jsx';
+import LoadingButton from '../components/ui/LoadingButton.jsx';
 
 function UserManagement() {
   const [isCreating, setIsCreating] = useState(false);
@@ -19,7 +21,7 @@ const [newUser, setNewUser] = useState({
   email: '',
   groups: []
 });
-  const { users, loading: usersLoading, error: usersError } = useMyUsers();
+  const { users, loading: usersLoading, error: usersError, refetch: usersRefetch } = useMyUsers();
   const { createUser, loading: createLoading, err: createError } = useCreateUser();
   const { deleteUser, loading: deleteLoading, error: deleteError } = useDeleteUser();
   const { editUser, loading: editLoading, error: editError } = useEditUser();
@@ -137,6 +139,7 @@ console.log("Current User Group:", currentUserGroup);
       editUser(editUserId, dataToSend)
         .then(result => {
           alert(result ? 'Utilisateur mis à jour !' : 'Erreur mise à jour');
+          usersRefetch(); // Rafraîchit la liste des utilisateurs
         })
         .catch(err => alert('Erreur: ' + err.message))
         .finally(() => {
@@ -156,6 +159,7 @@ console.log("Current User Group:", currentUserGroup);
     await createUser(pendingData);
     alert('Utilisateur créé avec succès');
     setShowEmailConfirmation(false);
+    usersRefetch(); // Rafraîchit la liste des utilisateurs
   } catch (err) {
     console.error(err);
     alert('Erreur lors de la création: ' + err.message);
@@ -167,7 +171,12 @@ console.log("Current User Group:", currentUserGroup);
   const handleDelete = (userId) => {
     if (!window.confirm('Êtes-vous sûr ?')) return;
     deleteUser(userId)
-      .then(success => success && alert('Utilisateur supprimé'))
+       .then(success => {
+      if (success) {
+        alert('Utilisateur supprimé');
+        usersRefetch(); // Rafraîchit la liste des utilisateurs
+      }
+    })
       .catch(err => alert('Erreur: ' + err.message));
   };
 
@@ -217,6 +226,45 @@ const cancelCreation = () => {
 
 const datausers = users;
 
+const activeUsers = datausers.filter(user => user.is_active === true);
+// Vérification des permissions de l'utilisateur courant
+const user = useCurrentUser();
+const hasFullRights = ['add_user', 'change_user', 'delete_user', 'view_user']
+  .every(p => user?.permissions?.includes(p));
+    if (!hasFullRights) {
+    const myProfile = user ? [{
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    }] : [];
+
+    return (
+       <Container fluid className="container-gestion-compte">
+      {/* Row 1: Titre principal */}
+      <Row className="justify-content-center">
+        <Col xs={12}>
+          <Box className="titre1 text-center text-md-start">Gestion du compte</Box>
+        </Col>
+      </Row>
+
+      {/* Row 2: Informations compte administrateur */}
+      <Row className="mt-3">
+        <Col xs={12}>
+          <Box className="info-admin-gestion-compte p-3">
+            <Box className="titre2 mb-3">Informations de mon compte utilisateur</Box>
+            <Users 
+              datausers={dataadmin}
+              isCurrentProfile={true}
+              currentUserGroup={currentUserGroup}
+              
+            />
+          </Box>
+        </Col>
+      </Row>
+      </Container>
+    );
+  }
+
   return (
     <Container fluid className="container-gestion-compte">
       {/* Row 1: Titre principal */}
@@ -233,7 +281,7 @@ const datausers = users;
             <Box className="titre2 mb-3">Informations de mon compte administrateur</Box>
             <Users 
               datausers={dataadmin}
-              isAdminProfile={true}
+              isCurrentProfile={true}
               currentUserGroup={currentUserGroup}
               
             />
@@ -253,7 +301,7 @@ const datausers = users;
         <Col xs={12}>
           <Box className="info-utilisateur-gestion-compte p-3">
             <Users
-              datausers={datausers}
+              datausers={activeUsers}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
               isCreating={isCreating}
@@ -272,13 +320,13 @@ const datausers = users;
         <Col xs={12}>
           {editUserId ? (
             <Box className="d-flex flex-column flex-md-row align-items-center">
-              <Button 
+              <LoadingButton 
                 onClick={handleCancel} 
                 variant="outlined" 
                 className="mb-2 mb-md-0 me-md-3"
               >
                 ❌ Annuler l'édition
-              </Button>
+              </LoadingButton>
               <span className="text-center text-md-start">Mode édition : modifier les infos dans le formulaire ci-dessous</span>
             </Box>
           ) : (
@@ -391,24 +439,16 @@ const datausers = users;
           </DialogTitle>
           
           <DialogActions className="dialog-actions">
-  <Button 
-    onClick={handleConfirmCreate} 
-    variant="contained" 
-    className="bouton-confirmer"
-    disabled={isCreatingUser} // Désactive le bouton pendant le chargement
-  >
-    {isCreatingUser ? (
-      <>
-        <CircularProgress size={24} color="inherit" /> 
-        <span style={{ marginLeft: '8px' }}>Création...</span>
-      </>
-    ) : (
-      'Confirmer'
-    )}
-  </Button>
-  <Button onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser}>
-    Annuler
-  </Button>
+  <LoadingButton
+  onClick={handleConfirmCreate}
+  isLoading={isCreatingUser}
+  className="bouton-confirmer"
+>
+  Confirmer
+</LoadingButton>
+<Button onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser}>
+  Annuler
+</Button>
 </DialogActions>
         </div>
       </Dialog>

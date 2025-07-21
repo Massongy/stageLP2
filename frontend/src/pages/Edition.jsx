@@ -44,14 +44,54 @@ function formatDataInfoForApi(blocInfoData) {
 
 }
 
-//Fonction pour formater les données questionnaire selon l'API
-function formatDataQuestionnaireForApi(questionnaireData, quoteId/*à remplacer par l'ID du questionnaire lié au devis*/) {
-  // Transformer l'objet questionnaireData en un tableau d'objets au format attendu par l'API
-  return Object.entries(questionnaireData).map(([questionId, answerData]) => ({
-    answer: answerData.reponse,  // La réponse sélectionnée
-    questionnaire: quoteId       // L'ID du devis/quote
-  })).filter(item => item.answer !== undefined); // Ne garder que les réponses définies
+// Fonction pour formater les données questionnaire selon l'API
+
+
+
+function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
+  const questionnaireId = Number(selectedQuote?.questionnaire?.id) || 0;
+
+  return Object.entries(questionnaireData)
+    .filter(([_, data]) => {
+      // Garder les questions avec une réponse OU une date
+      return (
+        (data.reponse !== undefined && data.reponse !== null && data.reponse !== '') ||
+        (data.date !== null && data.date !== undefined)
+      );
+    })
+    .map(([questionId, data]) => {
+      let answer;
+      let dateAnswer = null;
+
+      // Si il y a une date, answer = questionId
+      if (data.date) {
+        answer = Number(questionId); // L'ID de la question
+        
+        // Formater la date
+        try {
+          const [day, month, year] = data.date.split('/');
+          const isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          if (!isNaN(new Date(isoDate).getTime())) {
+            dateAnswer = isoDate;
+          }
+        } catch (e) {
+          console.error(`Erreur de traitement de date: ${data.date}`, e);
+        }
+      } else {
+        // Sinon, answer = ID de la réponse choisie
+        answer = Number(data.reponse);
+      }
+
+      console.log('formatDataQuestionnaireForApi - questionId:', questionId, 'answer:', answer, 'date_answer:', dateAnswer);
+
+      return {
+        answer,
+        questionnaire: questionnaireId,
+        date_answer: dateAnswer
+      };
+    });
 }
+
 
 
   // Récupération des données quotes avec le hook useQuotesQuotes
@@ -115,21 +155,44 @@ function formatDataQuestionnaireForApi(questionnaireData, quoteId/*à remplacer 
 
     try {
 
-   
+console.log('questionnaireData avant formatage:', questionnaireData);
       const dataInfoToSend  = formatDataInfoForApi(blocInfoData);
-       const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote.id);
-      
-      
+      const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);      
+     
        console.log('donnée questionnaire non formatées à envoyer' , questionnaireData);
-      
-      console.log('donnée questionnaiers formatées à envoyer' , questionnaireDataToSend);
+      console.log('donnée info formatées à envoyer' ,   questionnaireDataToSend);
   
 
-    
+    // Debug 1: Vérification des données avant envoi
+        console.log('Données brutes questionnaire:', questionnaireData);
+        console.log('Données formatées questionnaire:', questionnaireDataToSend);
+        console.log('Structure attendue par API:', [
+            {
+                "answer": 0,
+                "questionnaire": 0,
+                "date_answer": "null"
+            }
+        ]);
+
+        // Debug 2: Vérification des types
+        console.log('Types des données:', {
+            answer: typeof questionnaireDataToSend[0].answer,
+            questionnaire: typeof questionnaireDataToSend[0].questionnaire,
+            date_answer: typeof questionnaireDataToSend[0].date_answer
+        });
+
 
       // Utilisation du hook editquote 
       await editQuote(selectedQuote.id, dataInfoToSend);
        await givenAnswers(questionnaireDataToSend);
+
+       // Debug 3: Juste avant l'envoi
+        console.log('Payload final envoyé:', JSON.stringify(questionnaireDataToSend, null, 2));
+        
+        const response = await givenAnswers(questionnaireDataToSend);
+        
+        // Debug 4: Après réponse
+        console.log('Réponse API:', response);
       
       setMessage('Données enregistrées avec succès !');
       setMessageType('success');

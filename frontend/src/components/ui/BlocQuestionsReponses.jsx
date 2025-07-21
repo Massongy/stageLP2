@@ -30,12 +30,26 @@ export default function BlocQuestionsReponses({
   };
 
   const handleDateChange = (newDate) => {
-    
-    // newDate est un objet dayjs ou null
-    if (onDateChange) {
-      onDateChange(newDate ? newDate.format('DD/MM/YYYY') : null);
+  const formattedDate = newDate ? newDate.format('DD/MM/YYYY') : null;
+
+  // 1. Envoie la date vers le parent
+  if (onDateChange) {
+    onDateChange(formattedDate); // 🟦 met à jour questionnaireData[questionId].date
+  }
+
+  // 2. Trouve et envoie l’ID de la réponse associée à la date
+  if (formattedDate && validReponses.length > 0) {
+    const reponseAssociee = validReponses.find(r =>
+      r.value.toLowerCase().includes('date') ||
+      r.value.toLowerCase().includes('oui')
+    );
+
+    if (reponseAssociee && onReponseChange) {
+      onReponseChange(reponseAssociee.id); // 🟦 met à jour questionnaireData[questionId].reponse
     }
-  };
+  }
+};
+
 
   // Vérification que reponses est un tableau avant d'utiliser .map()
   const validReponses = Array.isArray(reponses) ? reponses : [];

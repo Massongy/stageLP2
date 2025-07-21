@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import LoadingButton from '../components/ui/LoadingButton';
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);  // <-- état pour loader
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
     try {
       const response = await fetch(`/api/users/forgot-password/`, {
         method: 'POST',
@@ -20,6 +24,8 @@ function ForgotPasswordPage() {
       }
     } catch (e) {
       setMessage('Erreur réseau');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -34,7 +40,9 @@ function ForgotPasswordPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <button type="submit">Envoyer le lien de réinitialisation</button>
+        <LoadingButton type="submit" isLoading={isLoading} >
+          Envoyer le lien de réinitialisation
+        </LoadingButton>
       </form>
       {message && <p>{message}</p>}
     </div>

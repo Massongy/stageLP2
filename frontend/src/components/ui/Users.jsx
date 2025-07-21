@@ -14,7 +14,7 @@ export default function Users({
   onCreationChange,
   onSaveNewUser,
   onCancelCreation,
-  isAdminProfile = false,
+  isCurrentProfile = false,
   currentUserGroup // Nouveau prop pour le groupe de l'utilisateur courant
 }) {
   const [passwordModal, setPasswordModal] = useState(false);
@@ -152,10 +152,10 @@ console.log('Available Roles:', availableRoles);
             {/* Colonne 3: Rôle ou Mot de passe */}
             <Box className="container-infos">
               <Box className="container-infos-1">
-                {isAdminProfile ? "Mot de passe :" : "Rôle :"}
+                {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
               </Box>
               <Box className="container-infos-2">
-                {isAdminProfile ? (
+                {isCurrentProfile ? (
                   <Button 
                     variant="outlined" 
                     size="small"
@@ -176,7 +176,7 @@ console.log('Available Roles:', availableRoles);
             </Box>
             
             {/* Colonne 4: Icônes */}
-            {!isAdminProfile && (
+            {!isCurrentProfile && (
               <Box sx={{ 
                 display: 'flex',
                 justifyContent: 'flex-end',
@@ -220,7 +220,7 @@ console.log('Available Roles:', availableRoles);
                   placeholder="Nom"
                   className="form-control-sm"
                   style={{ width: '100%', marginBottom: '4px' }}
-                  disabled={isAdminProfile}
+                  disabled={isCurrentProfile}
                 />
                 <input 
                   name="first_name" 
@@ -229,7 +229,7 @@ console.log('Available Roles:', availableRoles);
                   placeholder="Prénom"
                   className="form-control-sm"
                   style={{ width: '100%' }}
-                  disabled={isAdminProfile}
+                  disabled={isCurrentProfile}
                 />
               </Box>
             </Box>
@@ -245,7 +245,7 @@ console.log('Available Roles:', availableRoles);
                   placeholder="Email"
                   className="form-control-sm"
                   style={{ width: '100%' }}
-                  disabled={isAdminProfile}
+                  disabled={isCurrentProfile}
                 />
               </Box>
             </Box>
@@ -390,14 +390,14 @@ console.log('Available Roles:', availableRoles);
             </div>
             <div className="row mb-2">
               <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>
-                {isAdminProfile ? "Mot de passe :" : "Rôle :"}
+                {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
               </div>
               <div className="col-8 container-infos-2" style={{ 
                 backgroundColor: '#F5F2EE', 
                 padding: '8px',
                 color: '#656565'
               }}>
-                {isAdminProfile ? (
+                {isCurrentProfile ? (
                   <Button 
                     variant="outlined" 
                     size="small"
@@ -416,7 +416,7 @@ console.log('Available Roles:', availableRoles);
                 )}
               </div>
             </div>
-            {!isAdminProfile && (
+            {!isCurrentProfile && (
               <div className="d-flex justify-content-end mt-2">
                 <Button 
                   className="me-2" 
