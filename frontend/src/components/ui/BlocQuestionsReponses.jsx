@@ -21,7 +21,7 @@ export default function BlocQuestionsReponses({
   onReponseChange,
   onDateChange,
 }) {
-  const showDatePicker = isDateInput || question === "Si oui, à quelle date ?";
+  const showDatePicker = isDateInput || question === "Quelle est la date de l'évènement ?";
 
   const handleReponseChange = (reponse) => {
     if (onReponseChange) {
@@ -32,11 +32,8 @@ export default function BlocQuestionsReponses({
   const handleDateChange = (newDate) => {
   const formattedDate = newDate ? newDate.format('DD/MM/YYYY') : null;
   
-  console.log('🔍 DEBUG handleDateChange:');
-  console.log('- newDate:', newDate);
-  console.log('- formattedDate:', formattedDate);
 
-  // ✅ SIMPLIFIÉ : Un seul appel, la logique est dans QuestionsScoring
+
   if (onDateChange) {
     onDateChange(formattedDate);
   }

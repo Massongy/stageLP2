@@ -82,7 +82,6 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
         answer = Number(data.reponse);
       }
 
-      console.log('formatDataQuestionnaireForApi - questionId:', questionId, 'answer:', answer, 'date_answer:', dateAnswer);
 
       return {
         answer,
@@ -154,43 +153,21 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 
   try {
-    console.log('questionnaireData avant formatage:', questionnaireData);
     const dataInfoToSend = formatDataInfoForApi(blocInfoData);
     const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);      
    
-    console.log('donnée questionnaire non formatées à envoyer', questionnaireData);
-    console.log('donnée info formatées à envoyer', questionnaireDataToSend);
+    
 
-    // Debug : Vérification des données avant envoi
-    console.log('Données brutes questionnaire:', questionnaireData);
-    console.log('Données formatées questionnaire:', questionnaireDataToSend);
-    console.log('Structure attendue par API:', [
-      {
-        "answer": 0,
-        "questionnaire": 0,
-        "date_answer": "null"
-      }
-    ]);
-
-    // Debug : Vérification des types
-    console.log('Types des données:', {
-      answer: typeof questionnaireDataToSend[0]?.answer,
-      questionnaire: typeof questionnaireDataToSend[0]?.questionnaire,
-      date_answer: typeof questionnaireDataToSend[0]?.date_answer
-    });
+    
 
     // 1. Mise à jour du devis
     await editQuote(selectedQuote.id, dataInfoToSend);
     console.log('Devis mis à jour avec succès');
 
-    // 2. ✅ UN SEUL appel pour les réponses questionnaire
-    console.log('Payload final envoyé:', JSON.stringify(questionnaireDataToSend, null, 2));
     
     const response = await givenAnswers(questionnaireDataToSend);
     
-    console.log('Réponse API:', response);
-    console.log('Type de réponse:', typeof response);
-    console.log('Est-ce un tableau ?', Array.isArray(response));
+   
     
     // ✅ Vérification plus robuste de la réponse
     if (response !== undefined) {

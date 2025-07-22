@@ -4,26 +4,23 @@ import BlocQuestionsReponses from './BlocQuestionsReponses';
 import dayjs from 'dayjs';
 
 export default function QuestionsScoring({ onDataChange, questionsData, reponsesData }) {
-  // Pour chaque question, récupérer ses réponses et dire si c’est une date (id === 4 ici)
+
+
   const questionsReponsesData = questionsData.map(question => {
-    const reponses = reponsesData.filter(reponse => reponse.question === question.id);
+  
+  const reponses = reponsesData.filter(reponse => reponse.question === question.id);
     return {
       ...question,
       reponses,
-      isDateInput: question.id === 4, // adapte selon ton critère pour les dates
+      isDateInput: question.is_date_input
     };
   });
 
   const [answers, setAnswers] = useState({});
 
-  // Trouver l'id de la "réponse date" associée à une question date (ex: dans reponsesData)
+  // Trouver l'id de la "réponse date" associée à la question date 
  const getDateReponseId = (questionId) => {
-  console.log('contenu de reponsesData', reponsesData);
-  const dateReponse = reponsesData.find(r =>
-    r.question === questionId &&
-    r.value === 'Date Input Value'
-  );
-  console.log('🔍 DEBUG getDateReponseId:', dateReponse);
+  const dateReponse = reponsesData.find(r => r.question === questionId);
   return dateReponse ? dateReponse.id : null;
 };
 
@@ -37,10 +34,7 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
 
   // Gérer changement des réponses ou date
   const handleAnswerChange = (questionId, { reponse, date }) => {
-  console.log('🔍 DEBUG handleAnswerChange:');
-  console.log('- questionId:', questionId);
-  console.log('- reponse reçue:', reponse);
-  console.log('- date reçue:', date);
+ 
   
   setAnswers(prev => {
     const oldEntry = prev[questionId] || {};
@@ -50,7 +44,6 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
     if (date !== undefined) {
       // Si on modifie la date, forcer reponse à l'id associée à la date
       const dateReponseId = getDateReponseId(questionId);
-      console.log('- dateReponseId trouvé:', dateReponseId);
       newReponse = dateReponseId;
       newDate = date;
     } else if (reponse !== undefined) {
@@ -64,7 +57,6 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
       date: newDate
     };
     
-    console.log('- Nouvelle entrée pour questionId', questionId, ':', newEntry);
 
     return {
       ...prev,
@@ -87,7 +79,6 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
         selectedReponse={answers[item.id]?.reponse || ''}
         onReponseChange={(reponse) => handleAnswerChange(item.id, { reponse })}
         onDateChange={(date) => {
-          // ✅ CORRECTION : Gérer date + réponse en un seul appel
           if (date) {
             const dateReponseId = getDateReponseId(item.id);
             handleAnswerChange(item.id, { reponse: dateReponseId, date });
