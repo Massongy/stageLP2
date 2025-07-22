@@ -18,6 +18,15 @@ class QuestionLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ['id', 'label']  # or whatever your label field is called
+        
+        
+class QuestionIdSerializerSIResponse(serializers.ModelSerializer):
+    reference_id_SI = serializers.IntegerField(source='idKey', read_only=True)  # Assuming reference_id_SI is the field you want to use
+    
+    class Meta:
+        model = Question
+        fields = ['id', 'reference_id_SI', ]  # Only include the ID field
+        
 
 class ReponseLabelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,7 +39,7 @@ class GivenAnswersInputSerializer(serializers.ModelSerializer):
     date_answer = serializers.DateField(required=False, allow_null=True, format='%Y-%m-%d', input_formats=['%Y-%m-%d'])
     class Meta:
         model = GivenAnswer
-        fields = ['answer', 'questionnaire', 'question', '']
+        fields = ['answer', 'questionnaire', 'question', 'date_answer']
         read_only_fields = ['question']
             
     def get_question(self, obj):

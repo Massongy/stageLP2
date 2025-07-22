@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/users/', include('apps.users.urls')),
     path('api/quotes/', include('apps.quotes.urls')),
     path('api/questionnaire/', include('apps.questionnaire.urls')),
+    path('api/external-api/', include('apps.si_api_client.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

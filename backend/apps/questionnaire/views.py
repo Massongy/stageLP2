@@ -1,12 +1,14 @@
 from rest_framework import viewsets, permissions, status
 from .models import Question, Reponse, Questionnaire, GivenAnswer
-from .serializers import QuestionSerializer, ReponseSerializer, QuestionnaireSerializer, GivenAnswerSerializer, GivenAnswersInputSerializer, QuestionnaireInputSerializer
+from .serializers import QuestionSerializer, ReponseSerializer, QuestionnaireSerializer, GivenAnswerSerializer, GivenAnswersInputSerializer, QuestionnaireInputSerializer, QuestionIdSerializerSIResponse
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.http import Http404
 from rest_framework.decorators import action
-
+from ..si_api_client.request import ExternalAPIDataView
+from .request import QuestionnaireExternalAPIRequest 
+import os
 
 class QuestionnaireViewSet(viewsets.GenericViewSet):
     queryset = Questionnaire.objects.all()
@@ -196,3 +198,111 @@ class GivenAnswerViewSet(viewsets.GenericViewSet,  viewsets.mixins.ListModelMixi
         res_serializer = self.get_serializer(results, many=True)
         return Response(res_serializer.data, status=status.HTTP_201_CREATED)
 
+
+
+class ExchangeWithBackendViewSet(viewsets.GenericViewSet):
+    """
+    Viewset for managing exchange with backend.
+    """
+    permission_classes = [permissions.AllowAny]  # Allow any user to access this viewset
+    serializer_class = None
+
+    @swagger_auto_schema(
+        tags=["exchange with backend"],
+        operation_description="Exchange data with the backend."
+    )
+    
+    def get_queryset(self):
+
+    
+        """
+        Custom method to query questions from the backend.
+        """
+        
+        res = ExternalAPIDataView().get(self.request)
+        print(f'Response obtained in view')
+        return Response(data="Success", status=status.HTTP_200_OK)
+
+      
+    '''
+    def list(self, request, *args, **kwargs):
+        try : 
+            res = ExternalAPIDataView().get(request)
+            return Response({res}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    '''
+    @action(detail=False, methods=["get"], url_path="fetch-token")
+    def  getSIToken(self, request):
+        """
+        Custom action to fetch the token from the external API.
+        """
+        try:
+            token = ExternalAPIDataView().getToken()
+            if token:
+                return Response({"token": token}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Failed to fetch token"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+    @action(detail=False, methods=["get"], url_path="get-questions")
+    def get_questions(self, request):
+        """
+        Custom action to fetch questions from the external API.
+        """
+        try:
+            res = QuestionnaireExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL')).get_questions()
+            print(f'Response obtained in view: {res}')
+            return res  # This will return the Response object from ExternalAPIDataView
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    @action(detail=False, methods=["get"], url_path="get-answers")
+    def get_answers(self, request):
+        """
+        Custom action to fetch questions from the external API.
+        """
+        try:
+            res = QuestionnaireExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL')).get_answers()
+            print(f'Response obtained in view: {res}')
+            return res  # This will return the Response object from ExternalAPIDataView
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+    @action(detail=False, methods=["get"], url_path="get-questionnaire")
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'demandeId',
+                openapi.IN_QUERY,
+                type=openapi.TYPE_INTEGER,
+                description='ID of the demand to fetch the questionnaire for',
+                required=True
+            )
+        ],
+        responses={200: openapi.Response(description="Questionnaire data"), 400: "Bad Request", 500: "Internal Server Error"}
+    )
+    def get_questionnaires(self, request):
+        """
+        Custom action to fetch questionnaires from the external API.
+        Accepts 'demandeId' as a URL query parameter.
+        """
+        demandeId = request.query_params.get('demandeId')
+
+        try:
+            res = QuestionnaireExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL')).fetch_questionnaires(demand_id=demandeId)
+            print(f'Response obtained in view: {res}')
+            if res.status_code == 404:
+                return Response({"error": "No questionnaire found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(res, status=200)  # This will return the Response object from QuestionnaireExternalAPIRequest
+        except Exception as e:
+            print(f"Error fetching questionnaires: {e}")
+            if e.response and e.response.status_code == 404:
+                
+             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
