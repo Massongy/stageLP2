@@ -297,6 +297,12 @@ class ExchangeWithBackendViewSet(viewsets.GenericViewSet):
         try:
             res = QuestionnaireExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL')).fetch_questionnaires(demand_id=demandeId)
             print(f'Response obtained in view: {res}')
+            if res.status_code == 404:
+                return Response({"error": "No questionnaire found"}, status=status.HTTP_404_NOT_FOUND)
             return Response(res, status=200)  # This will return the Response object from QuestionnaireExternalAPIRequest
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(f"Error fetching questionnaires: {e}")
+            if e.response and e.response.status_code == 404:
+                
+             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        

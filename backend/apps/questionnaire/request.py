@@ -33,6 +33,9 @@ class QuestionnaireExternalAPIRequest:
             return response.json()
         except requests.HTTPError as e:
             print(f"HTTP error occurred: {e}")
+            if response.status_code == 404:
+                print("404 status code received, no questionnaire found")
+                return Response({"error": "No questionnaire found"}, status=status.HTTP_404_NOT_FOUND)
             # Handle HTTP errors
             return Response(
                 {"error": str(e)},

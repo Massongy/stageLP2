@@ -39,7 +39,7 @@ class GivenAnswersInputSerializer(serializers.ModelSerializer):
     date_answer = serializers.DateField(required=False, allow_null=True, format='%Y-%m-%d', input_formats=['%Y-%m-%d'])
     class Meta:
         model = GivenAnswer
-        fields = ['answer', 'questionnaire', 'question', '']
+        fields = ['answer', 'questionnaire', 'question', 'date_answer']
         read_only_fields = ['question']
             
     def get_question(self, obj):
