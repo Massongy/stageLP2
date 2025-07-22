@@ -31,26 +31,16 @@ export default function BlocQuestionsReponses({
 
   const handleDateChange = (newDate) => {
   const formattedDate = newDate ? newDate.format('DD/MM/YYYY') : null;
+  
+  console.log('🔍 DEBUG handleDateChange:');
+  console.log('- newDate:', newDate);
+  console.log('- formattedDate:', formattedDate);
 
-  // 1. Envoie la date vers le parent
+  // ✅ SIMPLIFIÉ : Un seul appel, la logique est dans QuestionsScoring
   if (onDateChange) {
-    onDateChange(formattedDate); // 🟦 met à jour questionnaireData[questionId].date
-  }
-
-  // 2. Trouve et envoie l’ID de la réponse associée à la date
-  if (formattedDate && validReponses.length > 0) {
-    const reponseAssociee = validReponses.find(r =>
-      r.value.toLowerCase().includes('date') ||
-      r.value.toLowerCase().includes('oui')
-    );
-
-    if (reponseAssociee && onReponseChange) {
-      onReponseChange(reponseAssociee.id); // 🟦 met à jour questionnaireData[questionId].reponse
-    }
+    onDateChange(formattedDate);
   }
 };
-
-
   // Vérification que reponses est un tableau avant d'utiliser .map()
   const validReponses = Array.isArray(reponses) ? reponses : [];
 

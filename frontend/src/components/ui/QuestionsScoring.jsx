@@ -17,12 +17,17 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
   const [answers, setAnswers] = useState({});
 
   // Trouver l'id de la "réponse date" associée à une question date (ex: dans reponsesData)
-  const getDateReponseId = (questionId) => {
-    const dateReponse = reponsesData.find(r => r.question === questionId && r.value.toLowerCase().includes('date'));
-    
-    
-    return dateReponse ? dateReponse.id : null;
-  };
+ const getDateReponseId = (questionId) => {
+  console.log('contenu de reponsesData', reponsesData);
+  const dateReponse = reponsesData.find(r =>
+    r.question === questionId &&
+    r.value === 'Date Input Value'
+  );
+  console.log('🔍 DEBUG getDateReponseId:', dateReponse);
+  return dateReponse ? dateReponse.id : null;
+};
+
+
 
   useEffect(() => {
     if (onDataChange) {
@@ -32,47 +37,66 @@ export default function QuestionsScoring({ onDataChange, questionsData, reponses
 
   // Gérer changement des réponses ou date
   const handleAnswerChange = (questionId, { reponse, date }) => {
-    setAnswers(prev => {
-      const oldEntry = prev[questionId] || {};
-      let newReponse = oldEntry.reponse;
-      let newDate = oldEntry.date;
+  console.log('🔍 DEBUG handleAnswerChange:');
+  console.log('- questionId:', questionId);
+  console.log('- reponse reçue:', reponse);
+  console.log('- date reçue:', date);
+  
+  setAnswers(prev => {
+    const oldEntry = prev[questionId] || {};
+    let newReponse = oldEntry.reponse;
+    let newDate = oldEntry.date;
 
-      if (date !== undefined) {
-        // Si on modifie la date, forcer reponse à l'id associée à la date
-        const dateReponseId = getDateReponseId(questionId);
-        newReponse = dateReponseId;
-        newDate = date;
-      } else if (reponse !== undefined) {
-        // Si on modifie la réponse classique, mettre la réponse et annuler la date
-        newReponse = reponse;
-        newDate = null;
-      }
+    if (date !== undefined) {
+      // Si on modifie la date, forcer reponse à l'id associée à la date
+      const dateReponseId = getDateReponseId(questionId);
+      console.log('- dateReponseId trouvé:', dateReponseId);
+      newReponse = dateReponseId;
+      newDate = date;
+    } else if (reponse !== undefined) {
+      // Si on modifie la réponse classique, mettre la réponse et annuler la date
+      newReponse = reponse;
+      newDate = null;
+    }
 
-      return {
-        ...prev,
-        [questionId]: {
-          reponse: newReponse,
-          date: newDate
-        }
-      };
-    });
-  };
+    const newEntry = {
+      reponse: newReponse,
+      date: newDate
+    };
+    
+    console.log('- Nouvelle entrée pour questionId', questionId, ':', newEntry);
+
+    return {
+      ...prev,
+      [questionId]: newEntry
+    };
+  });
+};
+
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '90px' }}>
-      {questionsReponsesData.map(item => (
-        <BlocQuestionsReponses
-          key={item.id}
-          question={item.label}
-          reponses={item.reponses}
-          questionId={item.id}
-          isDateInput={item.isDateInput}
-          selectedDate={answers[item.id]?.date ? dayjs(answers[item.id].date, 'DD/MM/YYYY') : null}
-          selectedReponse={answers[item.id]?.reponse || ''}
-          onReponseChange={(reponse) => handleAnswerChange(item.id, { reponse })}
-          onDateChange={(date) => handleAnswerChange(item.id, { date })}
-        />
-      ))}
-    </Box>
-  );
+  <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '90px' }}>
+    {questionsReponsesData.map(item => (
+      <BlocQuestionsReponses
+        key={item.id}
+        question={item.label}
+        reponses={item.reponses}
+        questionId={item.id}
+        isDateInput={item.isDateInput}
+        selectedDate={answers[item.id]?.date ? dayjs(answers[item.id].date, 'DD/MM/YYYY') : null}
+        selectedReponse={answers[item.id]?.reponse || ''}
+        onReponseChange={(reponse) => handleAnswerChange(item.id, { reponse })}
+        onDateChange={(date) => {
+          // ✅ CORRECTION : Gérer date + réponse en un seul appel
+          if (date) {
+            const dateReponseId = getDateReponseId(item.id);
+            handleAnswerChange(item.id, { reponse: dateReponseId, date });
+          } else {
+            handleAnswerChange(item.id, { date });
+          }
+        }}
+      />
+    ))}
+  </Box>
+);
 }

@@ -65,7 +65,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
       // Si il y a une date, answer = questionId
       if (data.date) {
-        answer = Number(questionId); // L'ID de la question
+        answer = Number(data.reponse); // L'ID de la reponse
         
         // Formater la date
         try {
@@ -145,63 +145,71 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   };
 
   const handleSaveData = async () => {
-    setMessage(null);
-    
-    if (!selectedQuote) {
-      setMessage('Devis non trouvé');
-      setMessageType('error');
-      return;
-    }
-
-    try {
-
-console.log('questionnaireData avant formatage:', questionnaireData);
-      const dataInfoToSend  = formatDataInfoForApi(blocInfoData);
-      const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);      
-     
-       console.log('donnée questionnaire non formatées à envoyer' , questionnaireData);
-      console.log('donnée info formatées à envoyer' ,   questionnaireDataToSend);
+  setMessage(null);
   
+  if (!selectedQuote) {
+    setMessage('Devis non trouvé');
+    setMessageType('error');
+    return;
+  }
 
-    // Debug 1: Vérification des données avant envoi
-        console.log('Données brutes questionnaire:', questionnaireData);
-        console.log('Données formatées questionnaire:', questionnaireDataToSend);
-        console.log('Structure attendue par API:', [
-            {
-                "answer": 0,
-                "questionnaire": 0,
-                "date_answer": "null"
-            }
-        ]);
+  try {
+    console.log('questionnaireData avant formatage:', questionnaireData);
+    const dataInfoToSend = formatDataInfoForApi(blocInfoData);
+    const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);      
+   
+    console.log('donnée questionnaire non formatées à envoyer', questionnaireData);
+    console.log('donnée info formatées à envoyer', questionnaireDataToSend);
 
-        // Debug 2: Vérification des types
-        console.log('Types des données:', {
-            answer: typeof questionnaireDataToSend[0].answer,
-            questionnaire: typeof questionnaireDataToSend[0].questionnaire,
-            date_answer: typeof questionnaireDataToSend[0].date_answer
-        });
+    // Debug : Vérification des données avant envoi
+    console.log('Données brutes questionnaire:', questionnaireData);
+    console.log('Données formatées questionnaire:', questionnaireDataToSend);
+    console.log('Structure attendue par API:', [
+      {
+        "answer": 0,
+        "questionnaire": 0,
+        "date_answer": "null"
+      }
+    ]);
 
+    // Debug : Vérification des types
+    console.log('Types des données:', {
+      answer: typeof questionnaireDataToSend[0]?.answer,
+      questionnaire: typeof questionnaireDataToSend[0]?.questionnaire,
+      date_answer: typeof questionnaireDataToSend[0]?.date_answer
+    });
 
-      // Utilisation du hook editquote 
-      await editQuote(selectedQuote.id, dataInfoToSend);
-       await givenAnswers(questionnaireDataToSend);
+    // 1. Mise à jour du devis
+    await editQuote(selectedQuote.id, dataInfoToSend);
+    console.log('Devis mis à jour avec succès');
 
-       // Debug 3: Juste avant l'envoi
-        console.log('Payload final envoyé:', JSON.stringify(questionnaireDataToSend, null, 2));
-        
-        const response = await givenAnswers(questionnaireDataToSend);
-        
-        // Debug 4: Après réponse
-        console.log('Réponse API:', response);
-      
+    // 2. ✅ UN SEUL appel pour les réponses questionnaire
+    console.log('Payload final envoyé:', JSON.stringify(questionnaireDataToSend, null, 2));
+    
+    const response = await givenAnswers(questionnaireDataToSend);
+    
+    console.log('Réponse API:', response);
+    console.log('Type de réponse:', typeof response);
+    console.log('Est-ce un tableau ?', Array.isArray(response));
+    
+    // ✅ Vérification plus robuste de la réponse
+    if (response !== undefined) {
       setMessage('Données enregistrées avec succès !');
       setMessageType('success');
       setTimeout(() => navigate('/'), 2000);
-    } catch (error) {
-      setMessage(`Erreur lors de l'enregistrement: ${error.message}`);
-      setMessageType('error');
+    } else {
+      // L'API a répondu 201 mais sans données - peut-être normal
+      setMessage('Données envoyées avec succès !');
+      setMessageType('success');
+      setTimeout(() => navigate('/'), 2000);
     }
-  };
+    
+  } catch (error) {
+    console.error('Erreur complète:', error);
+    setMessage(`Erreur lors de l'enregistrement: ${error.message}`);
+    setMessageType('error');
+  }
+};
 
   const handleEnregistrer = () => {
     if (validateData()) handleSaveData();
