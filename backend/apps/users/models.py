@@ -61,7 +61,8 @@ class User(AbstractUser, PermissionsMixin):
             ("can_delete_options_admin", "Can delete Options admin"),
             ("can_delete_acceor_admin", "Can delete Acceor admin"), 
             ("can_view_created_users", "Can view created users"),
-            ("can_access_user_manage_page", "Can access user manage page")
+            ("can_edit_users_password", "Can Edit users password"), 
+
         ]
 
     def __str__(self):
