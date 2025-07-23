@@ -76,7 +76,6 @@ const [newUser, setNewUser] = useState({
 }, [token]);
 
 const [currentUserGroup, setCurrentUserGroup] = useState(null);
-console.log("Current User Group:", currentUserGroup);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -192,7 +191,7 @@ console.log("Current User Group:", currentUserGroup);
       updated[name] = value;
     }
     
-    console.log('Updated user:', updated); // Pour débogage
+   
     return updated;
   });
 };
@@ -206,7 +205,7 @@ const saveNewUser = () => {
     created_by: createdBy
   };
   
-  console.log("Data being sent:", dataToSend); // Pour vérification
+
   setPendingData(dataToSend);
   setShowEmailConfirmation(true);
 };
@@ -229,8 +228,7 @@ const datausers = users;
 const activeUsers = datausers.filter(user => user.is_active === true);
 // Vérification des permissions de l'utilisateur courant
 const user = useCurrentUser();
-const hasFullRights = ['add_user', 'change_user', 'delete_user', 'view_user']
-  .every(p => user?.permissions?.includes(p));
+const hasFullRights = []  .every(p => user?.permissions?.includes(p));
     if (!hasFullRights) {
     const myProfile = user ? [{
       email: user.email,

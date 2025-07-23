@@ -32,7 +32,9 @@ export default function BlocQuestionsReponses({
   const handleDateChange = (newDate) => {
   const formattedDate = newDate ? newDate.format('DD/MM/YYYY') : null;
   
-
+  console.log('🔍 DEBUG handleDateChange:');
+  console.log('- newDate:', newDate);
+  console.log('- formattedDate:', formattedDate);
 
   if (onDateChange) {
     onDateChange(formattedDate);

@@ -121,6 +121,8 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState('success');
   const [confirmOpen, setConfirmOpen] = useState(false);
+  // Nouvel état pour la boîte de dialogue d'enregistrement
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
   const handleCommentaireChange = (newValue) => {
     setCommentaire(newValue);
@@ -143,7 +145,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     return true;
   };
 
-  const handleSaveData = async () => {
+  const handleSaveData = async (shouldSend = false) => {
   setMessage(null);
   
   if (!selectedQuote) {
@@ -171,12 +173,23 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     
     // ✅ Vérification plus robuste de la réponse
     if (response !== undefined) {
-      setMessage('Données enregistrées avec succès !');
+      // TODO: Ajouter ici l'appel API pour modifier le statut si shouldSend est true
+      if (shouldSend) {
+        // Futur appel API pour changer le statut du quote
+        console.log('Demande envoyée - statut à modifier');
+        setMessage('Données enregistrées et demande envoyée avec succès !');
+      } else {
+        setMessage('Données enregistrées avec succès !');
+      }
       setMessageType('success');
       setTimeout(() => navigate('/'), 2000);
     } else {
       // L'API a répondu 201 mais sans données - peut-être normal
-      setMessage('Données envoyées avec succès !');
+      if (shouldSend) {
+        setMessage('Données envoyées et demande envoyée avec succès !');
+      } else {
+        setMessage('Données envoyées avec succès !');
+      }
       setMessageType('success');
       setTimeout(() => navigate('/'), 2000);
     }
@@ -188,8 +201,26 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 };
 
+  // Fonction appelée lors du clic sur le bouton Enregistrer
   const handleEnregistrer = () => {
-    if (validateData()) handleSaveData();
+    if (validateData()) {
+      setSaveDialogOpen(true);
+    }
+  };
+
+  // Fonctions pour gérer les choix de la boîte de dialogue d'enregistrement
+  const handleSaveAndSend = () => {
+    setSaveDialogOpen(false);
+    handleSaveData(true); // shouldSend = true
+  };
+
+  const handleSaveAndReturnLater = () => {
+    setSaveDialogOpen(false);
+    handleSaveData(false); // shouldSend = false
+  };
+
+  const handleCancelSave = () => {
+    setSaveDialogOpen(false);
   };
 
   const handleCloseClick = () => {
@@ -308,7 +339,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
         </Row>
       </Container>
 
-      {/* Boîte de dialogue de confirmation */}
+      {/* Boîte de dialogue de confirmation de fermeture */}
       <Dialog open={confirmOpen} onClose={handleCancelClose} className="boite-dialogue">
         <div className="dialog-content">
           <DialogTitle className="dialog-title">
@@ -324,6 +355,40 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
             </Button>
             <Button className=" bouton-annuler"
             onClick={handleCancelClose}>
+              Annuler
+            </Button>
+          </DialogActions>
+        </div>
+      </Dialog>
+
+      {/* Nouvelle boîte de dialogue d'enregistrement */}
+      <Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
+        <div className="dialog-content">
+          <DialogTitle className="dialog-title">
+            Comment souhaitez-vous procéder ?
+          </DialogTitle>
+          <DialogActions className="dialog-actions">
+            <Button 
+              className="bouton-confirmer" 
+              onClick={handleSaveAndSend} 
+              variant="contained"
+              disabled={isLoading}
+            >
+              Enregistrer et envoyer
+            </Button>
+            <Button 
+              className="bouton-confirmer" 
+              onClick={handleSaveAndReturnLater} 
+              variant="contained"
+              disabled={isLoading}
+            >
+              Enregistrer et revenir plus tard
+            </Button>
+            <Button 
+              className="bouton-annuler"
+              onClick={handleCancelSave}
+              disabled={isLoading}
+            >
               Annuler
             </Button>
           </DialogActions>
