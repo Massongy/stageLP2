@@ -31,6 +31,7 @@ class QuoteSerializer(serializers.ModelSerializer):
         validated_data['updated_by'] = self.context['request'].user
         return super().update(instance, validated_data)
     
+
     
     
 class QuoteUserLogSerializer(serializers.ModelSerializer):

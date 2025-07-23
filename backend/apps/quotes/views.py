@@ -15,7 +15,9 @@ from datetime import timedelta
 from django.shortcuts import get_object_or_404
 from .request import QuotesExternalAPIRequest 
 from rest_framework.decorators import action
+from .utils import map_api_to_quote_dict
 import os
+from ..si_api_client.serializers import FetchQuoteserlializer 
 
 
 class QuoteViewSet(mixins.RetrieveModelMixin,  mixins.ListModelMixin,
@@ -211,5 +213,34 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
     def fetch_external_quotes(self, request):
         instance = QuotesExternalAPIRequest(os.getenv('EXTERNAL_API_BASE_URL'))
         res = instance.fetch_quotes()
-        print(f"Response from external API in view: {res}")
-        return res  # Assuming response is a dict with quotes data
+        
+        if res.status_code == 404:
+            return Response({"error": "No quotes found."}, status=status.HTTP_404_NOT_FOUND) 
+        
+        if res.status_code != 200:
+            return Response({"error": "Failed to fetch quotes from external API."}, status=status.HTTP_502_BAD_GATEWAY)
+        
+        saved_quotes = []
+        print(f"Fetched {len(res.data)} quotes from external API.")
+        for item in res.data:
+            mapped_data = map_api_to_quote_dict(item)
+            print(f"Mapped data: {mapped_data}")
+            serializer = FetchQuoteserlializer(data=mapped_data)
+            print(f"Serializer data: {serializer.initial_data}")
+            if serializer.is_valid():
+                print(f"Valid quote data: {serializer.validated_data}")
+                #Check if the quote already exists and update or create
+                if Quote.objects.filter(reference_id_SI=serializer.validated_data['reference_id_SI']).exists():
+                    quote = Quote.objects.get(reference_id_SI=serializer.validated_data['reference_id_SI'])
+                    serializer.update(quote, serializer.validated_data)
+                    print(f"Updated existing quote: {quote.id}")
+                else:
+                    serializer.save()
+                    print(f"Created new quote: {serializer.validated_data['reference_id_SI']}") 
+                
+                saved_quotes.append(serializer.validated_data)
+            else:
+                print("Invalid quote:", serializer.errors)
+                # Optionally: collect errors and return them
+
+        return Response(saved_quotes, status=status.HTTP_201_CREATED)

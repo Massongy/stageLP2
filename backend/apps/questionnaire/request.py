@@ -30,7 +30,7 @@ class QuestionnaireExternalAPIRequest:
             response = requests.get(endpoint, headers=headers, timeout=10)
             response.raise_for_status()
             print(f"Response from external API: {response.content}")
-            return response.json()
+            return Response(response.json(), status=status.HTTP_200_OK)  # Assuming the response is in JSON format
         except requests.HTTPError as e:
             print(f"HTTP error occurred: {e}")
             if response.status_code == 404:
