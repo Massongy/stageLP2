@@ -61,7 +61,7 @@ class User(AbstractUser, PermissionsMixin):
             ("can_delete_options_admin", "Can delete Options admin"),
             ("can_delete_acceor_admin", "Can delete Acceor admin"), 
             ("can_view_created_users", "Can view created users"),
-            ("can_edit_users_password", "Can Edit users password"), 
+            ("can_change_user_data", "Can change user data"), 
 
         ]
 
