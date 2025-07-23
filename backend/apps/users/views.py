@@ -124,6 +124,10 @@ class UserUpdateView(generics.UpdateAPIView):
         return obj
     
     def update(self, request, *args, **kwargs):
+        
+        if not self.request.user.has_perm('users.can_change_user_data') and request.user.id != int(kwargs.get('id')):
+            raise PermissionDenied("You do not have permission to change user data.")
+        
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
