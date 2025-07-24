@@ -9,6 +9,9 @@ import '../../assets/datatable.css';
 
 
 export default function DataTable({data, onPreview, openedRowRef, filterModel, onFilterModelChange }) {
+ console.log('🔍 DEBUG DataTable - données reçues:', data)  ;
+const filteredData = data?.filter(quote => quote.status !== 5) || [];
+  console.log('🔍 DEBUG DataTable - données filtrées:', filteredData);
  
   const theme = useTheme();
   
@@ -16,8 +19,14 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+    
+  const STATUS_MAPPING = {
+  4: 'En cours',
+  6: 'Sans intérêt',
+  7: 'A traiter'
+};
 
-  
+    
   // Colonnes adaptatives selon la taille d'écran
   const columns = React.useMemo(() => {
     const baseColumns = [
@@ -62,8 +71,8 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         hideable: false,
       },
       { 
-        field: 'demande', 
-        headerName: isMobile ? 'Demande' : 'Lien de la demande', 
+        field: 'lastname', 
+        headerName: isMobile ? 'Nom' : 'Nom', 
         headerAlign: 'center', 
         width: isMobile ? 100 : isTablet ? 150 : 200,
         minWidth: isMobile ? 100 : isTablet ? 150 : 200,
@@ -75,11 +84,11 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         hideable: false,
       },
       { 
-        field: 'score', 
-        headerName: 'Score', 
+        field: 'firstname', 
+        headerName: isMobile ? 'Prenom' : 'Prenom', 
         headerAlign: 'center', 
-        width: isMobile ? 60 : 80,
-        minWidth: isMobile ? 60 : 80,
+        width: isMobile ? 100 : isTablet ? 150 : 200,
+        minWidth: isMobile ? 100 : isTablet ? 150 : 200,
         flex: 0,
         align: 'center', 
         sortable: false, 
@@ -87,61 +96,36 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         disableColumnMenu: true,
         hideable: false,
       },
-      {
-        field: 'potential',
-        headerName: 'Potentiel',
-        width: isMobile ? 90 : isTablet ? 120 : 150,
-        minWidth: isMobile ? 90 : isTablet ? 120 : 150,
-        flex: 0,
-        renderHeader: () => (
-          <Box className="th-cell-dropdown">
-            Potentiel
-            <DropdownButton
-              options={[
-                { label: 'Tous', value: '' },
-                { label: 'Chaud', value: 'Chaud' },
-                { label: 'Tiède', value: 'Tiède' },
-                { label: 'Froid', value: 'Froid' },
-              ]}
-              onSelect={(value) => {
-                onFilterModelChange({
-                  items: value
-                    ? [{ id: 1, field: 'potentiel', operator: 'equals', value }]
-                    : [],
-                });
-              }}
-            />
-          </Box>
-        ),
-        sortable: false,
-        filterable: false,
-        disableColumnMenu: true,
-        hideable: false,
-      },
-      {
+      
+      
+     {
         field: 'status',
         headerName: 'Statut',
+        type: 'singleSelect',
+        valueOptions: Object.values(STATUS_MAPPING), // ["En cours", "Sans intérêt", "A traiter"]
         headerAlign: 'center',
+        align: 'center',
         width: isMobile ? 70 : 100,
         minWidth: isMobile ? 70 : 100,
-        flex: 0,
-        align: 'center',
         renderHeader: () => (
           <Box className="th-cell-dropdown">
             Statut
             <DropdownButton
-              options={[
-                { label: 'Répondu', value: 'Répondu' },
-                { label: 'En cours', value: 'En cours' },
-              ]}
+              options={Object.values(STATUS_MAPPING).map(label => ({ label, value: label }))}
+              
             />
           </Box>
         ),
+        renderCell: (params) => {
+          const raw = params.row?.status;
+          const label = STATUS_MAPPING[raw] ?? raw ?? '';
+          return <span>{label}</span>;
+        },
         sortable: false,
-        filterable: false,
+        filterable: true,
         disableColumnMenu: true,
         hideable: false,
-      },
+    },
       // Colonne transférer - maintenant toujours présente
       {
         field: 'transfert',
@@ -220,7 +204,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
       },
     }}>
       <DataGrid
-        rows={data}
+        rows={filteredData}
         columns={columns}
         filterModel={filterModel}
         onFilterModelChange={onFilterModelChange}

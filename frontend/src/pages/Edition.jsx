@@ -204,6 +204,8 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   // Nouvel état pour la boîte de dialogue d'enregistrement
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
 
+  const [confirmSansInteretOpen, setConfirmSansInteretOpen] = useState(false);
+
   const handleCommentaireChange = (newValue) => {
     setCommentaire(newValue);
   };
@@ -234,7 +236,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     return true;
   };
 
-  const handleSaveData = async (shouldSend = false) => {
+  const handleSaveData = async (shouldSend = false, statusToSet = null) => {
   setMessage(null);
   
   if (!selectedQuote) {
@@ -245,22 +247,17 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   try {
     const dataInfoToSend = formatDataInfoForApi(blocInfoData);
-
     const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);     
    
-  
-    // 1. Mise à jour du devis
-    await editQuote(selectedQuote.id, dataInfoToSend);
+    // 1. Mise à jour du devis avec le statut si fourni
+    const updateData = statusToSet ? { ...dataInfoToSend, status: statusToSet } : dataInfoToSend;
+    await editQuote(selectedQuote.id, updateData);
 
     const response = await givenAnswers(questionnaireDataToSend);
     
-    
     // ✅ Vérification plus robuste de la réponse
     if (response !== undefined) {
-      // TODO: Ajouter ici l'appel API pour modifier le statut si shouldSend est true
       if (shouldSend) {
-        // Futur appel API pour changer le statut du quote
-        console.log('Demande envoyée - statut à modifier');
         setMessage('Données enregistrées et demande envoyée avec succès !');
       } else {
         setMessage('Données enregistrées avec succès !');
@@ -268,7 +265,6 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
       setMessageType('success');
       setTimeout(() => navigate('/'), 2000);
     } else {
-      // L'API a répondu 201 mais sans données - peut-être normal
       if (shouldSend) {
         setMessage('Données envoyées et demande envoyée avec succès !');
       } else {
@@ -294,14 +290,14 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   // Fonctions pour gérer les choix de la boîte de dialogue d'enregistrement
   const handleSaveAndSend = () => {
-    setSaveDialogOpen(false);
-    handleSaveData(true); // shouldSend = true
-  };
+  setSaveDialogOpen(false);
+  handleSaveData(true, 5); // shouldSend = true, status = 5 (envoyé)
+};
 
   const handleSaveAndReturnLater = () => {
-    setSaveDialogOpen(false);
-    handleSaveData(false); // shouldSend = false
-  };
+  setSaveDialogOpen(false);
+  handleSaveData(false, 4); // shouldSend = false, status = 4 (en attente)
+};
 
   const handleCancelSave = () => {
     setSaveDialogOpen(false);
@@ -319,6 +315,31 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   const handleCancelClose = () => {
     setConfirmOpen(false);
   };
+
+
+const handleConfirmSansInteret = async () => {
+  setConfirmSansInteretOpen(false); // Ferme la popup
+  
+  if (!selectedQuote) {
+    setMessage('Devis non trouvé');
+    setMessageType('error');
+    return;
+  }
+
+  try {
+    const updatedData = { status: 6 };
+    await editQuote(selectedQuote.id, updatedData);
+
+    setMessage('Demande marquée comme sans intérêt');
+    setMessageType('success');
+    setTimeout(() => navigate('/'), 2000);
+    
+  } catch (error) {
+    console.error('Erreur:', error);
+    setMessage(`Erreur lors de la mise à jour: ${error.message}`);
+    setMessageType('error');
+  }
+};
 
   // Affichage des erreurs de chargement des quotes
   useEffect(() => {
@@ -392,6 +413,16 @@ const formatCustomDate = (dateString) => {
             >
               Fermer
             </Button>
+            <Button
+  variant="contained"
+  className="bouton-editer bouton-fermer-edition"
+  disabled={isLoading}
+  onClick={() => setConfirmSansInteretOpen(true)} // Ouvre la popup au lieu d'envoyer directement
+  style={{ marginLeft: '10px' }}
+>
+  sans intérêt
+</Button>
+
           </Col>
           <Col xs={6} className="d-flex justify-content-center align-items-center">
             <div className="titre1 titre-edition">{`Demande ${reference}`}</div>
@@ -492,6 +523,34 @@ const formatCustomDate = (dateString) => {
           </DialogActions>
         </div>
       </Dialog>
+
+      <Dialog 
+  open={confirmSansInteretOpen} 
+  onClose={() => setConfirmSansInteretOpen(false)}
+  className="boite-dialogue"
+>
+  <DialogTitle>Confirmation</DialogTitle>
+  <DialogContent>
+    <Typography>
+      Êtes-vous sûr de vouloir marquer cette demande comme "sans intérêt" ?
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button 
+      onClick={() => setConfirmSansInteretOpen(false)}
+      className="bouton-annuler"
+    >
+      Annuler
+    </Button>
+    <Button 
+      onClick={handleConfirmSansInteret}
+      className="bouton-confirmer"
+      variant="contained"
+    >
+      Confirmer
+    </Button>
+  </DialogActions>
+</Dialog>
 
       {/* Nouvelle boîte de dialogue d'enregistrement */}
       <Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
