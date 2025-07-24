@@ -4,6 +4,10 @@ import {
   Alert,
   CircularProgress,
   Dialog,
+  DialogContent,
+  List,
+  ListItem,
+  ListItemText,
   DialogTitle,
   DialogActions
 } from '@mui/material';
@@ -20,6 +24,8 @@ import { useEditQuote } from '../hooks/useEditQuote.jsx';
 import { useQuestionnaireQuestions } from '../hooks/useQuestionnaireQuestions.jsx';
 import { useQuestionnaireReponses } from '../hooks/useQuestionnaireReponses.jsx';
 import { usePostGivenAnswers } from '../hooks/usePostGivenAnswers';
+import { useGetQuestionnaireId } from '../hooks/useGetQuestionnaireId.jsx'; // Import du hook pour récupérer le questionnaire
+import dayjs from 'dayjs';
 
 
 export default function Edition() {
@@ -46,11 +52,9 @@ function formatDataInfoForApi(blocInfoData) {
 
 // Fonction pour formater les données questionnaire selon l'API
 
-
-
 function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   const questionnaireId = Number(selectedQuote?.questionnaire?.id) || 0;
-
+  
   return Object.entries(questionnaireData)
     .filter(([_, data]) => {
       // Garder les questions avec une réponse OU une date
@@ -62,27 +66,43 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     .map(([questionId, data]) => {
       let answer;
       let dateAnswer = null;
-
-      // Si il y a une date, answer = questionId
+      
+      // Si il y a une date, c'est une question de type date
       if (data.date) {
-        answer = Number(data.reponse); // L'ID de la reponse
+        answer = Number(data.reponse); // L'ID de la réponse pour cette question date
         
-        // Formater la date
+        // Gérer différents formats de date
         try {
-          const [day, month, year] = data.date.split('/');
-          const isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          let isoDate;
+          
+          // Format dd/mm/yyyy
+          if (data.date.includes('/')) {
+            const [day, month, year] = data.date.split('/');
+            isoDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+          }
+          // Format yyyy-mm-dd (déjà ISO)
+          else if (data.date.includes('-') && data.date.length === 10) {
+            isoDate = data.date;
+          }
+          // Autres formats possibles...
+          else {
+            throw new Error('Format de date non reconnu');
+          }
+          
+          // Vérifier que la date est valide
           if (!isNaN(new Date(isoDate).getTime())) {
             dateAnswer = isoDate;
+          } else {
+            console.warn(`Date invalide: ${data.date}`);
           }
         } catch (e) {
           console.error(`Erreur de traitement de date: ${data.date}`, e);
         }
       } else {
-        // Sinon, answer = ID de la réponse choisie
+        // Question normale (pas de date)
         answer = Number(data.reponse);
       }
-
-
+      
       return {
         answer,
         questionnaire: questionnaireId,
@@ -91,8 +111,30 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     });
 }
 
+// Fonction pour formater les données initiales du questionnaire pour initiliaser questionnaireData
 
-
+  function transformerQuestionnaire(questionnaire, dateQuestionId, reponseDateId) {
+    const resultat = {};
+    
+    // Ajouter l'entrée pour la date
+    resultat[dateQuestionId] = {
+      date: questionnaire.date_prevue,
+      reponse: reponseDateId
+    };
+    
+    // Ajouter les entrées pour chaque given_answer
+    questionnaire.given_answers.forEach(givenAnswer => {
+      const questionId = givenAnswer.question.id;
+      const answerId = givenAnswer.answer.id;
+      
+      resultat[questionId] = {
+        date: null,
+        reponse: answerId
+      };
+    });
+    
+    return resultat;
+  }
   // Récupération des données quotes avec le hook useQuotesQuotes
   const { quotes: tableData, loading: quotesLoading, error: quotesError } = useQuotesQuotes();
   const { reference } = useParams();
@@ -104,11 +146,27 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   // récupération des données questions du questionnaire avec le hook useQuestionnaireQuestions
   const { questions: questionnaireQuestions, loading: questionsLoading, error: questionsError } = useQuestionnaireQuestions();
 
+  //récupération de données infos de la question date du questionnaire
+  const dateInputQuestion = questionnaireQuestions?.find(q => q.is_date_input === true);
+  const dateQuestionId = dateInputQuestion ? dateInputQuestion.id : null;    
   // récupération des données réponses du questionnaire avec le hook usedQuestionnaireRéponses
   const { reponses: questionnaireResponses, loading: responsesLoading, error: responsesError } = useQuestionnaireReponses();
 
+   // recupération des données de la réponse date du questionnaire
+ 
+  const ReponseQuestionDateData = questionnaireResponses.find(r => r.question === dateQuestionId);
+ const reponseDateId= ReponseQuestionDateData ? ReponseQuestionDateData.id : null;
+ 
+
+
   // Utilisation du hook useEditQuote
   const { editQuote, loading: editLoading, error: editError } = useEditQuote();
+
+  //récupération du questionnaire ID avec le hook useGetQuestionnaireId
+  const { questionnaire, loading: questionnaireLoading, error: questionnaireError } = useGetQuestionnaireId(selectedQuote?.id);
+ 
+console.log('Questionnaire récupéré:', questionnaire);
+
 
   // Utilisation du hook usePostGivenAnswers
 
@@ -118,6 +176,19 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   const navigate = useNavigate();
   const [blocInfoData, setBlocInfoData] = useState(null);
   const [questionnaireData, setQuestionnaireData] = useState({});
+ 
+  // Initialisation des données questionnaireData avec les données du questionnaire récupéré (le cas échéant)
+  useEffect(() => {
+  if (questionnaire && questionnaire.given_answers) {
+    const initialQuestionnaireData = transformerQuestionnaire(questionnaire, dateQuestionId, reponseDateId);
+    setQuestionnaireData(initialQuestionnaireData);
+    
+  }
+}, [questionnaire, dateQuestionId, reponseDateId]);
+              console.log('Valeurs initiales de questionnaireData:', questionnaireData);
+
+
+   const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState('success');
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -130,6 +201,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   const handleInfoDatachange = setBlocInfoData;
   const handleQuestionDatachange = setQuestionnaireData;
+  
 
   const validateData = () => {
     if (!blocInfoData || Object.keys(blocInfoData).length === 0) {
@@ -156,20 +228,15 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   try {
     const dataInfoToSend = formatDataInfoForApi(blocInfoData);
-    const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);      
+
+    const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);     
    
-    
-
-    
-
+  
     // 1. Mise à jour du devis
     await editQuote(selectedQuote.id, dataInfoToSend);
-    console.log('Devis mis à jour avec succès');
 
-    
     const response = await givenAnswers(questionnaireDataToSend);
     
-   
     
     // ✅ Vérification plus robuste de la réponse
     if (response !== undefined) {
@@ -245,7 +312,14 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }, [quotesError]);
 
   const isLoading = quotesLoading || editLoading || answersLoading || questionsLoading || responsesLoading;
-
+// pour vérifier les données avant envoi
+  const [questionnaireDataToSend, setQuestionnaireDataToSend] = useState(null);
+  useEffect(() => {
+  if (questionnaireData && selectedQuote) {
+    const data = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);
+    setQuestionnaireDataToSend(data);
+  }
+}, [questionnaireData, selectedQuote]);
   return (
     <>
       <Container fluid style={{ paddingLeft: '10%', paddingRight: '10%' }} className="container-edition">
@@ -364,10 +438,31 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
       {/* Nouvelle boîte de dialogue d'enregistrement */}
       <Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
         <div className="dialog-content">
+
+
+      
+          <DialogTitle>Récapitulatif des modifications</DialogTitle>
+          <DialogContent className="dialog-content">
+                <List>
+                  {questionnaireDataToSend &&
+                  Object.keys(questionnaireData).length > 0 &&
+                  Object.entries(questionnaireData).map(([key, value]) => (
+                    <ListItem key={key} disablePadding>
+                      <ListItemText
+                        primary={key}
+                        secondary={String(value)}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+
+
+           </DialogContent>
           <DialogTitle className="dialog-title">
             Comment souhaitez-vous procéder ?
           </DialogTitle>
           <DialogActions className="dialog-actions">
+            
             <Button 
               className="bouton-confirmer" 
               onClick={handleSaveAndSend} 
