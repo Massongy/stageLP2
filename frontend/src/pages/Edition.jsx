@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import {
   Button,
   Alert,
@@ -9,7 +9,10 @@ import {
   ListItem,
   ListItemText,
   DialogTitle,
-  DialogActions
+  Typography,
+  DialogActions,
+  Grid,
+  Box
 } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import InfoDemande from '../components/ui/InfoDemande.jsx';
@@ -165,7 +168,6 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   //récupération du questionnaire ID avec le hook useGetQuestionnaireId
   const { questionnaire, loading: questionnaireLoading, error: questionnaireError } = useGetQuestionnaireId(selectedQuote?.id);
  
-console.log('Questionnaire récupéré:', questionnaire);
 
 
   // Utilisation du hook usePostGivenAnswers
@@ -175,6 +177,13 @@ console.log('Questionnaire récupéré:', questionnaire);
   const [commentaire, setCommentaire] = useState("");
   const navigate = useNavigate();
   const [blocInfoData, setBlocInfoData] = useState(null);
+  console.log('BlocInfoData initial:', blocInfoData);
+  
+  
+  
+  
+  
+  
   const [questionnaireData, setQuestionnaireData] = useState({});
  
   // Initialisation des données questionnaireData avec les données du questionnaire récupéré (le cas échéant)
@@ -188,7 +197,7 @@ console.log('Questionnaire récupéré:', questionnaire);
               console.log('Valeurs initiales de questionnaireData:', questionnaireData);
 
 
-   const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
+  const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
   const [message, setMessage] = useState(null);
   const [messageType, setMessageType] = useState('success');
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -200,7 +209,15 @@ console.log('Questionnaire récupéré:', questionnaire);
   };
 
   const handleInfoDatachange = setBlocInfoData;
-  const handleQuestionDatachange = setQuestionnaireData;
+  const handleQuestionDataChange = useCallback((newData) => {
+  setQuestionnaireData(prev => {
+    // Vérifie si les données ont vraiment changé
+    const shouldUpdate = Object.keys(newData).some(
+      key => prev[key] !== newData[key]
+    );
+    return shouldUpdate ? { ...prev, ...newData } : prev;
+  });
+}, []);
   
 
   const validateData = () => {
@@ -320,6 +337,47 @@ console.log('Questionnaire récupéré:', questionnaire);
     setQuestionnaireDataToSend(data);
   }
 }, [questionnaireData, selectedQuote]);
+
+// Fonction pour formater les dates personnalisées pour l'affichage
+const formatCustomDate = (dateString) => {
+  try {
+    // Si la date est déjà au format ISO (YYYY-MM-DD)
+    if (dayjs(dateString).isValid()) {
+      return dayjs(dateString).format('DD/MM/YYYY');
+    }
+    
+    // Si la date contient 'T' (format ISO avec time)
+    if (dateString.includes('T')) {
+      return dayjs(dateString.split('T')[0]).format('DD/MM/YYYY');
+    }
+    
+    // Pour les autres formats, essayez de parser manuellement
+    const parts = dateString.split(/[-/]/);
+    if (parts.length === 3) {
+      // Essayez différents ordres jour/mois/année
+      const formatsToTry = [
+        'YYYY-MM-DD',
+        'DD-MM-YYYY', 
+        'MM-DD-YYYY'
+      ];
+      
+      for (const format of formatsToTry) {
+        const date = dayjs(dateString, format);
+        if (date.isValid()) {
+          return date.format('DD/MM/YYYY');
+        }
+      }
+    }
+    
+    // Si tout échoue, retourne la date originale
+    return dateString;
+  } catch (e) {
+    console.error("Erreur de formatage de date:", e);
+    return dateString;
+  }
+};
+
+  // Affichage du composant
   return (
     <>
       <Container fluid style={{ paddingLeft: '10%', paddingRight: '10%' }} className="container-edition">
@@ -367,7 +425,7 @@ console.log('Questionnaire récupéré:', questionnaire);
         <Row className="mb-4">
           <Col xs={12} className="d-flex">
             <div className="d-flex flex-wrap">
-              <QuestionsScoring onDataChange={handleQuestionDatachange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} />
+              <QuestionsScoring onDataChange={handleQuestionDataChange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} />
             </div>
           </Col>
         </Row>
@@ -441,25 +499,87 @@ console.log('Questionnaire récupéré:', questionnaire);
 
 
       
-          <DialogTitle>Récapitulatif des modifications</DialogTitle>
+        
           <DialogContent className="dialog-content">
-                <List>
-                  {questionnaireDataToSend &&
-                  Object.keys(questionnaireData).length > 0 &&
-                  Object.entries(questionnaireData).map(([key, value]) => (
-                    <ListItem key={key} disablePadding>
-                      <ListItemText
-                        primary={key}
-                        secondary={String(value)}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
+         {blocInfoData && (
+    <>
+      <Typography variant="h6" sx={{ 
+        fontWeight: 'bold', 
+        mt: 2, 
+        mb: 2,
+        color: 'primary.main'
+      }}>
+        Informations de la demande
+      </Typography>
+      
+      <Box sx={{
+        p: 2,
+        mb: 3,
+        borderRadius: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+        border: '1px solid rgba(0, 0, 0, 0.12)'
+      }}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Typography variant="body2"><strong>Référence:</strong> {blocInfoData.Référence}</Typography>
+            <Typography variant="body2"><strong>Nom:</strong> {blocInfoData.Nom}</Typography>
+            <Typography variant="body2"><strong>Prénom:</strong> {blocInfoData.Prénom}</Typography>
+            <Typography variant="body2"><strong>Téléphone:</strong> {blocInfoData["Numéro de téléphone"]}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2"><strong>Email:</strong> {blocInfoData.Email}</Typography>
+            <Typography variant="body2"><strong>Semaine N°:</strong> {blocInfoData["Semaine N°"]}</Typography>
+            <Typography variant="body2"><strong>Nombre d'appels:</strong> {blocInfoData["Nombre d'appels"]}</Typography>
+            <Typography variant="body2"><strong>1er appel:</strong> {dayjs(blocInfoData["Date du 1er appel"]).format('DD/MM/YYYY')}</Typography>
+            <Typography variant="body2"><strong>Dernier appel:</strong> {dayjs(blocInfoData["Date du dernier appel"]).format('DD/MM/YYYY')}</Typography>
+          </Grid>
+        </Grid>
+      </Box>
+    </>
+  )}
+         
+  <List>
+    {questionnaireData && Object.entries(questionnaireData).map(([questionId, answerData]) => {
+      // Trouver la question complète
+      const question = questionnaireQuestions.find(q => q.id === Number(questionId));
+      
+      // Trouver la réponse complète
+      const response = questionnaireResponses.find(r => r.id === Number(answerData.reponse));
 
-
-           </DialogContent>
+      return (
+        <ListItem key={questionId} disablePadding sx={{ 
+          py: 1.5,
+          borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
+        }}>
+          <ListItemText
+           primary={
+    <Typography component="div" variant="subtitle1" fontWeight="bold">
+      {question?.label || `Question ${questionId}`}
+    </Typography>
+  }
+  secondary={
+    <Box component="div" sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+      {answerData.date ? (
+        <>
+          <Typography component="span" variant="body2">
+            {formatCustomDate(answerData.date)}
+          </Typography>
+        </>
+      ) : (
+        <Typography component="span" variant="body2">
+          {response?.text || response?.value || answerData.reponse}
+        </Typography>
+      )}
+    </Box>
+  }
+/>
+        </ListItem>
+      );
+    })}
+  </List>
+</DialogContent>
           <DialogTitle className="dialog-title">
-            Comment souhaitez-vous procéder ?
+            Que souhaitez-vous faire ?
           </DialogTitle>
           <DialogActions className="dialog-actions">
             
