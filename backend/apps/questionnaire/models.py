@@ -9,7 +9,8 @@ class Questionnaire(models.Model):
     score = models.IntegerField(default=0)
     potential = models.CharField(blank=True, null=True, max_length=100) 
     opName = models.CharField(max_length=255, blank=True, null=True)   
-    date_prevue = models.DateField(blank=True, null=True)  
+    date_prevue = models.DateField(blank=True, null=True)
+    reference_id_SI = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Questionnaire for {self.quote}"

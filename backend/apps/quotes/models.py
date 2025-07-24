@@ -35,7 +35,7 @@ class Quote(models.Model):
 
 
 class Comment(models.Model):
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name='comments')
+    quote = models.OneToOneField(Quote, on_delete=models.CASCADE, related_name='comment', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

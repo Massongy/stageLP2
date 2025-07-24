@@ -7,7 +7,10 @@ from drf_yasg import openapi
 from django.http import Http404
 from rest_framework.decorators import action
 from ..si_api_client.request import ExternalAPIDataView
+from ..si_api_client.serializers import FetchQuestionnairesSerializer
 from .request import QuestionnaireExternalAPIRequest 
+from .utils import map_api_to_questionnaire_dict
+from ..quotes.models import Quote
 import os
 
 class QuestionnaireViewSet(viewsets.GenericViewSet):
@@ -287,7 +290,7 @@ class ExchangeWithBackendViewSet(viewsets.GenericViewSet):
         ],
         responses={200: openapi.Response(description="Questionnaire data"), 400: "Bad Request", 500: "Internal Server Error"}
     )
-    def get_questionnaires(self, request):
+    def get_questionnaire(self, request):
         """
         Custom action to fetch questionnaires from the external API.
         Accepts 'demandeId' as a URL query parameter.
@@ -299,10 +302,37 @@ class ExchangeWithBackendViewSet(viewsets.GenericViewSet):
             print(f'Response obtained in view: {res}')
             if res.status_code == 404:
                 return Response({"error": "No questionnaire found"}, status=status.HTTP_404_NOT_FOUND)
-            return Response(res, status=200)  # This will return the Response object from QuestionnaireExternalAPIRequest
+            if res.status_code != 200: 
+                return Response({"error": "Failed to fetch questionnaires"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            print(f"Questionnaire fetched successfully: {res.data}")
+            
+            maped_data = map_api_to_questionnaire_dict(res.data)
+            serializer = FetchQuestionnairesSerializer(data=maped_data)
+            print (f"Serializer data: {serializer.initial_data}")
+            if serializer.is_valid():
+                print(f"Valid questionnaire data: {serializer.validated_data}")
+                existing_quote = Quote.objects.filter(reference_id_SI=serializer.validated_data['quote']).first()
+                if not existing_quote:
+                    return Response({"error": "Quote not found for the given ID"}, status=status.HTTP_404_NOT_FOUND)
+                
+                serializer.validated_data['quote'] = existing_quote
+                
+                
+                existing_questionnaire = Questionnaire.objects.filter(quote=existing_quote).first()
+                if existing_questionnaire:
+                    print(f"UpdatING existing questionnaire: {existing_questionnaire.id}")
+                    serializer.update(existing_questionnaire, serializer.validated_data)
+                else: 
+                    print(f"Creating new questionnaire: {serializer.validated_data['reference_id_SI']}")
+                    serializer.save()
+            else:
+                print("Invalid questionnaire data:", serializer.errors)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            return Response(res.data, status=200)  # This will return the Response object from QuestionnaireExternalAPIRequest
         except Exception as e:
             print(f"Error fetching questionnaires: {e}")
-            if e.response and e.response.status_code == 404:
-                
-             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         
