@@ -17,9 +17,10 @@ from .request import QuotesExternalAPIRequest
 from rest_framework.decorators import action
 from .utils import map_api_to_quote_dict
 import os
-from ..si_api_client.serializers import FetchQuoteserlializer, FetchQuestionnairesSerializer
-from ..questionnaire.models import Questionnaire
+from ..si_api_client.serializers import FetchQuoteserlializer, FetchQuestionnairesSerializer, FetchGivenAnswerSerializer
+from ..questionnaire.models import Questionnaire, Question, Reponse, GivenAnswer
 from ..questionnaire.utils import map_api_to_questionnaire_dict
+from ..questionnaire.utils import map_api_to_given_answer_dict
 
 
 class QuoteViewSet(mixins.RetrieveModelMixin,  mixins.ListModelMixin,
@@ -226,14 +227,13 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
         print(f"Fetched {len(res.data)} quotes from external API.")
         for item in res.data:
             #print("Full response item:", item)
-            
-            
+                       
             mapped_data = map_api_to_quote_dict(item)
-            print(f"Mapped data: {mapped_data}")
+          
             serializer = FetchQuoteserlializer(data=mapped_data)
-            print(f"Serializer data: {serializer.initial_data}")
+         
             if serializer.is_valid():
-                print(f"Valid quote data: {serializer.validated_data}")
+               
                 #Check if the quote already exists and update or create
                 if Quote.objects.filter(reference_id_SI=serializer.validated_data['reference_id_SI']).exists():
                     quote = Quote.objects.get(reference_id_SI=serializer.validated_data['reference_id_SI'])
@@ -249,9 +249,9 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                     print("Questionnaire data found, processing...")
                     questionnaire_mapped_data = map_api_to_questionnaire_dict(item['questionnaire'])
                     serializer = FetchQuestionnairesSerializer(data=questionnaire_mapped_data)
-                    print(f"Questionnaire serializer data: {serializer.initial_data}")
+                  
                     if serializer.is_valid():
-                        print(f"Valid questionnaire data: {serializer.validated_data}")
+                    
                         existing_quote = Quote.objects.filter(reference_id_SI=serializer.validated_data['quote']).first()
                         if not existing_quote:
                             return Response({"error": "Quote not found for the returned questionnaire"}, status=status.HTTP_404_NOT_FOUND)
@@ -265,8 +265,47 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                         else: 
                             print(f"Creating new questionnaire: {serializer.validated_data['reference_id_SI']}")
                             serializer.save()
-                    
+                            
                 
+                    #TODO Update given answers on the questionnaire
+                    for answer in item['questionnaire']['questionsReponsesList']:
+                        print("Processing answer:", answer)
+                        
+                        if not answer['reponsePossibleId']:
+                            print("No responsePossibleId found in answer, skipping...")
+                            continue
+                        
+                        given_answer_mapped_data = map_api_to_given_answer_dict(answer)
+                        print(f"Given answer mapped data: {given_answer_mapped_data}")
+                        serializer = FetchGivenAnswerSerializer(data=given_answer_mapped_data)
+                        print(f"Given answer serializer data: {serializer.initial_data}")
+                        if serializer.is_valid():
+                            print('Retrieving answer ...')
+                            answer  = get_object_or_404(Reponse, reference_id_SI=given_answer_mapped_data['answer'])
+                            print('Retrieving question ...')
+                            
+                            question = get_object_or_404(Question, id=answer.question.id) 
+                            print('Retrieving questionnaire ...')
+                            
+                            questionnaire = get_object_or_404(Questionnaire, quote=existing_quote)
+                            serializer.validated_data['question'] = question
+                            serializer.validated_data['answer'] = answer
+                            serializer.validated_data['questionnaire'] = questionnaire
+                            print(f"Creating GivenAnswer for quote {existing_quote.id}")  
+                           
+                           
+                            # Check if the answer already exists
+                            if GivenAnswer.objects.filter(questionnaire=questionnaire, question=question).exists():
+                                given_answer = GivenAnswer.objects.get(questionnaire=questionnaire, question=question)
+                                serializer.update(given_answer, serializer.validated_data)
+                                print(f"Updated existing given answer: {given_answer.id}")
+                            else:
+                                serializer.save()
+                                print(f"Created new given answer: {serializer.validated_data['answer']}")
+                        else : 
+                            print("Invalid given answer:", serializer.errors)
+                        
+                               
             else:
                 print("Invalid quote:", serializer.errors)
                 # Optionally: collect errors and return them

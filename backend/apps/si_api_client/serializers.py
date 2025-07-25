@@ -2,7 +2,7 @@ from rest_framework import serializers
 from ..questionnaire.models import Questionnaire, Quote
 from ..questionnaire.serializers import QuestionnaireIdSerializer
 from ..quotes.serializers import CommentLabelSerializer
-
+from ..questionnaire.models import GivenAnswer
 
 
 
@@ -40,3 +40,14 @@ class FetchQuoteserlializer(serializers.ModelSerializer):
         
     
      
+class FetchGivenAnswerSerializer(serializers.ModelSerializer):
+    """
+    Serializer for fetching given answers.
+    """
+    answer = serializers.IntegerField(required=True, help_text="ID of the answer.")
+
+    class Meta:
+        model = GivenAnswer
+        fields = '__all__'  # Specify the fields you want to include
+        
+   
