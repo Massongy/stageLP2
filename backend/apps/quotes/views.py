@@ -269,29 +269,27 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                 
                     #TODO Update given answers on the questionnaire
                     for answer in item['questionnaire']['questionsReponsesList']:
-                        print("Processing answer:", answer)
+                        
                         
                         if not answer['reponsePossibleId']:
-                            print("No responsePossibleId found in answer, skipping...")
+                           
                             continue
                         
                         given_answer_mapped_data = map_api_to_given_answer_dict(answer)
-                        print(f"Given answer mapped data: {given_answer_mapped_data}")
+                       
                         serializer = FetchGivenAnswerSerializer(data=given_answer_mapped_data)
-                        print(f"Given answer serializer data: {serializer.initial_data}")
+                     
                         if serializer.is_valid():
-                            print('Retrieving answer ...')
+                          
                             answer  = get_object_or_404(Reponse, reference_id_SI=given_answer_mapped_data['answer'])
-                            print('Retrieving question ...')
-                            
                             question = get_object_or_404(Question, id=answer.question.id) 
-                            print('Retrieving questionnaire ...')
+                            
                             
                             questionnaire = get_object_or_404(Questionnaire, quote=existing_quote)
                             serializer.validated_data['question'] = question
                             serializer.validated_data['answer'] = answer
                             serializer.validated_data['questionnaire'] = questionnaire
-                            print(f"Creating GivenAnswer for quote {existing_quote.id}")  
+                           
                            
                            
                             # Check if the answer already exists
@@ -301,7 +299,7 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                                 print(f"Updated existing given answer: {given_answer.id}")
                             else:
                                 serializer.save()
-                                print(f"Created new given answer: {serializer.validated_data['answer']}")
+                                print(f"Created new given answer for quote {existing_quote.id}: {serializer.validated_data['answer']}")
                         else : 
                             print("Invalid given answer:", serializer.errors)
                         
