@@ -19,4 +19,5 @@ def map_api_to_quote_dict(api_data):
             "idEtablissement": api_data.get("idEtablissement"),
             "order_id": api_data.get("orderId"),  # Default to empty string if not present
             "reference": api_data.get("referenceDemande"),
+            "questionnaire": api_data.get("questionnaire"),
         }

@@ -10,3 +10,14 @@ def map_api_to_questionnaire_dict(response_data):
         "updated_at": response_data.get("idGrillePotentiel"),
         "questions": response_data.get("questionsReponsesList", []),  # Assuming questions is a list
     }
+    
+
+
+def map_api_to_given_answer_dict(response_data):
+    """
+    Convert a single API record to GivenAnswer serializer-compatible dictionary.
+    """
+    return {
+        "IdAnswer": response_data.get("questionId"),
+        "givenAnswer": response_data.get("reponsePossibleId"),
+    }

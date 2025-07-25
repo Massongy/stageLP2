@@ -17,7 +17,9 @@ from .request import QuotesExternalAPIRequest
 from rest_framework.decorators import action
 from .utils import map_api_to_quote_dict
 import os
-from ..si_api_client.serializers import FetchQuoteserlializer 
+from ..si_api_client.serializers import FetchQuoteserlializer, FetchQuestionnairesSerializer
+from ..questionnaire.models import Questionnaire
+from ..questionnaire.utils import map_api_to_questionnaire_dict
 
 
 class QuoteViewSet(mixins.RetrieveModelMixin,  mixins.ListModelMixin,
@@ -223,6 +225,9 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
         saved_quotes = []
         print(f"Fetched {len(res.data)} quotes from external API.")
         for item in res.data:
+            #print("Full response item:", item)
+            
+            
             mapped_data = map_api_to_quote_dict(item)
             print(f"Mapped data: {mapped_data}")
             serializer = FetchQuoteserlializer(data=mapped_data)
@@ -239,6 +244,29 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                     print(f"Created new quote: {serializer.validated_data['reference_id_SI']}") 
                 
                 saved_quotes.append(serializer.validated_data)
+                
+                if item['questionnaire']:
+                    print("Questionnaire data found, processing...")
+                    questionnaire_mapped_data = map_api_to_questionnaire_dict(item['questionnaire'])
+                    serializer = FetchQuestionnairesSerializer(data=questionnaire_mapped_data)
+                    print(f"Questionnaire serializer data: {serializer.initial_data}")
+                    if serializer.is_valid():
+                        print(f"Valid questionnaire data: {serializer.validated_data}")
+                        existing_quote = Quote.objects.filter(reference_id_SI=serializer.validated_data['quote']).first()
+                        if not existing_quote:
+                            return Response({"error": "Quote not found for the returned questionnaire"}, status=status.HTTP_404_NOT_FOUND)
+                        serializer.validated_data['quote'] = existing_quote
+                
+                        existing_questionnaire = Questionnaire.objects.filter(quote=existing_quote).first()
+                    
+                        if existing_questionnaire:
+                            print(f"UpdatING existing questionnaire from fetch-quotes: {existing_questionnaire.id}")
+                            serializer.update(existing_questionnaire, serializer.validated_data)
+                        else: 
+                            print(f"Creating new questionnaire: {serializer.validated_data['reference_id_SI']}")
+                            serializer.save()
+                    
+                
             else:
                 print("Invalid quote:", serializer.errors)
                 # Optionally: collect errors and return them
