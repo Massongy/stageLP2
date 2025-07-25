@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import  '../../assets/previewtabs.css'
+import EditButton from './EditButton.jsx';
 import FicheClient from './FicheClient.jsx'; 
 
-export default function PreviewTabs({ openedRowRef }) {
+export default function PreviewTabs({ openedRowRef, quoteId }) {
+  
+  
   const [activeTab, setActiveTab] = useState(0);
+
+  
 
   if (!openedRowRef) {
     return (
@@ -26,12 +30,9 @@ export default function PreviewTabs({ openedRowRef }) {
 
   return (
     <Box className = "preview-selected">
-        <Button component={Link}
-          to={`/edition/${openedRowRef}`}
-          variant="contained"
-          className="bouton-editer"
-          > éditer</Button>
-        {/*ici il faut récupérer les infos du client et les passer dans les props de FicheClient */}
+        <EditButton openedRowRef={openedRowRef}  quoteId={quoteId} />
+         
+       
         <FicheClient reference={openedRowRef} className="fiche-info"/>
     </Box>
   );

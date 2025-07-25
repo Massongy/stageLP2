@@ -16,7 +16,12 @@ export default function Dashboard() {
 
   const { quotes:tableData, loading, error } = useQuotesQuotes();
  
-
+const quoteId = tableData?.find(quote => 
+    quote.reference_id_SI === openedRowRef || 
+    quote.reference_id_SI?.toString() === openedRowRef
+  )?.id || null;
+  
+  
   const handlePreview = (row) => {
     const reference = row.reference_id_SI;
     setSelectedReference(reference);
@@ -58,7 +63,7 @@ export default function Dashboard() {
                 borderRadius: 1,
               }
             }}>
-              <PreviewTabs openedRowRef={openedRowRef} />
+              <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} />
             </Box>
           </div>
         </div>

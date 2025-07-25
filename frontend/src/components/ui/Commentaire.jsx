@@ -24,7 +24,7 @@ export default function Commentaire({value, onChange, editable = true}) {
           />
         ) : (
           <TextField className="texte2 champ champ-commentaire"
-             value={value || "coucou"}>
+             value={value || ""}>
          </TextField>
         )}
     </Box>

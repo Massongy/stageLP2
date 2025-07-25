@@ -27,14 +27,15 @@ import { useEditQuote } from '../hooks/useEditQuote.jsx';
 import { useQuestionnaireQuestions } from '../hooks/useQuestionnaireQuestions.jsx';
 import { useQuestionnaireReponses } from '../hooks/useQuestionnaireReponses.jsx';
 import { usePostGivenAnswers } from '../hooks/usePostGivenAnswers';
-import { useGetQuestionnaireId } from '../hooks/useGetQuestionnaireId.jsx'; // Import du hook pour récupérer le questionnaire
+import { useGetQuestionnaireId } from '../hooks/useGetQuestionnaireId.jsx'; 
+import { useUnlockQuote } from '../hooks/useUnlockQuote';
 import dayjs from 'dayjs';
 
 
 export default function Edition() {
 
   // Fonction pour formater les données info demande selon l'API
-function formatDataInfoForApi(blocInfoData) {
+function formatDataInfoForApi(blocInfoData, commentaire) {
   return {
     order_id: blocInfoData.order_id,                    
     reference: blocInfoData.reference,
@@ -48,7 +49,8 @@ function formatDataInfoForApi(blocInfoData) {
     date_last_call: blocInfoData["Date du dernier appel"],
     idEtablissement: blocInfoData.idEtablissement,      
     reference_id_SI: parseInt(blocInfoData.Référence),
-    status: parseInt(blocInfoData.status)               
+    status: parseInt(blocInfoData.status),
+    comment: commentaire || ""               
   };
 
 }
@@ -174,16 +176,12 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   const { givenAnswers, loading: answersLoading, error: answersError } = usePostGivenAnswers();
 
-  const [commentaire, setCommentaire] = useState("");
+  // Hook pour déverrouiller le devis
+  const { unlockQuote, loading: unlockLoading, error: unlockError, isUnlocked, reset: resetUnlock } = useUnlockQuote();
+
   const navigate = useNavigate();
   const [blocInfoData, setBlocInfoData] = useState(null);
-  console.log('BlocInfoData initial:', blocInfoData);
-  
-  
-  
-  
-  
-  
+
   const [questionnaireData, setQuestionnaireData] = useState({});
  
   // Initialisation des données questionnaireData avec les données du questionnaire récupéré (le cas échéant)
@@ -196,6 +194,14 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 }, [questionnaire, dateQuestionId, reponseDateId]);
               console.log('Valeurs initiales de questionnaireData:', questionnaireData);
 
+  const [commentaire, setCommentaire] = useState("");
+ useEffect(() => {
+  if (selectedQuote && selectedQuote.comment) {
+    setCommentaire(selectedQuote.comment);
+  }
+}, [selectedQuote]);
+
+console.log('Valeur initiale du commentaire:', commentaire);
 
   const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
   const [message, setMessage] = useState(null);
@@ -246,7 +252,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 
   try {
-    const dataInfoToSend = formatDataInfoForApi(blocInfoData);
+    const dataInfoToSend = formatDataInfoForApi(blocInfoData, commentaire);
     const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);     
    
     // 1. Mise à jour du devis avec le statut si fourni
@@ -289,14 +295,16 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   };
 
   // Fonctions pour gérer les choix de la boîte de dialogue d'enregistrement
-  const handleSaveAndSend = () => {
+  const handleSaveAndSend = async () => {
   setSaveDialogOpen(false);
-  handleSaveData(true, 5); // shouldSend = true, status = 5 (envoyé)
+  handleSaveData(true, 5);
+  await unlockQuote(selectedQuote.id); // shouldSend = true, status = 5 (envoyé)
 };
 
-  const handleSaveAndReturnLater = () => {
+  const handleSaveAndReturnLater =async () => {
   setSaveDialogOpen(false);
-  handleSaveData(false, 4); // shouldSend = false, status = 4 (en attente)
+  handleSaveData(false, 4); 
+  await unlockQuote(selectedQuote.id);// shouldSend = false, status = 4 (en attente)
 };
 
   const handleCancelSave = () => {
@@ -307,9 +315,10 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     setConfirmOpen(true);
   };
 
-  const handleConfirmClose = () => {
+  const handleConfirmClose = async () => {
     setConfirmOpen(false);
     navigate('/');
+    await unlockQuote(selectedQuote.id);
   };
 
   const handleCancelClose = () => {
@@ -329,6 +338,7 @@ const handleConfirmSansInteret = async () => {
   try {
     const updatedData = { status: 6 };
     await editQuote(selectedQuote.id, updatedData);
+    await unlockQuote(selectedQuote.id);
 
     setMessage('Demande marquée comme sans intérêt');
     setMessageType('success');
@@ -636,6 +646,7 @@ const formatCustomDate = (dateString) => {
       );
     })}
   </List>
+  
 </DialogContent>
           <DialogTitle className="dialog-title">
             Que souhaitez-vous faire ?
@@ -648,7 +659,7 @@ const formatCustomDate = (dateString) => {
               variant="contained"
               disabled={isLoading}
             >
-              Enregistrer et envoyer
+              Enregistrer et clôturer
             </Button>
             <Button 
               className="bouton-confirmer" 

@@ -122,18 +122,13 @@ export default function FicheClient({reference}) {
       </Box>
 
 
-
-
-
-
-                
         <Box>
-        <Commentaire className="champ" value="" 
-  onChange={() => {}} editable = {false}/>
-     </Box>
-        </CardContent>
-      <CardActions />
-    </Card>
+                <Commentaire className="champ" value={selectedQuote?.comment || " "} 
+                    onChange={() => {}} editable = {false}/>
+            </Box>
+                </CardContent>
+              <CardActions />
+            </Card>
   );
 }
 
