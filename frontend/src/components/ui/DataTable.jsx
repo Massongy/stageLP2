@@ -2,28 +2,58 @@ import React, { useState, useEffect } from 'react';
 import { Box, useTheme, useMediaQuery } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Alert, Snackbar } from '@mui/material';
 import { faUnlock, faArrowUpRightFromSquare, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import DropdownButton from './DropdownButton';
 import PreviewButtonCell from './PreviewButtonCell';
+import ConfirmTransferIcon from './ConfirmTransferIcone';
+import { useEditQuote } from '../../hooks/useEditQuote';
 import '../../assets/datatable.css';
 
 
 export default function DataTable({data, onPreview, openedRowRef, filterModel, onFilterModelChange }) {
- console.log('🔍 DEBUG DataTable - données reçues:', data)  ;
 const filteredData = data?.filter(quote => quote.status !== 5) || [];
-  console.log('🔍 DEBUG DataTable - données filtrées:', filteredData);
- 
+
+
+
+const { editQuote } = useEditQuote(); 
   const theme = useTheme();
   
   // Breakpoints responsives
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [message, setMessage] = useState(null);
     
+const [messageType, setMessageType] = useState('success');
   const STATUS_MAPPING = {
   4: 'En cours',
   6: 'Sans intérêt',
   7: 'A traiter'
+};
+useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage(null);
+      }, 3000); // L'alerte disparaît après 3 secondes
+
+      return () => clearTimeout(timer); // Nettoyage du timer lors du démontage du composant
+    }
+  }, [message]);
+const handleTransfer = async (quoteId) => {
+  try {
+    await editQuote(quoteId, { status: 5 });
+    setMessage('Transfert effectué avec succès');
+    setMessageType('success');
+    setOpenSnackbar(true);
+    window.location.reload(); // Rechargement complet de la page
+  } catch (error) {
+    setMessage(`Erreur lors du transfert : ${error.message}`);
+    setMessageType('error');
+    setOpenSnackbar(true);
+  }
 };
 
     
@@ -135,11 +165,10 @@ const filteredData = data?.filter(quote => quote.status !== 5) || [];
         minWidth: isMobile ? 70 : isTablet ? 80 : 120,
         flex: 0,
         align: 'center',
-        renderCell: () => (
-          <FontAwesomeIcon
-            icon={faArrowUpRightFromSquare}
-            style={{ cursor: 'pointer' }}
-            className="icone-datatable"
+        renderCell: (params) => (
+          <ConfirmTransferIcon
+            row={params.row}
+            onConfirm={(id) => handleTransfer(id)}
           />
         ),
         sortable: false,
@@ -170,73 +199,79 @@ const filteredData = data?.filter(quote => quote.status !== 5) || [];
   }, [onPreview, openedRowRef, onFilterModelChange, isMobile, isTablet]);
 
   return (
-    <Box sx={{ 
-      display: 'flex',
-      width: '100%', 
-      height: 400,
-      overflow: 'hidden',
-      '& .MuiDataGrid-root': {
-        border: 'none',
-        width: '100%',
+
+<>
+  <Snackbar
+    open={openSnackbar}
+    autoHideDuration={3000} // Durée d'affichage de 3 secondes
+    onClose={() => setOpenSnackbar(false)}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+  >
+    <Alert
+      onClose={() => setOpenSnackbar(false)}
+      severity={messageType}
+      sx={{ width: '100%' }}
+    >
+      {message}
+    </Alert>
+  </Snackbar>
+
+  <Box sx={{ 
+    display: 'flex',
+    width: '100%', 
+    height: 400,
+    overflow: 'hidden',
+    '& .MuiDataGrid-root': {
+      border: 'none',
+      width: '100%',
+    },
+    '& .MuiDataGrid-cell': {
+      borderBottom: 'none',
+    },
+    '& .MuiDataGrid-columnHeaders': {
+      backgroundColor: theme.palette.grey[50],
+      borderBottom: 'none',
+    },
+    '& .MuiDataGrid-virtualScroller': {
+      backgroundColor: theme.palette.grey[50],
+    },
+    '& .MuiDataGrid-footerContainer': {
+      borderTop: 'none',
+      backgroundColor: theme.palette.grey[50],
+    },
+    [theme.breakpoints.down('sm')]: {
+      '& .MuiDataGrid-columnHeader': {
+        fontSize: '0.75rem',
       },
       '& .MuiDataGrid-cell': {
-        borderBottom: 'none',
+        fontSize: '0.75rem',
       },
-      '& .MuiDataGrid-columnHeaders': {
-        backgroundColor: theme.palette.grey[50],
-        borderBottom: 'none',
-      },
-      '& .MuiDataGrid-virtualScroller': {
-        backgroundColor: theme.palette.grey[50],
-      },
-      '& .MuiDataGrid-footerContainer': {
-        borderTop: 'none',
-        backgroundColor: theme.palette.grey[50],
-      },
-      // Responsive adjustments
-      [theme.breakpoints.down('sm')]: {
-        '& .MuiDataGrid-columnHeader': {
-          fontSize: '0.75rem',
-        },
-        '& .MuiDataGrid-cell': {
-          fontSize: '0.75rem',
-        },
-      },
-    }}>
-      <DataGrid
-        rows={filteredData}
-        columns={columns}
-        filterModel={filterModel}
-        onFilterModelChange={onFilterModelChange}
-        pageSize={isMobile ? 3 : isTablet ? 5 : 10}
-        rowsPerPageOptions={isMobile ? [3, 5] : isTablet ? [5, 10] : [5, 10, 25]}
-        disableRowSelectionOnClick
-        className="datatable"
-        sx={{
-          width: '100%',
-          // Hauteur adaptative
-          height: isMobile ? 300 : isTablet ? 350 : 400,
-          // Activation du défilement horizontal
-          '& .MuiDataGrid-main': {
-            overflow: 'visible',
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            overflowX: 'auto',
-            overflowY: 'auto',
-          },
-          // Permettre aux colonnes de déborder pour activer le scroll horizontal
-          '& .MuiDataGrid-columnHeaders': {
-            minWidth: 'max-content',
-          },
-          '& .MuiDataGrid-row': {
-            minWidth: 'max-content',
-          },
-          // Empêche la réduction forcée des colonnes
-          '& .MuiDataGrid-columnHeader': {
-            minWidth: 'unset !important',
-          },
-        }}
-      />
-    </Box>
+    },
+  }}>
+    <DataGrid
+      rows={filteredData}
+      columns={columns}
+      filterModel={filterModel}
+      onFilterModelChange={onFilterModelChange}
+      pageSize={isMobile ? 3 : isTablet ? 5 : 10}
+      rowsPerPageOptions={isMobile ? [3, 5] : isTablet ? [5, 10] : [5, 10, 25]}
+      disableRowSelectionOnClick
+      className="datatable"
+      sx={{
+        width: '100%',
+        height: isMobile ? 300 : isTablet ? 350 : 400,
+        '& .MuiDataGrid-main': { overflow: 'visible' },
+        '& .MuiDataGrid-virtualScroller': { overflowX: 'auto', overflowY: 'auto' },
+        '& .MuiDataGrid-columnHeaders': { minWidth: 'max-content' },
+        '& .MuiDataGrid-row': { minWidth: 'max-content' },
+        '& .MuiDataGrid-columnHeader': { minWidth: 'unset !important' },
+      }}
+    />
+  </Box>
+</>
+
   );
 }

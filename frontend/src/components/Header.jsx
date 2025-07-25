@@ -54,9 +54,16 @@ function Header() {
       <Row className="align-items-center h-100 flex-column flex-md-row">
         {/* Section boutons - première ligne sur mobile */}
         <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">
-          <Button className="boutton-search">
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </Button>
+          <Button 
+  className="boutton-search"
+  onClick={() => {
+    if (window.openSearchModal) {
+      window.openSearchModal();
+    }
+  }}
+>
+  <FontAwesomeIcon icon={faMagnifyingGlass} />
+</Button>
           
           <Button className="titre2 bouton-actualiser">
             Actualiser
