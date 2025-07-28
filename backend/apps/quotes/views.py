@@ -17,7 +17,10 @@ from .request import QuotesExternalAPIRequest
 from rest_framework.decorators import action
 from .utils import map_api_to_quote_dict
 import os
-from ..si_api_client.serializers import FetchQuoteserlializer 
+from ..si_api_client.serializers import FetchQuoteserlializer, FetchQuestionnairesSerializer, FetchGivenAnswerSerializer
+from ..questionnaire.models import Questionnaire, Question, Reponse, GivenAnswer
+from ..questionnaire.utils import map_api_to_questionnaire_dict
+from ..questionnaire.utils import map_api_to_given_answer_dict
 
 
 class QuoteViewSet(mixins.RetrieveModelMixin,  mixins.ListModelMixin,
@@ -77,7 +80,7 @@ class QuoteUserLogsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return super().list(request, *args, **kwargs)
     
     
-class QuoteLockViewSet( mixins.CreateModelMixin,
+class QuoteLockViewSet( mixins.CreateModelMixin, mixins.ListModelMixin,
     viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = QuoteLock.objects.all()
@@ -91,6 +94,13 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
     
     
     
+    def list(self, request, *args, **kwargs):
+        """
+        List all locks for quotes.
+        """
+        
+        return super().list(request, *args, **kwargs)
+
     
     @swagger_auto_schema(
         request_body=openapi.Schema(
@@ -102,6 +112,7 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
         ),
         responses={201: QuoteLockSerializer}
     )
+    
     def create(self, request):
         quote_id = request.data.get("quote_id")
         if not quote_id:
@@ -223,12 +234,14 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
         saved_quotes = []
         print(f"Fetched {len(res.data)} quotes from external API.")
         for item in res.data:
+            #print("Full response item:", item)
+                       
             mapped_data = map_api_to_quote_dict(item)
-            print(f"Mapped data: {mapped_data}")
+          
             serializer = FetchQuoteserlializer(data=mapped_data)
-            print(f"Serializer data: {serializer.initial_data}")
+         
             if serializer.is_valid():
-                print(f"Valid quote data: {serializer.validated_data}")
+               
                 #Check if the quote already exists and update or create
                 if Quote.objects.filter(reference_id_SI=serializer.validated_data['reference_id_SI']).exists():
                     quote = Quote.objects.get(reference_id_SI=serializer.validated_data['reference_id_SI'])
@@ -239,6 +252,66 @@ class ExternalAPIQuotesView(viewsets.GenericViewSet):
                     print(f"Created new quote: {serializer.validated_data['reference_id_SI']}") 
                 
                 saved_quotes.append(serializer.validated_data)
+                
+                if item['questionnaire']:
+                    print("Questionnaire data found, processing...")
+                    questionnaire_mapped_data = map_api_to_questionnaire_dict(item['questionnaire'])
+                    serializer = FetchQuestionnairesSerializer(data=questionnaire_mapped_data)
+                  
+                    if serializer.is_valid():
+                    
+                        existing_quote = Quote.objects.filter(reference_id_SI=serializer.validated_data['quote']).first()
+                        if not existing_quote:
+                            return Response({"error": "Quote not found for the returned questionnaire"}, status=status.HTTP_404_NOT_FOUND)
+                        serializer.validated_data['quote'] = existing_quote
+                
+                        existing_questionnaire = Questionnaire.objects.filter(quote=existing_quote).first()
+                    
+                        if existing_questionnaire:
+                            print(f"UpdatING existing questionnaire from fetch-quotes: {existing_questionnaire.id}")
+                            serializer.update(existing_questionnaire, serializer.validated_data)
+                        else: 
+                            print(f"Creating new questionnaire: {serializer.validated_data['reference_id_SI']}")
+                            serializer.save()
+                            
+                
+                    #TODO Update given answers on the questionnaire
+                    for answer in item['questionnaire']['questionsReponsesList']:
+                        
+                        
+                        if not answer['reponsePossibleId']:
+                           
+                            continue
+                        
+                        given_answer_mapped_data = map_api_to_given_answer_dict(answer)
+                       
+                        serializer = FetchGivenAnswerSerializer(data=given_answer_mapped_data)
+                     
+                        if serializer.is_valid():
+                          
+                            answer  = get_object_or_404(Reponse, reference_id_SI=given_answer_mapped_data['answer'])
+                            question = get_object_or_404(Question, id=answer.question.id) 
+                            
+                            
+                            questionnaire = get_object_or_404(Questionnaire, quote=existing_quote)
+                            serializer.validated_data['question'] = question
+                            serializer.validated_data['answer'] = answer
+                            serializer.validated_data['questionnaire'] = questionnaire
+                           
+                           
+                           
+                            # Check if the answer already exists
+                            if GivenAnswer.objects.filter(questionnaire=questionnaire, question=question).exists():
+                                given_answer = GivenAnswer.objects.get(questionnaire=questionnaire, question=question)
+                                serializer.update(given_answer, serializer.validated_data)
+                                print(f"Updated existing given answer: {given_answer.id}")
+                            else:
+                                serializer.save()
+                                print(f"Created new given answer for quote {existing_quote.id}: {serializer.validated_data['answer']}")
+                        else : 
+                            print("Invalid given answer:", serializer.errors)
+                        
+                               
             else:
                 print("Invalid quote:", serializer.errors)
                 # Optionally: collect errors and return them
