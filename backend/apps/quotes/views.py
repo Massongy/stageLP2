@@ -80,7 +80,7 @@ class QuoteUserLogsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         return super().list(request, *args, **kwargs)
     
     
-class QuoteLockViewSet( mixins.CreateModelMixin,
+class QuoteLockViewSet( mixins.CreateModelMixin, mixins.ListModelMixin,
     viewsets.GenericViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = QuoteLock.objects.all()
@@ -94,6 +94,13 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
     
     
     
+    def list(self, request, *args, **kwargs):
+        """
+        List all locks for quotes.
+        """
+        
+        return super().list(request, *args, **kwargs)
+
     
     @swagger_auto_schema(
         request_body=openapi.Schema(
@@ -105,6 +112,7 @@ class QuoteLockViewSet( mixins.CreateModelMixin,
         ),
         responses={201: QuoteLockSerializer}
     )
+    
     def create(self, request):
         quote_id = request.data.get("quote_id")
         if not quote_id:
