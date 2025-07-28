@@ -55,13 +55,13 @@ function Header() {
         {/* Section boutons - première ligne sur mobile */}
         <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">
           <Button 
-  className="boutton-search"
-  onClick={() => {
-    if (window.openSearchModal) {
-      window.openSearchModal();
-    }
-  }}
->
+              className="boutton-search"
+              onClick={() => {
+                if (window.openSearchModal) {
+                  window.openSearchModal();
+                }
+              }}
+            >
   <FontAwesomeIcon icon={faMagnifyingGlass} />
 </Button>
           

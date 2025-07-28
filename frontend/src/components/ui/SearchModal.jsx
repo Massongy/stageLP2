@@ -23,7 +23,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
     // Recherche par nom ou référence
     const results = tableData?.filter(item => {
       const searchLower = searchTerm.toLowerCase();
-      // Recherche par référence (conversion en string pour la comparaison)
+      // Recherche par référence - utiliser reference_id_SI pour la recherche
       const refMatch = item.reference_id_SI?.toString().toLowerCase().includes(searchLower);
       // Recherche par nom (adaptez selon vos champs)
       const nameMatch = item.lastname?.toLowerCase().includes(searchLower) || 
@@ -37,6 +37,8 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
   };
 
   const handleSelectResult = (item) => {
+    console.log('[handleSelectResult] item selected:', item);
+    // Passer la valeur de reference_id_SI (number) à la fonction de recherche
     onSearch(item.reference_id_SI);
     handleClose();
   };
@@ -133,9 +135,9 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
                       <Typography variant="body1" fontWeight="medium">
                         Référence: {item.reference_id_SI}
                       </Typography>
-                      {(item.nom || item.name || item.client) && (
+                      {(item.nom || item.name || item.client || item.lastname) && (
                         <Typography variant="body2" color="text.secondary">
-                          {item.nom || item.name || item.client}
+                          {item.nom || item.name || item.client || item.lastname}
                         </Typography>
                       )}
                     </Box>

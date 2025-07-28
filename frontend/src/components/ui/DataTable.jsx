@@ -12,8 +12,10 @@ import '../../assets/datatable.css';
 
 
 export default function DataTable({data, onPreview, openedRowRef, filterModel, onFilterModelChange }) {
-const filteredData = data?.filter(quote => quote.status !== 5) || [];
 
+
+
+  const filteredData = (data || []).filter(quote => quote.status !== 5);
 
 
 const { editQuote } = useEditQuote(); 
@@ -197,7 +199,10 @@ const handleTransfer = async (quoteId) => {
 
     return baseColumns;
   }, [onPreview, openedRowRef, onFilterModelChange, isMobile, isTablet]);
-
+console.log('>> DataTable receives filterModel:', filterModel);
+useEffect(() => {
+  console.log('DATATABLE FILTER MODEL:', filterModel);
+}, [filterModel]);
   return (
 
 <>
