@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import EditButton from './EditButton.jsx';
-import FicheClient from './FicheClient.jsx'; 
+import FicheClient from './FicheClient.jsx';
+import '../../assets/style.css';
+import '../../assets/previewtabs.css';
 
 export default function PreviewTabs({ openedRowRef, quoteId }) {
   

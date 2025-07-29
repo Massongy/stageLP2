@@ -15,7 +15,7 @@ export default function Users({
   onSaveNewUser,
   onCancelCreation,
   isCurrentProfile = false,
-  currentUserGroup // Nouveau prop pour le groupe de l'utilisateur courant
+  currentUserGroup //  prop pour le groupe de l'utilisateur courant
 }) {
   const [passwordModal, setPasswordModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -28,12 +28,12 @@ export default function Users({
   const { loading, error, success, changePassword, reset } = useChangePassword();
 
   if (!Array.isArray(datausers)) {
-    console.error("datausers n'est pas un tableau :", datausers);
+   
     return null;
   }
 
   const getAvailableRoles = () => {
-  // Mapping basé sur les IDs réels de votre base
+  // Mapping basé sur les IDs réels de la bdd
   const groupMapping = {
     'Gestionnaire Acceor': '2',    // ID réel: 2
     'Gestionnaire Options': '1',   // ID réel: 1
@@ -62,7 +62,7 @@ export default function Users({
 
   const availableRoles = getAvailableRoles();
 
-console.log('Available Roles:', availableRoles);
+
 
 
   const handlePasswordClick = (user) => {
@@ -156,17 +156,18 @@ console.log('Available Roles:', availableRoles);
               </Box>
               <Box className="container-infos-2">
                 {isCurrentProfile ? (
-                  <Button 
-                    variant="outlined" 
-                    size="small"
-                    onClick={() => handlePasswordClick(user)}
-                    sx={{ 
-                      textTransform: 'none',
-                      fontSize: '12px',
-                      padding: '4px 8px'
+                  <Button className="container-infos-2" sx={{
+                      all: 'unset',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      
                     }}
+                    
+                    onClick={() => handlePasswordClick(user)}
                   >
-                    <FontAwesomeIcon icon={faEdit} style={{ marginRight: '4px' }} />
+                    
                     Modifier
                   </Button>
                 ) : (
@@ -270,7 +271,7 @@ console.log('Available Roles:', availableRoles);
     name="groups"
     value={creationData.groups?.[0] || ''}
     onChange={(e) => {
-      console.log('Selected:', e.target.value); // Debug
+      
       onCreationChange({
         target: {
           name: 'groups',
@@ -469,7 +470,7 @@ console.log('Available Roles:', availableRoles);
           borderRadius: 2
         }}>
           <Typography id="password-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-            Modifier le mot de passe
+            Modifier votre mot de passe
           </Typography>
           
           {error && (
@@ -487,31 +488,44 @@ console.log('Available Roles:', availableRoles);
           <TextField
             fullWidth
             type="password"
-            label="Mot de passe actuel"
+            placeholder="Mot de passe actuel"
             name="currentPassword"
             value={passwordData.currentPassword}
             onChange={handlePasswordInputChange}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2,
+            backgroundColor: '#F5F2EE',
+            '& .MuiFilledInput-root': {
+              backgroundColor: '#F5F2EE',
+              }, }}
+            
           />
           
           <TextField
             fullWidth
             type="password"
-            label="Nouveau mot de passe"
+            placeholder="Nouveau mot de passe"
             name="newPassword"
             value={passwordData.newPassword}
             onChange={handlePasswordInputChange}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2,
+            backgroundColor: '#F5F2EE',
+            '& .MuiFilledInput-root': {
+              backgroundColor: '#F5F2EE',
+              }, }}
           />
           
           <TextField
             fullWidth
             type="password"
-            label="Confirmer le nouveau mot de passe"
+            placeholder="Confirmer votre nouveau mot de passe"
             name="confirmPassword"
             value={passwordData.confirmPassword}
             onChange={handlePasswordInputChange}
-            sx={{ mb: 3 }}
+            sx={{ mb: 3,
+            backgroundColor: '#F5F2EE',
+            '& .MuiFilledInput-root': {
+              backgroundColor: '#F5F2EE',
+              }, }}
           />
           
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>

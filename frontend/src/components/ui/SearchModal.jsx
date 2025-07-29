@@ -11,6 +11,9 @@ import {
   IconButton
 } from '@mui/material';
 import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
+import LoadingButton from './LoadingButton';
+import '../../assets/style.css'
+import '../../assets/searchmodal.css'
 
 const SearchModal = ({ open, onClose, onSearch, tableData }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,7 +40,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
   };
 
   const handleSelectResult = (item) => {
-    console.log('[handleSelectResult] item selected:', item);
+    
     // Passer la valeur de reference_id_SI (number) à la fonction de recherche
     onSearch(item.reference_id_SI);
     handleClose();
@@ -57,55 +60,32 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
   };
 
   return (
-    <Dialog 
+    <Dialog className="dialog-searchmodal"
       open={open} 
       onClose={handleClose}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
-          minHeight: '300px'
-        }
-      }}
+     
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        pb: 1
-      }}>
-        <Typography variant="h6" component="div">
-          Rechercher une demande
-        </Typography>
-        <IconButton
+      <DialogTitle >
+        
+        <IconButton className="custom-close-button"
           aria-label="close"
           onClick={handleClose}
-          sx={{ color: (theme) => theme.palette.grey[500] }}
+          
         >
-          <CloseIcon />
+          <CloseIcon className="custom-close-icon"  />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers>
-        <Box sx={{ mb: 2 }}>
-          <TextField
+      <DialogContent className="dialog-content">
+        <Box className="dialog-content-box1-search-modal">
+          <TextField className="dialog-content-textfield"
             fullWidth
-            label="Nom ou numéro de référence"
-            variant="outlined"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Saisissez un nom ou une référence..."
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={handleSearch} edge="end">
-                  <SearchIcon />
-                </IconButton>
-              ),
-            }}
-            sx={{ mb: 2 }}
-          />
+            placeholder="Rechercher une demande par nom, numéro de référence..."
+          />   
+             
         </Box>
 
         {hasSearched && (
@@ -153,18 +133,16 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
         )}
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button onClick={handleClose} color="secondary">
-          Annuler
-        </Button>
-        <Button 
+      <DialogActions sx={{ px: 3, py: 2, justifyContent: 'center' }}>
+        
+        <LoadingButton className="titre2 bouton-rechercher"
           onClick={handleSearch} 
           variant="contained" 
           disabled={!searchTerm.trim()}
-          startIcon={<SearchIcon />}
+          
         >
           Rechercher
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

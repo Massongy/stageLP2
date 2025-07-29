@@ -4,11 +4,14 @@ import { Button, Dropdown, Row, Col, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '../assets/header.css';
+import '../assets/style.css';
 import logo from '../assets/Logo_Options_Footer.svg';
 import { jwtDecode } from 'jwt-decode';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+
 import useCurrentUser from "../hooks/useCurrentUser.jsx";
+import LoadingButton from "./ui/LoadingButton.jsx";
 
 function Header() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -56,18 +59,26 @@ function Header() {
         <Col xs={12} md={4} className="d-flex justify-content-center justify-content-md-start mb-2 mb-md-0">
           <Button 
               className="boutton-search"
+    
               onClick={() => {
                 if (window.openSearchModal) {
                   window.openSearchModal();
                 }
               }}
             >
-  <FontAwesomeIcon icon={faMagnifyingGlass} />
-</Button>
-          
-          <Button className="titre2 bouton-actualiser">
-            Actualiser
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
           </Button>
+          
+          <LoadingButton
+            className="titre2 bouton-actualiser"
+            onClick={() => {
+                if (window.refetchQuotes) {
+                  window.refetchQuotes(); // Rafraîchit les données
+                }
+              }}
+          >
+            Actualiser les demandes
+          </LoadingButton>
         </Col>
         
         {/* Logo - deuxième ligne sur mobile */}

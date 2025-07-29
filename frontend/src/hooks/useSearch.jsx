@@ -15,7 +15,6 @@ export const useSearch = (tableData, setFilterModel, setOpenedRowRef) => {
   }, []);
 
   const performSearch = (reference) => {
-  console.log('[performSearch] AVANT setFilterModel - reference:', reference);
   
   const newFilterModel = {
     items: [{
@@ -25,14 +24,12 @@ export const useSearch = (tableData, setFilterModel, setOpenedRowRef) => {
     }]
   };
   
-  console.log('[performSearch] newFilterModel à appliquer:', newFilterModel);
   
   // Appel synchrone pour s'assurer que le state est mis à jour
   setFilterModel(newFilterModel);
   
   // Attendez le prochain tick du cycle d'événements pour ouvrir la row
   setTimeout(() => {
-    console.log('[performSearch] setOpenedRowRef avec:', reference);
     setOpenedRowRef(reference);
   }, 0);
 };

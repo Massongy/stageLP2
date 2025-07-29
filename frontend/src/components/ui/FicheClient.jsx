@@ -100,7 +100,7 @@ export default function FicheClient({reference}) {
                   <Typography className="fiche-info-blocs-text">{item.question.label}</Typography>
                 </Box>
                 <Box className="questionnaire-box-droite">
-                  <Typography className="fiche-info-blocs-text">{item.answer.value}</Typography>
+                  <Typography className="fiche-info-blocs-text questionnaire-box-droite">{item.answer.value}</Typography>
                 </Box>
               </Box>
             )
@@ -113,7 +113,7 @@ export default function FicheClient({reference}) {
               <Typography className="fiche-info-blocs-text">{dateInputQuestion?.label}</Typography>
             </Box>
             <Box className="questionnaire-box-droite">
-              <Typography className="fiche-info-blocs-text">
+              <Typography className="fiche-info-blocs-text questionnaire-box-droite">
                 {dayjs(questionnaire.date_prevue).format('DD/MM/YYYY')}
               </Typography>
             </Box>

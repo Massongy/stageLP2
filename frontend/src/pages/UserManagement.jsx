@@ -25,7 +25,6 @@ const [newUser, setNewUser] = useState({
   const { createUser, loading: createLoading, err: createError } = useCreateUser();
   const { deleteUser, loading: deleteLoading, error: deleteError } = useDeleteUser();
   const { editUser, loading: editLoading, error: editError } = useEditUser();
-
   const [error, setError] = useState('');
   const [hasPermission, setHasPermission] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -151,6 +150,7 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
     }
   };
 
+
   const handleConfirmCreate = async () => {
   setIsCreatingUser(true); // Active le loader
   
@@ -158,7 +158,12 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
     await createUser(pendingData);
     alert('Utilisateur créé avec succès');
     setShowEmailConfirmation(false);
+    setShowEmailConfirmation(false);
+    setShowForm(false);
+    setIsCreating(false);
     usersRefetch(); // Rafraîchit la liste des utilisateurs
+    
+    
   } catch (err) {
     console.error(err);
     alert('Erreur lors de la création: ' + err.message);
@@ -166,7 +171,15 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
     setIsCreatingUser(false); // Désactive le loader
   }
 };
-
+useEffect(() => {
+    if (!showForm) {
+      // Action à effectuer lorsque le formulaire est masqué
+      console.log('Le formulaire est maintenant masqué');
+    }
+  }, [showForm]);
+  useEffect(() => {
+  console.log('Valeur de showForm:', showForm);
+}, [showForm]);
   const handleDelete = (userId) => {
     if (!window.confirm('Êtes-vous sûr ?')) return;
     deleteUser(userId)
@@ -340,7 +353,7 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
       </Row>
 
       {/* Row 6: Formulaire (si affiché) */}
-      {showForm && (
+      {showForm  && (
         <Row className="mt-3" ref={formRef}>
           <Col xs={12}>
             <form onSubmit={handleSubmit} className="p-3 border rounded user-form">

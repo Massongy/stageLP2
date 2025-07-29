@@ -19,21 +19,19 @@ export default function Dashboard() {
 
 
   // Récupération des données avec le hook useQuotesQuotes
-  const { quotes: tableData, loading, error } = useQuotesQuotes();
+  const { quotes: tableData, loading, error, refetch } = useQuotesQuotes();
 
   // Callbacks stables pour useSearch
- const setFilterModelCallback = useCallback((newFilterModel) => {
-  console.log('[Dashboard] setFilterModel appelé avec:', newFilterModel);
+  const setFilterModelCallback = useCallback((newFilterModel) => {
   setFilterModel(newFilterModel); // Ne créez pas de nouvel objet ici
-}, []);
+  }, []);
 
 // Ajoutez ce useEffect pour debug :
-useEffect(() => {
-  console.log('FILTER MODEL UPDATED:', filterModel);
-}, [filterModel]);
+  useEffect(() => {
+  }, [filterModel]);
+  
   const setOpenedRowRefCallback = useCallback((ref) => {
-    console.log('[Dashboard] setOpenedRowRef appelé avec:', ref);
-    setOpenedRowRef(ref);
+      setOpenedRowRef(ref);
   }, []);
 
   // Hook de recherche avec callbacks stables
@@ -45,9 +43,9 @@ useEffect(() => {
   } = useSearch(tableData, setFilterModelCallback, setOpenedRowRefCallback);
 
   const quoteId = tableData?.find(quote => 
-  quote.reference_id_SI === openedRowRef || 
-  quote.reference_id_SI?.toString() === openedRowRef
-)?.id || null;
+    quote.reference_id_SI === openedRowRef || 
+    quote.reference_id_SI?.toString() === openedRowRef
+  )?.id || null;
   
   const handlePreview = (row) => {
     const reference = row.reference_id_SI; // Utiliser reference_id_SI
@@ -55,48 +53,50 @@ useEffect(() => {
     setOpenedRowRef(prev => (prev === reference ? null : reference));
   };
 
-  // Exposer la fonction openSearchModal globalement pour le header
-  useEffect(() => {
-    window.openSearchModal = openSearchModal;
-    return () => {
-      delete window.openSearchModal;
-    };
-  }, [openSearchModal]);
+  // Exposer les fonctions openSearchModal et refetchQuotes globalement pour le header
+    useEffect(() => {
+      window.openSearchModal = openSearchModal;
+      window.refetchQuotes = refetch;
+      return () => {
+        delete window.openSearchModal;
+        delete window.refetchQuotes; // <-- Nettoyage
+      };
+    }, [openSearchModal, refetch]);
 
-  console.log('[Dashboard] filterModel:', filterModel);
-console.log('[Dashboard] tableData:', tableData);
+ 
   const filteredData = tableData?.filter((row) => {
-  if (!filterModel?.items?.length) return true;
-  
-  console.log('[Dashboard] current row:', row);
-  console.log('[Dashboard] applying filterModel:', filterModel);
-
-  return filterModel.items.every((filter) => {
-    // Récupérer la valeur du champ à filtrer
-    let rowValue;
-    if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
-      rowValue = row.reference_id_SI?.toString();
-    } else {
-      rowValue = row[filter.field]?.toString().toLowerCase();
-    }
-    
-    const filterValue = filter.value?.toString();
-
-    if (filter.operator === 'equals') {
-      console.log(`[Comparing] rowValue (${filter.field}):`, rowValue, '===', filterValue);
+      if (!filterModel?.items?.length) return true;
       
-      // Pour reference_id_SI, comparaison stricte
-      if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
-        return rowValue === filterValue;
-      }
-      
-      // Pour les autres champs, comparaison en lowercase
-      return rowValue === filterValue.toLowerCase();
-    }
+      return filterModel.items.every((filter) => {
+        // Récupérer la valeur du champ à filtrer
+        let rowValue;
+        if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
+          rowValue = row.reference_id_SI?.toString();
+        } else {
+          rowValue = row[filter.field]?.toString().toLowerCase();
+        }
+        
+        const filterValue = filter.value?.toString();
 
-    return true;
-  });
-}) || [];
+        if (filter.operator === 'equals') {
+          
+          // Pour reference_id_SI, comparaison stricte
+          if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
+            return rowValue === filterValue;
+          }
+          
+          // Pour les autres champs, comparaison en lowercase
+          return rowValue === filterValue.toLowerCase();
+        }
+
+        return true;
+      });
+  }) || [];
+
+
+
+
+
   return (
     <Box sx={{ width: '100%', p: 2 }}>
       <div className="container-fluid">

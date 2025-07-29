@@ -17,7 +17,7 @@ const EditButton = ({ openedRowRef, quoteId }) => {
   };
 
   return (
-    <button onClick={handleClick}>
+    <button className="bouton-editer" onClick={handleClick}>
       Éditer
     </button>
   );

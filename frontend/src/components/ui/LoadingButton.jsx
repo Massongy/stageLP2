@@ -8,7 +8,7 @@ const LoadingButton = ({ isLoading, onClick, children, ...props }) => {
       onClick={onClick}
       disabled={isLoading || props.disabled}
       variant="contained"
-      sx={{ position: 'relative' }}
+      
     >
       {isLoading ? (
         <>

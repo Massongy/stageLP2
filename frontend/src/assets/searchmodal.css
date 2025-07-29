@@ -1,0 +1,91 @@
+
+.dialog-searchmodal .MuiPaper-root {
+
+  background-color: white !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  min-width: 100% !important;
+
+  
+}
+.dialog-searchmodal .MuiBackdrop-root {
+  background-color: transparent !important;
+}
+
+
+.dialog-searchmodal .MuiDialogTitle-root {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-top: 10%;
+  
+}
+
+.custom-close-button {
+display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background:  #D4C7B5 !important;
+  border-radius: 50% !important;
+  color: white !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.custom-close-icon {
+  
+  font-size: 15px !important;
+ font-weight: bold !important;
+}
+.custom-close-icon.css-1umw9bq-MuiSvgIcon-root > path {
+  stroke-width: 2 !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+.dialog-content {
+
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-top: 70px;
+}
+.dialog-content-box1-search-modal {
+    display: flex !important;
+    justify-content: center !important;
+    font-style: italic;
+    align-items: center !important;
+    color: #656565;
+  border-bottom: 2px solid #D4C7B5 !important;
+  width: 50% !important;
+}
+
+.dialog-content-textfield {
+  text-align: center !important;
+  color: #656565 !important;
+}
+
+.dialog-content-textfield .MuiInputBase-input {
+  text-align: center !important;
+  color: #656565 !important;
+}
+
+.dialog-content-textfield .MuiInputBase-input::placeholder {
+  text-align: center !important;
+  color: #656565 !important;
+  opacity: 1 !important;
+}
+
+.bouton-rechercher {
+
+    display: inline-block !important;
+  height: 47px !important;
+  width: 314px !important;
+  text-align: center !important;
+  background-color: #90A5C8 !important;
+  border-radius: 25px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  border: none !important;
+}
