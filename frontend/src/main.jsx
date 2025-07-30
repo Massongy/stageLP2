@@ -11,6 +11,8 @@ import ChangePassword from './pages/ChangePassword'
 import Edition from './pages/Edition'
 import UserManagement from './pages/UserManagement'
 import PrivateRoute from './components/PrivateRoute'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import ForgotPasswordPage from './pages/ForgotPassword'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -55,6 +57,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                      </PrivateRoute>
                  }
              />
+             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route
+                    path="/reset-password/:uidb64/:token"
+                    element={<ResetPasswordPage />} // Ajoutez cette ligne
+                />
               <Route path="*" element={<Navigate to="/" />} />
           </Routes>
       </BrowserRouter>

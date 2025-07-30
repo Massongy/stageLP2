@@ -1,27 +1,101 @@
 // src/pages/Dashboard.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import DataTable from '../components/ui/DataTable.jsx';
 import PreviewTabs from '../components/ui/PreviewTabs.jsx';
-import {useQuotesQuotes} from '../hooks/useQuotesQuotes';
+import { useQuotesQuotes } from '../hooks/useQuotesQuotes';
+import  {useSearch } from '../hooks/useSearch.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import SearchModal from '../components/ui/SearchModal.jsx';
 
 export default function Dashboard() {
+  
+  
   const [selectedReference, setSelectedReference] = useState(null);
-  const [openedRowRef, setOpenedRowRef] = useState(null); // état pour l'état du bouton
-  const [filterModel, setFilterModel] = React.useState({ items: [] }); // gérer état filtre
+  const [openedRowRef, setOpenedRowRef] = useState(null);
+  const [filterModel, setFilterModel] = useState({ items: [] });
 
-  //récupération des données avec le hook useQuotesQuotes
 
-  const { quotes:tableData, loading, error } = useQuotesQuotes();
- 
 
+  // Récupération des données avec le hook useQuotesQuotes
+  const { quotes: tableData, loading, error, refetch } = useQuotesQuotes();
+
+  // Callbacks stables pour useSearch
+  const setFilterModelCallback = useCallback((newFilterModel) => {
+  setFilterModel(newFilterModel); // Ne créez pas de nouvel objet ici
+  }, []);
+
+// Ajoutez ce useEffect pour debug :
+  useEffect(() => {
+  }, [filterModel]);
+  
+  const setOpenedRowRefCallback = useCallback((ref) => {
+      setOpenedRowRef(ref);
+  }, []);
+
+  // Hook de recherche avec callbacks stables
+  const {
+    searchModalOpen,
+    openSearchModal,
+    closeSearchModal,
+    performSearch
+  } = useSearch(tableData, setFilterModelCallback, setOpenedRowRefCallback);
+
+  const quoteId = tableData?.find(quote => 
+    quote.reference_id_SI === openedRowRef || 
+    quote.reference_id_SI?.toString() === openedRowRef
+  )?.id || null;
+  
   const handlePreview = (row) => {
-    const reference = row.reference_id_SI;
+    const reference = row.reference_id_SI; // Utiliser reference_id_SI
     setSelectedReference(reference);
     setOpenedRowRef(prev => (prev === reference ? null : reference));
   };
+
+  // Exposer les fonctions openSearchModal et refetchQuotes globalement pour le header
+    useEffect(() => {
+      window.openSearchModal = openSearchModal;
+      window.refetchQuotes = refetch;
+      return () => {
+        delete window.openSearchModal;
+        delete window.refetchQuotes; // <-- Nettoyage
+      };
+    }, [openSearchModal, refetch]);
+
+ 
+  const filteredData = tableData?.filter((row) => {
+      if (!filterModel?.items?.length) return true;
+      
+      return filterModel.items.every((filter) => {
+        // Récupérer la valeur du champ à filtrer
+        let rowValue;
+        if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
+          rowValue = row.reference_id_SI?.toString();
+        } else {
+          rowValue = row[filter.field]?.toString().toLowerCase();
+        }
+        
+        const filterValue = filter.value?.toString();
+
+        if (filter.operator === 'equals') {
+          
+          // Pour reference_id_SI, comparaison stricte
+          if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
+            return rowValue === filterValue;
+          }
+          
+          // Pour les autres champs, comparaison en lowercase
+          return rowValue === filterValue.toLowerCase();
+        }
+
+        return true;
+      });
+  }) || [];
+
+
+
+
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -37,13 +111,11 @@ export default function Dashboard() {
               }
             }}>
               <DataTable
-                //passe les données concernant les quotes
-                data={tableData}
-                // passe la fonction handle preview en paramètre de la propriété onPreview
+                data={filteredData}
                 onPreview={handlePreview}
                 openedRowRef={openedRowRef}
                 filterModel={filterModel}
-                onFilterModelChange={setFilterModel}
+                onFilterModelChange={setFilterModelCallback}
                 disableRowSelectionOnClick
               />
             </Box>
@@ -58,11 +130,19 @@ export default function Dashboard() {
                 borderRadius: 1,
               }
             }}>
-              <PreviewTabs openedRowRef={openedRowRef} />
+              <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} />
             </Box>
           </div>
         </div>
       </div>
+
+      {/* Modal de recherche */}
+      <SearchModal
+        open={searchModalOpen}
+        onClose={closeSearchModal}
+        onSearch={performSearch}
+        tableData={tableData}
+      />
     </Box>
   );
 }

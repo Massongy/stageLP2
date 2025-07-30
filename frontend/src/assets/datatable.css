@@ -2,22 +2,10 @@
 .datatable {
   border: none !important;
   box-shadow: none !important;
-  overflow-x: hidden !important;
   scrollbar-color: #D4C7B5 #F5F2EE;
+ 
   
 }
-
-.datatable .MuiDataGrid-virtualScroller {
-  overflow-x: hidden !important;
-}
-
-.datatable .MuiDataGrid-virtualScroller::-webkit-scrollbar-button {
-  display: none !important;
-}
-
-/* Cache totalement la scrollbar horizontale */
-.datatable .MuiDataGrid-virtualScroller::-webkit-scrollbar {
-  height: 0 !important;}
 
 
 .MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within {
@@ -40,8 +28,8 @@
   font-size:larger !important;
 }
 
-.th-cell-dropdown {
-font-size: larger !important;
+.th-cell {
+
 color: #656565;
 
 
@@ -62,4 +50,60 @@ color: #656565;
 
 .icone-datatable-info {
     color: #D4C7B5;
+}
+
+
+
+/* Force l'affichage PERMANENT de toutes les icônes */
+.MuiDataGrid-root .MuiDataGrid-menuIcon,
+.MuiDataGrid-root .MuiDataGrid-iconButtonContainer {
+  visibility: visible !important;
+  width: auto !important;
+  opacity: 1 !important;
+}
+
+/* Force le remplacement de l'icône native */
+.MuiDataGrid-menuIcon .custom-menu-icon {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Supprime le style par défaut */
+.MuiDataGrid-menuIcon svg:not(.custom-menu-icon) {
+  display: none !important;
+}
+
+/* Suppression totale du tooltip */
+.MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"] {
+  position: relative !important;
+}
+
+.MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"]::after,
+.MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"]::before,
+.MuiTooltip-popper[role="tooltip"],
+.css-3v9qdb-MuiTooltip-tooltip,
+.css-o4ds0q-MuiPopper-root-MuiTooltip-popper {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0 !important;
+}
+
+.MuiDataGrid-root,
+.MuiDataGrid-cell,
+.MuiDataGrid-columnHeader,
+.MuiDataGrid-row {
+  border-color: transparent !important;
+  --DataGrid-t-color-border-base: transparent !important;
+  --DataGrid-rowBorderColor: transparent !important;
+}
+
+.MuiDataGrid-cell {
+  border-top: none !important;
+  border-bottom: none !important;
 }

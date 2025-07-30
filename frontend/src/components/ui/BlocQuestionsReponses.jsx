@@ -21,7 +21,7 @@ export default function BlocQuestionsReponses({
   onReponseChange,
   onDateChange,
 }) {
-  const showDatePicker = isDateInput || question === "Si oui, à quelle date ?";
+  const showDatePicker = isDateInput || question === "Quelle est la date de l'évènement ?";
 
   const handleReponseChange = (reponse) => {
     if (onReponseChange) {
@@ -30,13 +30,16 @@ export default function BlocQuestionsReponses({
   };
 
   const handleDateChange = (newDate) => {
-    
-    // newDate est un objet dayjs ou null
-    if (onDateChange) {
-      onDateChange(newDate ? newDate.format('DD/MM/YYYY') : null);
-    }
-  };
+  const formattedDate = newDate ? newDate.format('DD/MM/YYYY') : null;
+  
+  console.log('🔍 DEBUG handleDateChange:');
+  console.log('- newDate:', newDate);
+  console.log('- formattedDate:', formattedDate);
 
+  if (onDateChange) {
+    onDateChange(formattedDate);
+  }
+};
   // Vérification que reponses est un tableau avant d'utiliser .map()
   const validReponses = Array.isArray(reponses) ? reponses : [];
 

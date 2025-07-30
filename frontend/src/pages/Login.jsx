@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/Card';
-import Button from '@mui/material/Button';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
+import { Link } from 'react-router-dom'; // ← import Link
 import logoOptions from '@/assets/logo-options.png';
 import logoAcceor from '@/assets/logo-acceor.png';
-import '../assets/login.css'
-import '../assets/style.css'
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../assets/style.css';
+import '../assets/login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,49 +33,76 @@ export default function Login() {
   };
 
   return (
-          <div className='min-h-screen flex flex-col items-center justify-center bg-[#cdbcaa] px-4 container-login'>
-            <motion.img
-            src={logoOptions}
-            alt='Options Logo'
-            className='w-24 mb-4'
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            />
-            <h1 className='text-white text-4xl font-light tracking-wider'>OUTIL DE GESTION DES DEMANDES INTERNET</h1>
-            <Card className='w-full max-w-md shadow-xl'>
-            <CardContent className='p-8'>
-            <form onSubmit={handleSubmit} className='space-y-6'>
-              <div className='space-y-2'>
-                <label htmlFor='email' className='text-gray-700'>Identifiant</label>
-                <input
-                    id='email'
-                    type='text'
-                    className='w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-              </div>
+    <Container
+      fluid
+      className="min-vh-100 d-flex flex-column justify-content-center align-items-center container-login"
+    >
+      <Row className="mb-4 w-100 justify-content-center">
+        <Col xs="auto" className="d-flex justify-content-center">
+          <img src={logoOptions} alt="Options Logo" style={{ width: '17rem' }} />
+        </Col>
+      </Row>
 
-              <div className='space-y-2'>
-                <label htmlFor='password' className='text-gray-700'>Mot de passe</label>
-                <input
-                    id='password'
-                    type='password'
-                    className='w-full rounded-md border-gray-300 shadow-sm focus:ring-2 focus:ring-indigo-500'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-              </div>
+      <Row className="mb-5 w-100 justify-content-center">
+        <Col xs="auto" className="titre-login">
+          Outil de gestion des demandes internet
+        </Col>
+      </Row>
 
-              {error && <p className='text-red-600 text-sm'>{error}</p>}
+      <Row className="mb-5 w-100 justify-content-center">
+        <Col xs={12} sm={10} md={8} lg={7}>
+          <Form onSubmit={handleSubmit} className="p-4 shadow rounded bg-white">
+            <Form.Label className="text-center d-block mt-4 mb-5 form-label-custom">
+              Entrez vos identifiants de connexion
+            </Form.Label>
 
-              <Button type='submit' className='w-full py-3 rounded-2xl text-base font-semibold'>CONNEXION</Button>
-            </form>
-            </CardContent>
-            </Card>
-            <img src={logoAcceor} alt='Acceor Logo' className='w-24 mt-12' />
-          </div>
-        );
+            <Form.Group controlId="email" className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Identifiant"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-50 mx-auto p-3 form-control-personnalise"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="password" className="mb-3">
+              <Form.Control
+                type="password"
+                placeholder="Mot de Passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-50 mx-auto p-3 form-control-personnalise"
+                required
+              />
+            </Form.Group>
+
+            {error && <Alert variant="danger">{error}</Alert>}
+
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-50 mx-auto py-3 rounded-pill fw-semibold bouton-login"
+            >
+              CONNEXION
+            </Button>
+
+            {/* ➕ Lien "Mot de passe oublié ?" */}
+            <div className="w-50 mx-auto mt-3 text-center">
+              <Link to="/forgot-password/" className="text-primary">
+                Mot de passe oublié ?
+              </Link>
+            </div>
+          </Form>
+        </Col>
+      </Row>
+
+      <Row className="w-100 justify-content-center mb-5 pb-4">
+        <Col xs="auto" className="d-flex justify-content-center">
+          <img src={logoAcceor} alt="Acceor Logo" className="img-acceor" />
+        </Col>
+      </Row>
+    </Container>
+  );
 }
