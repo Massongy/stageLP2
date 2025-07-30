@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Box } from '@mui/material';
 import DataTable from '../components/ui/DataTable.jsx';
@@ -98,9 +97,9 @@ export default function Dashboard() {
 
 
   return (
-    <Box sx={{ width: '100%', p: 2 }}>
+    <Box sx={{ width: '100%' }}>
       <div className="container-fluid">
-        <div className="row">
+        <div className="row row g-0">
           {/* Tableau - Prend toute la largeur sur mobile, 8 colonnes sur desktop */}
           <div className="col-12 col-lg-8 mb-3 mb-lg-0">
             <Box sx={{ 

@@ -5,7 +5,6 @@
   min-height: 100px;
   height: auto;
   
-  
 }
 
 .logo {
@@ -13,13 +12,11 @@
 }
 
 
-
 .right {
   flex: 0 1 auto;
 }
 
 .icon-circle {
-  display: inline-block;
   border: none;
   color: #D4C7B5;
   font-size: 24px;
@@ -27,7 +24,9 @@
 }
 
 .boutton-search {
-  display: inline-block !important;
+  display: flex !important;
+  justify-content: center !important;  /* Centre horizontalement */
+   align-items: center !important;     
   border: none !important;
   outline: none !important;
   height: 47px !important;
@@ -45,15 +44,19 @@
 }
 
 .bouton-actualiser {
-  display: inline-block !important;
   height: 47px !important;
   width: 314px !important;
-  text-align: center !important;
-  background-color: #90A5C8 !important;
+  color:  #D4C7B5 !important;
+  background-color: white !important;
   border-radius: 25px !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
   text-transform: uppercase !important;
   border: none !important;
+  display: flex !important;           /* Active flexbox */
+   justify-content: center !important; /* Centre horizontalement */
+   align-items: center !important;
+   box-shadow: none !important; 
   
 }
 

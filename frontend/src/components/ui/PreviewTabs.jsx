@@ -21,9 +21,12 @@ export default function PreviewTabs({ openedRowRef, quoteId }) {
         
         <FontAwesomeIcon icon={faEye} className="icone-preview" />
         
-        <Typography className="text-preview">Onglet de prévisualisation<br></br>
-        Sélectionnez une demande pour voir les informations</Typography>
+        <Box className="text-preview">
         
+        <Typography className="text-preview-1" >Onglet de prévisualisation</Typography>
+
+        <Typography className="text-preview-2">Sélectionnez une demande pour voir les informations</Typography>
+        </Box>
       </Box>
     );
   }

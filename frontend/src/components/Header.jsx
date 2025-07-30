@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation  } from 'react-router-dom';
 import { Button, Dropdown, Row, Col, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -27,7 +27,9 @@ function Header() {
     setAnchorEl(null);
   };
   
+  
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
@@ -51,7 +53,33 @@ function Header() {
   };
 
   if (!isLogged) return null;
-
+  
+  
+  const handleSearch = () => {
+  if (location.pathname !== '/dashboard') {
+    navigate('/dashboard');
+    // Attendre que la page se charge puis ouvrir la modal
+    setTimeout(() => {
+      if (window.openSearchModal) {
+        window.openSearchModal();
+      }
+    }, 100);
+  } else if (window.openSearchModal) {
+    window.openSearchModal();
+  }
+};
+const handleRefetch = () => {
+  if (location.pathname !== '/dashboard') {
+    navigate('/dashboard');
+    setTimeout(() => {
+      if (window.refetchQuotes) {
+        window.refetchQuotes();
+      }
+    }, 100);
+  } else if (window.refetchQuotes) {
+    window.refetchQuotes();
+  }
+};
   return (
     <Container fluid className="header">
       <Row className="align-items-center h-100 flex-column flex-md-row">
@@ -60,22 +88,14 @@ function Header() {
           <Button 
               className="boutton-search"
     
-              onClick={() => {
-                if (window.openSearchModal) {
-                  window.openSearchModal();
-                }
-              }}
+              onClick={handleSearch}
             >
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
+              <FontAwesomeIcon className="icon-circle" icon={faMagnifyingGlass} />
           </Button>
           
           <LoadingButton
-            className="titre2 bouton-actualiser"
-            onClick={() => {
-                if (window.refetchQuotes) {
-                  window.refetchQuotes(); // Rafraîchit les données
-                }
-              }}
+            className="bouton-actualiser"
+            onClick={handleRefetch}
           >
             Actualiser les demandes
           </LoadingButton>

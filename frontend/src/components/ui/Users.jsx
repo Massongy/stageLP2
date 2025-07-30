@@ -62,9 +62,6 @@ export default function Users({
 
   const availableRoles = getAvailableRoles();
 
-
-
-
   const handlePasswordClick = (user) => {
     setCurrentUser(user);
     setPasswordModal(true);
@@ -202,7 +199,6 @@ export default function Users({
             gridTemplateColumns: '1fr 1.5fr 1fr auto',
             gap: '16px',
             alignItems: 'center',
-            backgroundColor: '#f8f9fa',
             padding: '8px',
             borderRadius: '4px',
             marginBottom: '8px'
@@ -219,8 +215,8 @@ export default function Users({
                   value={creationData.last_name} 
                   onChange={onCreationChange}
                   placeholder="Nom"
-                  className="form-control-sm"
-                  style={{ width: '100%', marginBottom: '4px' }}
+                  className="form-control-sm border-0"
+                  style={{ width: '100%' }}
                   disabled={isCurrentProfile}
                 />
                 <input 
@@ -228,7 +224,7 @@ export default function Users({
                   value={creationData.first_name} 
                   onChange={onCreationChange}
                   placeholder="Prénom"
-                  className="form-control-sm"
+                  className="form-control-sm border-0"
                   style={{ width: '100%' }}
                   disabled={isCurrentProfile}
                 />
@@ -244,7 +240,7 @@ export default function Users({
                   value={creationData.email} 
                   onChange={onCreationChange}
                   placeholder="Email"
-                  className="form-control-sm"
+                  className="form-control-sm border-0"
                   style={{ width: '100%' }}
                   disabled={isCurrentProfile}
                 />
@@ -255,7 +251,7 @@ export default function Users({
             {/* Colonne 3: Rôle - CORRIGÉ */}
     <Box className="container-infos">
       <Box className="container-infos-1">Rôle :</Box>
-      <Box className="container-infos-2" sx={{ 
+      <Box className="container-infos-2 " sx={{ 
   position: 'relative',
   zIndex: 1300, // Z-index très élevé
   '& select': {
@@ -279,10 +275,10 @@ export default function Users({
         }
       });
     }}
+    className="border-0"
     style={{
       width: '100%',
-      padding: '8px',
-      border: '1px solid #ccc',
+      padding: '4px',
       borderRadius: '4px',
       backgroundColor: '#fff',
       cursor: 'pointer',
@@ -313,7 +309,7 @@ export default function Users({
 </Box>
     </Box>
     
-    {/* Colonne 4: Actions - CORRIGÉ */}
+    {/* Colonne 4: Actions  */}
     <Box sx={{ 
       display: 'flex', 
       gap: '8px',
@@ -321,6 +317,8 @@ export default function Users({
         pointerEvents: 'auto' // Force les événements de clic
       }
     }}>
+
+      
       <Button 
         variant="contained" 
         color="success" 
@@ -329,10 +327,18 @@ export default function Users({
           e.stopPropagation();
           onSaveNewUser();
         }}
-        sx={{ minWidth: '40px' }}
+        className="bouton-créer-utilisateur"
+       sx={{
+        minWidth: '20px',
+    '&:focus, &:active': {
+      backgroundColor: '#90A5C8 !important',
+      boxShadow: 'none !important',
+      outline: 'none !important',
+    },
+  }}
         disabled={!creationData.groups?.[0]}
       >
-        <FontAwesomeIcon icon={faCircleCheck} />
+         <span className="custom-add-utilisateur-icon">+</span>
       </Button>
       <Button 
         variant="outlined" 

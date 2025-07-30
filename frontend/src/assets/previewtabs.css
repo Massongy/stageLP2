@@ -17,12 +17,26 @@
 
 
 .text-preview {
-    text-align: center; 
-    font-size: 24px;
-    color:#656565;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   margin-top: 20px;
+    text-align: center !important; 
+    
     
 }
+.text-preview-1 {
+font-size: 22px !important;
+    color:#656565;
+    padding-top: 4px;
+}
 
+.text-preview-2{
+font-size: 22px !important;
+    color:#656565;
+    font-style: italic !important;
+     padding-top: 4px;
+}
 .preview-selected {
     display: flex;
     flex-direction: column;

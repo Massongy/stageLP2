@@ -2,10 +2,37 @@
 .datatable {
   border: none !important;
   box-shadow: none !important;
-  scrollbar-color: #D4C7B5 #F5F2EE;
  
   
 }
+
+/* Styles spécifiques aux navigateurs basés sur WebKit */
+.MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
+  background-color: #F5F2EE !important;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
+  background-color: #D4C7B5 !important;
+  border-radius: 4px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
+  background-color: #D4C7B5;
+}
+
+/* Règle de secours pour Firefox */
+@supports not selector(::-webkit-scrollbar) {
+  .MuiDataGrid-virtualScroller {
+   
+    scrollbar-color: #D4C7B5 #F5F2EE;
+  }
+}
+
 
 
 .MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within {
@@ -45,6 +72,7 @@ color: #656565;
 .icone-datatable {
 
     font-size: 20px;
+    
     
 }
 
@@ -107,3 +135,8 @@ color: #656565;
   border-top: none !important;
   border-bottom: none !important;
 }
+/*supprimer l'effet hover*/
+.css-12tkar3-MuiDataGrid-root .MuiDataGrid-row:hover {
+  background-color: #D4C7B5 !important;
+}
+

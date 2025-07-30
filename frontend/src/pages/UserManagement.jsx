@@ -9,7 +9,6 @@ import { useCreateUser } from '../hooks/useCreateUser';
 import { useMyUsers } from '../hooks/useMyUsers';
 import { useDeleteUser } from '../hooks/useDeleteUser';
 import { useEditUser } from '../hooks/useEditUser';
-import { CircularProgress } from '@mui/material';
 import useCurrentUser from '../hooks/useCurrentUser.jsx';
 import LoadingButton from '../components/ui/LoadingButton.jsx';
 
@@ -26,7 +25,6 @@ const [newUser, setNewUser] = useState({
   const { deleteUser, loading: deleteLoading, error: deleteError } = useDeleteUser();
   const { editUser, loading: editLoading, error: editError } = useEditUser();
   const [error, setError] = useState('');
-  const [hasPermission, setHasPermission] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '', first_name: '', last_name: '', created_by: '', groups: [] });
   const [editUserId, setEditUserId] = useState(null);
@@ -55,11 +53,7 @@ const [newUser, setNewUser] = useState({
                        null;
       setCurrentUserGroup(userGroup);
 
-      if (!profile.permissions?.includes('view_user')) {
-        setHasPermission(false);
-        return;
-      }
-      setHasPermission(true);
+      
 
       setAvailableGroups([
         { id: 1, name: 'Gestionnaire Acceor' },
@@ -238,10 +232,14 @@ const cancelCreation = () => {
 
 const datausers = users;
 
+
 const activeUsers = datausers.filter(user => user.is_active === true);
 // Vérification des permissions de l'utilisateur courant
 const user = useCurrentUser();
-const hasFullRights = []  .every(p => user?.permissions?.includes(p));
+const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissions.includes(p));
+
+
+
     if (!hasFullRights) {
     const myProfile = user ? [{
       email: user.email,
@@ -331,23 +329,17 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
         <Col xs={12}>
           {editUserId ? (
             <Box className="d-flex flex-column flex-md-row align-items-center">
-              <LoadingButton 
-                onClick={handleCancel} 
-                variant="outlined" 
-                className="mb-2 mb-md-0 me-md-3"
-              >
-                ❌ Annuler l'édition
-              </LoadingButton>
-              <span className="text-center text-md-start">Mode édition : modifier les infos dans le formulaire ci-dessous</span>
+                
+                <span className="text-center text-md-start titre3 ">Modifier les informations de mon utilisateur dans le formulaire ci-dessous</span>
             </Box>
-          ) : (
-           <Button 
-  onClick={handleAdd} 
-  className="custom-add-button w-100 w-md-auto"
->
-  <span className="custom-add-icon">+</span>
-  <span className="custom-add-text">Ajouter un utilisateur</span>
-</Button>
+                  ) : (
+            <Button 
+                onClick={handleAdd} 
+                className="custom-add-button w-100 w-md-auto"
+            >
+              <span className="custom-add-icon">+</span>
+              <span className="custom-add-text">Ajouter un utilisateur</span>
+            </Button>
           )}
         </Col>
       </Row>
@@ -356,16 +348,16 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
       {showForm  && (
         <Row className="mt-3" ref={formRef}>
           <Col xs={12}>
-            <form onSubmit={handleSubmit} className="p-3 border rounded user-form">
+            <form onSubmit={handleSubmit} className="p-3 border-0 rounded-0 user-form">
               <div className="row">
-                <div className="col-12 col-md-6 mb-3">
+                <div className="col-12 col-md-6 mb-3 ">
                   <input 
                     name="first_name" 
                     placeholder="Prénom" 
                     value={formData.first_name} 
                     onChange={handleChange} 
                     required 
-                    className="form-control"
+                    className="form-control border-0 shadow-none input-formulaire-edition"
                   />
                 </div>
                 <div className="col-12 col-md-6 mb-3">
@@ -375,7 +367,7 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
                     value={formData.last_name} 
                     onChange={handleChange} 
                     required 
-                    className="form-control"
+                    className="form-control border-0 shadow-none input-formulaire-edition"
                   />
                 </div>
               </div>
@@ -388,7 +380,7 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
                     value={formData.email} 
                     onChange={handleChange} 
                     required 
-                    className="form-control"
+                    className="form-control border-0 shadow-none input-formulaire-edition"
                   />
                 </div>
               </div>
@@ -419,24 +411,24 @@ const hasFullRights = []  .every(p => user?.permissions?.includes(p));
               )}
 
               {editUserId && formData.groups.length > 0 && (
-                <div className="alert alert-info">
-                  <strong>Groupe actuel :</strong> {availableGroups.find(g => formData.groups.includes(g.id))?.name || 'Groupe inconnu'}
+                <div className="alert alert-info input-formulaire-edition">
+                  <strong className="titre3">Groupe actuel :</strong> <span className="text-muted texte2">{availableGroups.find(g => formData.groups.includes(g.id))?.name || 'Groupe inconnu'}</span>
                   <br/>
-                  <small className="text-muted">Les groupes ne peuvent pas être modifiés lors de l'édition.</small>
+                  <small className="text-muted texte2"><i>Les groupes ne peuvent pas être modifiés lors de l'édition.</i></small>
                 </div>
               )}
 
               <div className="d-flex flex-column flex-sm-row gap-2">
-                <button type="submit" className="btn btn-primary flex-grow-1">
-                  ✅ {editUserId ? 'Mettre à jour' : 'Créer'}
-                </button>
-                <button 
+                <LoadingButton type="submit" className="bouton-edition-utilisateur">
+                   {editUserId ? 'Mettre à jour' : 'Créer'}
+                </LoadingButton>
+                <LoadingButton 
                   type="button" 
                   onClick={handleCancel} 
-                  className="btn btn-outline-secondary flex-grow-1"
+                  className="bouton-annuler-edition-utilisateur"
                 >
                   Annuler
-                </button>
+                </LoadingButton>
               </div>
             </form>
           </Col>

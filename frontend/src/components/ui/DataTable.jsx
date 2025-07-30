@@ -147,46 +147,47 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
           
      
       {
-  field: 'status',
-  headerName: 'Statut',
-  type: 'singleSelect',
-  valueOptions: getStatusValueOptions(),
-  valueFormatter: (params) => STATUS_MAPPING[params.value] || `Statut ${params.value}`,
-  renderCell: (params) => (
-    <span>{STATUS_MAPPING[params.value] || `Statut ${params.value}`}</span>
-  ),
-  headerAlign: 'center',
-  align: 'center',
-  width: isMobile ? 100 : isTablet ? 120 : 140,
-  minWidth: isMobile ? 100 : isTablet ? 120 : 140,
-  flex: 0,
-  sortable: false,
-  filterable: true,
-  disableColumnMenu: false,
-  hideable: false,
-  headerClassName: 'th-cell',
-  // Personnalisation du filtre
-  filterOperators: getGridSingleSelectOperators().filter(
-    (operator) => operator.value === 'is'
-  ).map((operator) => ({
-    ...operator,
-    InputComponent: GridFilterInputSingleSelect,
-    InputComponentProps: {
-      valueOptions: getStatusValueOptions(),
-      // Optionnel : personnaliser l'affichage des options
-      getOptionLabel: (value) => STATUS_MAPPING[value] || `Statut ${value}`,
-    },
-  })),
-  sx: {
-    '& .MuiDataGrid-iconButtonContainer': {
-      visibility: 'visible !important',
-      opacity: '1 !important'
-    },
-    '& .MuiDataGrid-columnHeaderTitleContainer': {
-      justifyContent: 'center'
-    },
-  },
-},
+        field: 'status',
+        headerName: 'Statut',
+        type: 'singleSelect',
+        valueOptions: getStatusValueOptions(),
+        valueFormatter: (params) => STATUS_MAPPING[params.value] || `Statut ${params.value}`,
+        renderCell: (params) => (
+          <span>{STATUS_MAPPING[params.value] || `Statut ${params.value}`}</span>
+        ),
+        headerAlign: 'center',
+        align: 'center',
+        width: isMobile ? 100 : isTablet ? 120 : 140,
+        minWidth: isMobile ? 100 : isTablet ? 120 : 140,
+        flex: 0,
+        sortable: false,
+        filterable: true,
+        disableColumnMenu: false,
+        hideable: false,
+        headerClassName: 'th-cell',
+        // Personnalisation du filtre
+        filterOperators: getGridSingleSelectOperators().filter(
+            (operator) => operator.value === 'is'
+          ).map((operator) => ({
+            ...operator,
+            InputComponent: GridFilterInputSingleSelect,
+            InputComponentProps: {
+              valueOptions: getStatusValueOptions(),
+              // Optionnel : personnaliser l'affichage des options
+              getOptionLabel: (value) => STATUS_MAPPING[value] || `Statut ${value}`,
+            },
+          })),
+        sx: {
+          '& .MuiDataGrid-iconButtonContainer': {
+            visibility: 'visible !important',
+            opacity: '1 !important'
+          },
+          '& .MuiDataGrid-columnHeaderTitleContainer': {
+            justifyContent: 'center'
+          },
+        },
+      },
+
       {
         field: 'transfert',
         headerName: isMobile ? 'Transf.' : isTablet ? 'Transf.' : 'Transférer',
@@ -254,8 +255,8 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
       <Box sx={{ 
         display: 'flex',
         width: '100%', 
-        height: 400,
-        overflow: 'hidden',
+        height: 200,  
+        overflow: 'auto',
         '& .MuiDataGrid-root': {
           border: 'none',
           width: '100%',
@@ -267,9 +268,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
           backgroundColor: theme.palette.grey[50],
           borderBottom: 'none',
         },
-        '& .MuiDataGrid-virtualScroller': {
-          backgroundColor: theme.palette.grey[50],
-        },
+        
         '& .MuiDataGrid-footerContainer': {
           borderTop: 'none',
           backgroundColor: theme.palette.grey[50],
@@ -283,102 +282,108 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
           },
         },
       }}>
-        <DataGrid
-  rows={filteredData}
-  columns={columns}
-  filterModel={filterModel}
-  onFilterModelChange={onFilterModelChange}
-  pageSize={isMobile ? 3 : isTablet ? 5 : 10}
-  rowsPerPageOptions={isMobile ? [3, 5] : isTablet ? [5, 10] : [5, 10, 25]}
-  disableRowSelectionOnClick
-  disableColumnSelector={true} 
-  className="datatable"
-  hideFooter={true}
-  getRowClassName={(params) =>
-    params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-  }
-  
-
-  slots={{
-    
-    columnMenuIcon: () => (
-      <FontAwesomeIcon icon={faAngleDown}
         
-        className="custom-menu-icon"
-        style={{
-          fontSize: '1rem',
-          color: theme.palette.text.secondary,
-          padding: '4px'
-        }}
-      />
-    ),
-  }}
-  
-   componentsProps={{
-    columnMenu: {
-      components: {
-        Tooltip: () => null, // Désactive complètement le composant Tooltip
-      }
-    }
-  }}
-  
-  sx={{
-    width: '100%',
-    height: isMobile ? 300 : isTablet ? 350 : 400,
-    backgroundColor: '#ffffff',
-    
-    // NOUVEAU : Corriger la zone vide sous les lignes
-    '& .MuiDataGrid-virtualScroller': {
-      backgroundColor: '#ffffff', // Zone de contenu blanche
-    },
-    '& .MuiDataGrid-filler': {
-      backgroundColor: '#ffffff', // Zone de remplissage blanche
-    },
-    '& .MuiDataGrid-overlayWrapper': {
-      backgroundColor: '#ffffff', // Zone d'overlay blanche
-    },
-    
-    '& .MuiDataGrid-main': { overflow: 'visible' },
-    '& .MuiDataGrid-virtualScroller': { overflowX: 'auto', overflowY: 'auto' },
-    '& .MuiDataGrid-columnHeaders': { minWidth: 'max-content' },
-    '& .MuiDataGrid-row': { minWidth: 'max-content' },
-    '& .MuiDataGrid-columnHeader': { minWidth: 'unset !important' },
-    
-    // Styles spécifiques pour forcer l'affichage de l'icône personnalisée
-    '& .custom-menu-icon': {
-      display: 'block !important',
-      opacity: '1 !important',
-      visibility: 'visible !important'
-    },
-    '& .MuiDataGrid-menuIcon': {
-      width: 'auto !important',
-      visibility: 'visible !important',
-      '& button': {
-        padding: '4px !important',
-        '& svg:not(.custom-menu-icon)': {
-          display: 'none !important' // Cache l'icône native
-        }
-      }
-      
-    },
+        
+          <DataGrid
+                  rows={filteredData}
+                  columns={columns}
+                  headerHeight={70}
+                  rowHeight={70}
+                  filterModel={filterModel}
+                  onFilterModelChange={onFilterModelChange}
+                  pageSize={isMobile ? 3 : isTablet ? 5 : 10}
+                  rowsPerPageOptions={isMobile ? [3, 5] : isTablet ? [5, 10] : [5, 10, 25]}
+                  disableRowSelectionOnClick
+                  disableColumnSelector={true} 
+                  className="datatable"
+                  hideFooter={true}
+                  getRowClassName={(params) =>
+                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
+                  }
+                  
 
-    //couleurs des lignes
+                  slots={{
+                    
+                    columnMenuIcon: () => (
+                      <FontAwesomeIcon icon={faAngleDown}
+                        
+                        className="custom-menu-icon"
+                        style={{
+                          fontSize: '1rem',
+                          color: theme.palette.text.secondary,
+                          padding: '4px'
+                        }}
+                      />
+                    ),
+                  }}
+                  
+                  componentsProps={{
+                    columnMenu: {
+                      components: {
+                        Tooltip: () => null, // Désactive complètement le composant Tooltip
+                      }
+                    }
+                  }}
+                  
+                  sx={{
+                    
+                    width: '100%',
+                    height: isMobile ? 300 : isTablet ? 350 : 400,
+                    backgroundColor: '#ffffff',
+                    '& .MuiDataGrid-main': { overflow: 'visible'
+                     },
+                    
+                    '& .MuiDataGrid-filler': {
+                      backgroundColor: '#ffffff', // Zone de remplissage blanche
+                    },
+                    '& .MuiDataGrid-overlayWrapper': {
+                      backgroundColor: '#ffffff', // Zone d'overlay blanche
+                    },
+                    
+                    '& .MuiDataGrid-main': { overflow: 'visible' },
+                    '& .MuiDataGrid-virtualScroller': { overflowX: 'auto', overflowY: 'auto' },
+                    '& .MuiDataGrid-columnHeaders': { minWidth: 'max-content' },
+                    '& .MuiDataGrid-row': { minWidth: 'max-content' },
+                    '& .MuiDataGrid-columnHeader': { minWidth: 'unset !important' },
+                    
+                    // Styles spécifiques pour forcer l'affichage de l'icône personnalisée
+                    '& .custom-menu-icon': {
+                      display: 'block !important',
+                      opacity: '1 !important',
+                      visibility: 'visible !important'
+                    },
+                    '& .MuiDataGrid-menuIcon': {
+                      width: 'auto !important',
+                      visibility: 'visible !important',
+                      '& button': {
+                        padding: '4px !important',
+                        '& svg:not(.custom-menu-icon)': {
+                          display: 'none !important' // Cache l'icône native
+                        }
+                      }
+                      
+                    },
 
-    '& .even-row': {
-      backgroundColor: '#F5F2EE', // Gris clair pour les lignes paires
-    },
-    '& .odd-row': {
-      backgroundColor: 'white', // Blanc pour les lignes impaires
-    },
-    
-    // Supprimer les bordures entre les lignes
-    '& .MuiDataGrid-row': {
-      borderBottom: 'none !important',
-    },
-    // NOUVEAU : Changer l'arrière-plan
-    backgroundColor: '#f0f0f0', 
-  }}
-/>
+                    //couleurs des lignes
+
+                    '& .even-row': {
+                      backgroundColor: '#F5F2EE', // Gris clair pour les lignes paires
+                    },
+                    '& .odd-row': {
+                      backgroundColor: 'white', // Blanc pour les lignes impaires
+                    },
+                    
+                    // Supprimer les bordures entre les lignes
+                    '& .MuiDataGrid-row': {
+                      borderBottom: 'none !important',
+                    },
+                    
+
+                    
+                    // NOUVEAU : Changer l'arrière-plan
+                    backgroundColor: '#f0f0f0', 
+                  }}
+            />
       </Box>
     </>
   );

@@ -15,18 +15,18 @@ body {
 
 .titre1 {
 
- color: #D4C7B5;
-    text-transform: uppercase;
-    font-size: 28px;
-    font-weight: 600;
+ color: #D4C7B5 !important;
+    text-transform: uppercase !important;
+    font-size: 28px !important;
+    font-weight: 600 !important;
    
 }
 
 .titre2 {
-   color: #D4C7B5;
-    text-transform: uppercase;
-    font-weight: 500 ;
-    font-size: 20px;
+   color: #D4C7B5 !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    font-size: 20px !important;
   
 }
 
@@ -65,7 +65,7 @@ font-weight: 500 !important;
 
 .bouton {
  height: 47px;
-  border-radius: 50%;
+ 
   border: none;
   outline: none;
   text-align: center;
@@ -75,6 +75,7 @@ font-weight: 500 !important;
   border:none;
   font-size: 16px;
 }
+
 
 .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline {
   border: none !important; /* Supprime la bordure */

@@ -11,7 +11,7 @@ export default function PreviewButtonCell({ row, isOpen, onToggle }) {
   return (
     <FontAwesomeIcon
       icon={isOpen ? faTimes : faCircleArrowRight}
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'pointer', color: '#656565'}}
       onClick={handleClick}
       className="icone-datatable"
     />
