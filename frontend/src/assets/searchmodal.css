@@ -3,9 +3,9 @@
 
   background-color: white !important;
   box-shadow: none !important;
-  border: none !important;
+  border: 2px solid  #D4C7B5 !important;
   border-radius: 0 !important;
-  min-width: 100% !important;
+  min-width: 80% !important;
 
   
 }
@@ -32,6 +32,8 @@ display: flex !important;
   width: 30px !important;
   height: 30px !important;
 }
+
+
 
 .custom-close-icon {
   
@@ -79,7 +81,7 @@ display: flex !important;
 
 .bouton-rechercher {
 
-    display: inline-block !important;
+  display: inline-block !important;
   height: 47px !important;
   width: 314px !important;
   text-align: center !important;
@@ -88,4 +90,6 @@ display: flex !important;
   font-weight: 500 !important;
   text-transform: uppercase !important;
   border: none !important;
+  margin-bottom: 40px !important;
+  color: white !important;
 }

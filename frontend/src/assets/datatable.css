@@ -1,8 +1,8 @@
 
 .datatable {
   border: none !important;
-  box-shadow: none !important;
- 
+box-shadow: none !important;
+ background-color: white !important;
   
 }
 
@@ -132,11 +132,8 @@ color: #656565;
 }
 
 .MuiDataGrid-cell {
-  border-top: none !important;
-  border-bottom: none !important;
-}
-/*supprimer l'effet hover*/
-.css-12tkar3-MuiDataGrid-root .MuiDataGrid-row:hover {
-  background-color: #D4C7B5 !important;
+  border: none !important;
+ 
 }
 
+ 

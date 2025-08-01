@@ -39,19 +39,23 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
     setHasSearched(true);
   };
 
-  const handleSelectResult = (item) => {
-    
-    // Passer la valeur de reference_id_SI (number) à la fonction de recherche
-    onSearch(item.reference_id_SI);
-    handleClose();
-  };
+ const handleSelectResult = (item) => {
+  onSearch(item.reference_id_SI);
+  // Notifier le Header qu'un résultat a été sélectionné
+  if (window.notifyResultSelected) {
+    window.notifyResultSelected();
+  }
+  handleClose();
+};
+
 
   const handleClose = () => {
-    setSearchTerm('');
-    setSearchResults([]);
-    setHasSearched(false);
-    onClose();
-  };
+  // Fermeture normale sans notifier
+  setSearchTerm('');
+  setSearchResults([]);
+  setHasSearched(false);
+  onClose();
+};
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
@@ -63,6 +67,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
     <Dialog className="dialog-searchmodal"
       open={open} 
       onClose={handleClose}
+      scroll="body"
      
     >
       <DialogTitle >
@@ -95,7 +100,13 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
                 <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
                   {searchResults.length} résultat(s) trouvé(s) :
                 </Typography>
-                <Box sx={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <Box sx={{ 
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)', // 3 colonnes égales
+                  gap: 2,  
+    }}>
                   {searchResults.map((item, index) => (
                     <Box
                       key={item.id || index}
@@ -112,11 +123,14 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
                       }}
                       onClick={() => handleSelectResult(item)}
                     >
-                      <Typography variant="body1" fontWeight="medium">
-                        Référence: {item.reference_id_SI}
-                      </Typography>
+                      <Typography class="titre3">
+
+                        Référence : 
+                        </Typography>
+                        <Typography class="texte2">{item.reference_id_SI}
+                      </Typography >
                       {(item.nom || item.name || item.client || item.lastname) && (
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography class="texte1">
                           {item.nom || item.name || item.client || item.lastname}
                         </Typography>
                       )}
@@ -135,7 +149,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
 
       <DialogActions sx={{ px: 3, py: 2, justifyContent: 'center' }}>
         
-        <LoadingButton className="titre2 bouton-rechercher"
+        <LoadingButton className="titre2 bouton bouton-rechercher"
           onClick={handleSearch} 
           variant="contained" 
           disabled={!searchTerm.trim()}

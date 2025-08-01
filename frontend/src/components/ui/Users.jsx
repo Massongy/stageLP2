@@ -153,7 +153,9 @@ export default function Users({
               </Box>
               <Box className="container-infos-2">
                 {isCurrentProfile ? (
-                  <Button className="container-infos-2" sx={{
+                  <Button 
+                  disableRipple
+                  className="container-infos-2" sx={{
                       all: 'unset',
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -462,21 +464,28 @@ export default function Users({
         onClose={handlePasswordCancel}
         aria-labelledby="password-modal-title"
         aria-describedby="password-modal-description"
+        
       >
+       
         <Box sx={{
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
+          width: '50%',
+          height: '60%',
           bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
-          borderRadius: 2
+          border: '1px solid #D4C7B5;',
+           p: 30,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          
         }}>
-          <Typography id="password-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-            Modifier votre mot de passe
+          
+          <Typography className="titre2">
+            Modification du mot de passe
           </Typography>
           
           {error && (
@@ -550,6 +559,8 @@ export default function Users({
             </Button>
           </Box>
         </Box>
+
+   
       </Modal>
     </div>
   );

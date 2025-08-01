@@ -6,7 +6,7 @@ import Header from './components/Header'
 import '@/assets/index.css'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
-import Profile from './pages/Profile'
+
 import ChangePassword from './pages/ChangePassword'
 import Edition from './pages/Edition'
 import UserManagement from './pages/UserManagement'
@@ -33,14 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               />
               <Route path="/users" element={<PrivateRoute><UserManagement /></PrivateRoute>} />
 
-              <Route
-                  path="/profile"
-                  element={
-                      <PrivateRoute>
-                          <Profile />
-                      </PrivateRoute>
-                  }
-              />
+          
               <Route
                   path="/change-password"
                   element={

@@ -68,7 +68,7 @@ export default function BlocQuestionsReponses({
           </Box>
         ) : (
           validReponses.map((reponse, index) => (
-            <Box key={index} className="texte2 bouton-reponse">
+            <Box key={index} className={`texte2 bouton-reponse ${selectedReponse === reponse.id ? 'selected' : ''}`}>
               <label>
                 <input
                   type="radio"

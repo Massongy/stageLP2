@@ -54,15 +54,15 @@ export default function Dashboard() {
 
   // Exposer les fonctions openSearchModal et refetchQuotes globalement pour le header
     useEffect(() => {
-      window.openSearchModal = openSearchModal;
-      window.refetchQuotes = refetch;
-      return () => {
-        delete window.openSearchModal;
-        delete window.refetchQuotes; // <-- Nettoyage
-      };
-    }, [openSearchModal, refetch]);
+  window.openSearchModal = openSearchModal;
+  window.refetchQuotes = refetch;
+  return () => {
+    delete window.openSearchModal;
+    delete window.refetchQuotes;
+  };
+}, [openSearchModal, refetch]);
 
- 
+
   const filteredData = tableData?.filter((row) => {
       if (!filterModel?.items?.length) return true;
       
@@ -92,7 +92,14 @@ export default function Dashboard() {
       });
   }) || [];
 
-
+useEffect(() => {
+  window.clearFilter = () => {
+    setFilterModel({ items: [] });
+  };
+  return () => {
+    delete window.clearFilter;
+  };
+}, []);
 
 
 
@@ -125,9 +132,7 @@ export default function Dashboard() {
             <Box sx={{ 
               width: '100%',
               height: '100%',
-              '& .MuiTabs-root': {
-                borderRadius: 1,
-              }
+              
             }}>
               <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} />
             </Box>

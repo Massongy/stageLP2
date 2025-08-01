@@ -2,6 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLockQuote}  from '../../hooks/useLockQuote';
+import LoadingButton from './LoadingButton';
 
 const EditButton = ({ openedRowRef, quoteId }) => {
   const { quoteLock } = useLockQuote();
@@ -17,9 +18,9 @@ const EditButton = ({ openedRowRef, quoteId }) => {
   };
 
   return (
-    <button className="bouton-editer" onClick={handleClick}>
+    <LoadingButton className="bouton bouton-editer" onClick={handleClick}>
       Éditer
-    </button>
+    </LoadingButton>
   );
 };
 

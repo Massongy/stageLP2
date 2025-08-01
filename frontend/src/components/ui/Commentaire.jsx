@@ -8,9 +8,9 @@ import '../../assets/commentaire.css';
 export default function Commentaire({value, onChange, editable = true}) {
   return (
     <Box className="bloc-titre-champ champ-commentaire">
-        <Box className="titre3">
+        <Typography className="titre3">
           Commentaire :
-        </Box>
+        </Typography>
       
         {editable ? (
           <TextField  

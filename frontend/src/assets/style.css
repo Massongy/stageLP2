@@ -25,20 +25,29 @@ body {
 .titre2 {
    color: #D4C7B5 !important;
     text-transform: uppercase !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     font-size: 20px !important;
   
 }
 
 .titre3 {
 color: #656565;
-font-weight: 500 !important;
+font-weight: 600 !important;
+font-family:inherit !important;
 }
 
+.texte1 {
+color: #656565;
+font-size: 16px;
+font-style: italic;
+font-family:inherit !important;
 
+}
 .texte2 {
 
   font-size: 16px !important;
+  color: #656565;
+  font-family:inherit !important;
 }
 
 .bloc-titre-champ {
@@ -73,7 +82,17 @@ font-weight: 500 !important;
   font-weight: 500;
   text-transform: uppercase;
   border:none;
-  font-size: 16px;
+  font-size: 1rem;
+  box-shadow: none !important; /* Suppression de l'ombre */
+
+}
+.bouton:hover {
+  opacity: 0.85; /* 15% de transparence = 85% d'opacité */
+  box-shadow: none !important;
+}
+.bouton:focus {
+  outline: none;
+  box-shadow: none !important;
 }
 
 
@@ -144,9 +163,17 @@ fieldset {
   border-radius: 25px !important;
   font-size: 16px !important;
   font-weight: 500 !important;
+  box-shadow: none !important;
   
   
 }
+
+
+.bouton-confirmer:hover {
+  opacity: 0.85; /* 15% de transparence = 85% d'opacité */
+  box-shadow: none !important;
+}
+
 
 .bouton-annuler {
   width: 100% !important;
@@ -162,11 +189,15 @@ fieldset {
   font-weight: 500 !important;
   border: 2px solid #90A5C8 !important;
   margin-right: 6px !important;  /* Couleur bordure */
-  
+  box-shadow: none !important;
   
     
 }
 
+.bouton-annuler:hover {
+  opacity: 0.85; /* 15% de transparence = 85% d'opacité */
+  box-shadow: none !important;
+}
 .boite-dialogue .MuiDialog-paper {
   border: 1px solid #D4C7B5;
   border-radius: 0;
@@ -175,6 +206,7 @@ fieldset {
   min-height: 356px;
   max-width: none;
   padding: 0; /* Désactive le padding par défaut de MUI */
+
 }
 
 .boite-dialogue .MuiDialogTitle-root {

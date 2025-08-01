@@ -37,8 +37,7 @@ export default function FicheClient({reference}) {
           <Box className="fiche-info-title-content" >
             <Typography className="fiche-info-title-content-text">Référence : {reference}
             </Typography>
-            <Typography className="fiche-info-title-content-text"> Scoring : 
-            </Typography>
+            
           </Box>
         }
         
@@ -51,33 +50,40 @@ export default function FicheClient({reference}) {
 
           <Box className="fiche-info-bloc-1-row">
             <Box>
-              <Typography className="fiche-info-blocs-text"><strong>Nom et prénom :</strong> {selectedQuote?.lastname ?? 'Inconnu'} {selectedQuote?.firstname ?? 'Inconnu'}</Typography>
+              <Typography className="titre3">Nom et prénom :</Typography>
+              <Typography className="texte2">{selectedQuote?.lastname ?? 'Inconnu'} {selectedQuote?.firstname ?? 'Inconnu'}
+              </Typography> 
+            
             </Box> 
             <Box sx={{ textAlign: 'right' }}>
-              <Typography className="fiche-info-blocs-text"><strong>Numéro :</strong> {selectedQuote?.phone ?? 'Inconnu'}</Typography>
+              <Typography className="titre3">Numéro :</Typography> 
+               <Typography className="texte2">{selectedQuote?.phone ?? 'Inconnu'}</Typography>
             </Box>
           </Box>
 
           <Box className="fiche-info-bloc-1-row">
             <Box >
-              <Typography className="fiche-info-blocs-text"><strong>Date du 1er appel :</strong> {selectedQuote?.date_first_call ? dayjs(selectedQuote.date_first_call).format('DD/MM/YYYY')
-    : 'Inconnu'} </Typography>
+              <Typography className="titre3">Date du 1er appel :</Typography>
+              <Typography className="texte2">{selectedQuote?.date_first_call ? dayjs(selectedQuote.date_first_call).format('DD/MM/YYYY')
+              : 'Inconnu'} </Typography>
             </Box> 
 
             <Box sx={{ textAlign: 'right' }}>
-              <Typography className="fiche-info-blocs-text"><strong> Nombre d'appels :
-              </strong> {selectedQuote?.call_count ?? 'Inconnu'}</Typography>  
+              <Typography className="titre3">Nombre d'appels :</Typography>  
+               <Typography className="texte2">{selectedQuote?.call_count ?? 'Inconnu'}</Typography>
             </Box>
           </Box>
 
           <Box className="fiche-info-bloc-1-row">
 
             <Box>
-              <Typography className="fiche-info-blocs-text"><strong>Date du dernier appel :</strong> {selectedQuote?.date_last_call ? dayjs(selectedQuote.date_last_call).format('DD/MM/YYYY')
-      : 'Inconnu'} </Typography>
+              <Typography className="titre3">Date du dernier appel :</Typography>
+              <Typography className="texte2">  {selectedQuote?.date_last_call ? dayjs(selectedQuote.date_last_call).format('DD/MM/YYYY')
+                : 'Inconnu'}</Typography>
             </Box>
-            <Box>  
-              <Typography className="fiche-info-blocs-text"><strong>Semaine N°: </strong> {selectedQuote?.weeknumber ?? 'Inconnu'}</Typography>
+            <Box sx={{ textAlign: 'right' }}>  
+              <Typography className="titre3">Semaine N°:</Typography>
+              <Typography className="texte2"> {selectedQuote?.weeknumber ?? 'Inconnu'}</Typography>
             </Box>
           </Box>
           
@@ -97,7 +103,7 @@ export default function FicheClient({reference}) {
             item.answer.value && (
               <Box key={item.question.id} className="questionnaire-box">
                 <Box className="questionnaire-box-gauche">
-                  <Typography className="fiche-info-blocs-text">{item.question.label}</Typography>
+                  <Typography className="fiche-info-blocs-text titre3">{item.question.label}</Typography>
                 </Box>
                 <Box className="questionnaire-box-droite">
                   <Typography className="fiche-info-blocs-text questionnaire-box-droite">{item.answer.value}</Typography>
@@ -110,10 +116,10 @@ export default function FicheClient({reference}) {
         {questionnaire?.date_prevue && (
           <Box className="questionnaire-box">
             <Box className="questionnaire-box-gauche">
-              <Typography className="fiche-info-blocs-text">{dateInputQuestion?.label}</Typography>
+              <Typography className="titre3">{dateInputQuestion?.label}</Typography>
             </Box>
             <Box className="questionnaire-box-droite">
-              <Typography className="fiche-info-blocs-text questionnaire-box-droite">
+              <Typography className="texte2 questionnaire-box-droite">
                 {dayjs(questionnaire.date_prevue).format('DD/MM/YYYY')}
               </Typography>
             </Box>
@@ -123,12 +129,12 @@ export default function FicheClient({reference}) {
 
 
         <Box>
-                <Commentaire className="champ" value={selectedQuote?.comment || " "} 
+            <Commentaire className="champ" value={selectedQuote?.comment || " "} 
                     onChange={() => {}} editable = {false}/>
-            </Box>
-                </CardContent>
-              <CardActions />
-            </Card>
+        </Box>
+        </CardContent>
+        
+      </Card>
   );
 }
 

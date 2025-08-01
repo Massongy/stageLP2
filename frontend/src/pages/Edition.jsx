@@ -466,7 +466,7 @@ const formatCustomDate = (dateString) => {
         <Row className="mb-4">
           <Col xs={12} className="d-flex">
             <div className="d-flex flex-wrap">
-              <QuestionsScoring onDataChange={handleQuestionDataChange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} />
+              <QuestionsScoring onDataChange={handleQuestionDataChange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} questionnaireData={questionnaireData}/>
             </div>
           </Col>
         </Row>
@@ -565,92 +565,10 @@ const formatCustomDate = (dateString) => {
       {/* Nouvelle boîte de dialogue d'enregistrement */}
       <Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
         <div className="dialog-content">
-
-
-      
-        
-          <DialogContent className="dialog-content">
-         {blocInfoData && (
-    <>
-      <Typography variant="h6" sx={{ 
-        fontWeight: 'bold', 
-        mt: 2, 
-        mb: 2,
-        color: 'primary.main'
-      }}>
-        Informations de la demande
-      </Typography>
-      
-      <Box sx={{
-        p: 2,
-        mb: 3,
-        borderRadius: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.02)',
-        border: '1px solid rgba(0, 0, 0, 0.12)'
-      }}>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Typography variant="body2"><strong>Référence:</strong> {blocInfoData.Référence}</Typography>
-            <Typography variant="body2"><strong>Nom:</strong> {blocInfoData.Nom}</Typography>
-            <Typography variant="body2"><strong>Prénom:</strong> {blocInfoData.Prénom}</Typography>
-            <Typography variant="body2"><strong>Téléphone:</strong> {blocInfoData["Numéro de téléphone"]}</Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2"><strong>Email:</strong> {blocInfoData.Email}</Typography>
-            <Typography variant="body2"><strong>Semaine N°:</strong> {blocInfoData["Semaine N°"]}</Typography>
-            <Typography variant="body2"><strong>Nombre d'appels:</strong> {blocInfoData["Nombre d'appels"]}</Typography>
-            <Typography variant="body2"><strong>1er appel:</strong> {dayjs(blocInfoData["Date du 1er appel"]).format('DD/MM/YYYY')}</Typography>
-            <Typography variant="body2"><strong>Dernier appel:</strong> {dayjs(blocInfoData["Date du dernier appel"]).format('DD/MM/YYYY')}</Typography>
-          </Grid>
-        </Grid>
-      </Box>
-    </>
-  )}
-         
-  <List>
-    {questionnaireData && Object.entries(questionnaireData).map(([questionId, answerData]) => {
-      // Trouver la question complète
-      const question = questionnaireQuestions.find(q => q.id === Number(questionId));
-      
-      // Trouver la réponse complète
-      const response = questionnaireResponses.find(r => r.id === Number(answerData.reponse));
-
-      return (
-        <ListItem key={questionId} disablePadding sx={{ 
-          py: 1.5,
-          borderBottom: '1px solid rgba(0, 0, 0, 0.12)'
-        }}>
-          <ListItemText
-           primary={
-    <Typography component="div" variant="subtitle1" fontWeight="bold">
-      {question?.label || `Question ${questionId}`}
-    </Typography>
-  }
-  secondary={
-    <Box component="div" sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-      {answerData.date ? (
-        <>
-          <Typography component="span" variant="body2">
-            {formatCustomDate(answerData.date)}
-          </Typography>
-        </>
-      ) : (
-        <Typography component="span" variant="body2">
-          {response?.text || response?.value || answerData.reponse}
-        </Typography>
-      )}
-    </Box>
-  }
-/>
-        </ListItem>
-      );
-    })}
-  </List>
-  
-</DialogContent>
           <DialogTitle className="dialog-title">
             Que souhaitez-vous faire ?
           </DialogTitle>
+          
           <DialogActions className="dialog-actions">
             
             <Button 
@@ -661,6 +579,7 @@ const formatCustomDate = (dateString) => {
             >
               Enregistrer et clôturer
             </Button>
+
             <Button 
               className="bouton-confirmer" 
               onClick={handleSaveAndReturnLater} 
@@ -676,6 +595,7 @@ const formatCustomDate = (dateString) => {
             >
               Annuler
             </Button>
+          
           </DialogActions>
         </div>
       </Dialog>

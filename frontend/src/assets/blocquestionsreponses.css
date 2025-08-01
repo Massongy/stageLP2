@@ -28,6 +28,11 @@
   color: white;
 }
 
+.bouton-reponse.selected {
+  background-color: #D4C7B5;
+  color: white;
+}
+
 .css-19y0qf7-MuiFormControl-root-MuiPickersTextField-root {
 border: 1px solid #D4C7B5 !important;
 height: 34px !important; 

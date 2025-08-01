@@ -81,9 +81,6 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         field: 'lock',
         headerName: '',
         headerAlign: 'center',
-        width: isMobile ? 30 : 60,
-        minWidth: isMobile ? 30 : 60,
-        flex: 0,
         align: 'center',
         renderCell: (params) => {
           const isLocked = lockedQuotes.some(lockedQuote => lockedQuote.quote === params.row.id);
@@ -91,6 +88,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
             <FontAwesomeIcon 
               icon={isLocked ? faLock : faUnlock} 
               className="icone-datatable" 
+              style={{ color: isLocked ? undefined : '#656565' }}
             />
           );
         },
@@ -104,12 +102,8 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         field: 'reference_id_SI',
         headerName: 'Référence',
         headerAlign: 'center',
-        width: isMobile ? 80 : isTablet ? 120 : 120,
-        minWidth: isMobile ? 80 : isTablet ? 120 : 120,
-        flex: 0,
+        width: '130',
         align: 'center',
-        
-        
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
@@ -120,10 +114,8 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         field: 'lastname', 
         headerName: isMobile ? 'Nom' : 'Nom', 
         headerAlign: 'center', 
-        width: isMobile ? 100 : isTablet ? 150 : 150,
-        minWidth: isMobile ? 100 : isTablet ? 150 : 150,
-        flex: 0,
         align: 'center', 
+          width: '130',
         sortable: false, 
         filterable: false, 
         disableColumnMenu: true,
@@ -134,10 +126,8 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         field: 'firstname', 
         headerName: isMobile ? 'Prénom' : 'Prénom', 
         headerAlign: 'center', 
-        width: isMobile ? 100 : isTablet ? 150 : 150,
-        minWidth: isMobile ? 100 : isTablet ? 150 : 150,
-        flex: 0,
         align: 'center', 
+          width: '130',
         sortable: false, 
         filterable: false, 
         disableColumnMenu: true,
@@ -157,9 +147,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         ),
         headerAlign: 'center',
         align: 'center',
-        width: isMobile ? 100 : isTablet ? 120 : 140,
-        minWidth: isMobile ? 100 : isTablet ? 120 : 140,
-        flex: 0,
+          width: '130',
         sortable: false,
         filterable: true,
         disableColumnMenu: false,
@@ -185,16 +173,13 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
           '& .MuiDataGrid-columnHeaderTitleContainer': {
             justifyContent: 'center'
           },
+          },
         },
-      },
 
       {
         field: 'transfert',
         headerName: isMobile ? 'Transf.' : isTablet ? 'Transf.' : 'Transférer',
         headerAlign: 'center',
-        width: isMobile ? 70 : isTablet ? 80 : 120,
-        minWidth: isMobile ? 70 : isTablet ? 80 : 120,
-        flex: 0,
         align: 'center',
         headerClassName: 'th-cell',
         renderCell: (params) => (
@@ -204,33 +189,39 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
           />
           
         ),
+          width: '100',
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
         hideable: false,
       },
+      
       {
         field: 'preview',
         headerName: '',
-        width: isMobile ? 50 : 80,
-        minWidth: isMobile ? 50 : 80,
-        flex: 0,
         align: 'center',
         renderHeader: () => <FontAwesomeIcon icon={faCircleInfo} className="icone-datatable icone-datatable-info" />,
         renderCell: (params) => (
           <PreviewButtonCell row={params.row} isOpen={params.row.reference_id_SI === openedRowRef} onToggle={onPreview} />
         ),
+          width: '80',
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
         hideable: false,
-      }
+        }
     ];
 
     return baseColumns;
   }, [onPreview, openedRowRef, onFilterModelChange, isMobile, isTablet, filteredData, lockedQuotes]);
 
+const containerRef = React.useRef();
 
+useEffect(() => {
+  if (containerRef.current) {
+    console.log('Largeur conteneur:', containerRef.current.offsetWidth);
+  }
+}, []);
 
   return (
     <>
@@ -252,36 +243,14 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         </Alert>
       </Snackbar>
 
-      <Box sx={{ 
-        display: 'flex',
-        width: '100%', 
-        height: 200,  
-        overflow: 'auto',
-        '& .MuiDataGrid-root': {
-          border: 'none',
-          width: '100%',
-        },
-        '& .MuiDataGrid-cell': {
-          borderBottom: 'none',
-        },
-        '& .MuiDataGrid-columnHeaders': {
-          backgroundColor: theme.palette.grey[50],
-          borderBottom: 'none',
-        },
-        
-        '& .MuiDataGrid-footerContainer': {
-          borderTop: 'none',
-          backgroundColor: theme.palette.grey[50],
-        },
-        [theme.breakpoints.down('sm')]: {
-          '& .MuiDataGrid-columnHeader': {
-            fontSize: '0.75rem',
-          },
-          '& .MuiDataGrid-cell': {
-            fontSize: '0.75rem',
-          },
-        },
-      }}>
+      <Box ref={containerRef} 
+      
+          sx={{ 
+            display: 'flex',
+             width: '100%', 
+          height: '400px', // Hauteur fixe ou dynamique
+            overflow: 'hidden',
+          }}>
         
         
           <DataGrid
@@ -291,16 +260,20 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                   rowHeight={70}
                   filterModel={filterModel}
                   onFilterModelChange={onFilterModelChange}
-                  pageSize={isMobile ? 3 : isTablet ? 5 : 10}
-                  rowsPerPageOptions={isMobile ? [3, 5] : isTablet ? [5, 10] : [5, 10, 25]}
                   disableRowSelectionOnClick
                   disableColumnSelector={true} 
                   className="datatable"
                   hideFooter={true}
-                  getRowClassName={(params) =>
-                    params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row'
-                  }
-                  
+                  getRowClassName={(params) => {
+                      // Vérifie si cette ligne est ouverte
+                      const isRowOpen = params.row.reference_id_SI === openedRowRef;
+                      if (isRowOpen) {
+                        return 'opened-row';
+                      }
+                              // Sinon, applique les couleurs alternées normales
+                              return params.indexRelativeToCurrentPage % 2 === 0 ? 'even-row' : 'odd-row';
+                            }}
+                                              
 
                   slots={{
                     
@@ -326,9 +299,11 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                   }}
                   
                   sx={{
-                    
-                    width: '100%',
-                    height: isMobile ? 300 : isTablet ? 350 : 400,
+                  width: '100%',
+                          height: '100%', // Prend toute la hauteur du Box parent
+                          '& .MuiDataGrid-virtualScroller': {
+                            overflowY: 'auto', // Active le scroll vertical
+                          },
                     backgroundColor: '#ffffff',
                     '& .MuiDataGrid-main': { overflow: 'visible'
                      },
@@ -342,9 +317,11 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                     
                     '& .MuiDataGrid-main': { overflow: 'visible' },
                     '& .MuiDataGrid-virtualScroller': { overflowX: 'auto', overflowY: 'auto' },
-                    '& .MuiDataGrid-columnHeaders': { minWidth: 'max-content' },
-                    '& .MuiDataGrid-row': { minWidth: 'max-content' },
-                    '& .MuiDataGrid-columnHeader': { minWidth: 'unset !important' },
+                    '& .MuiDataGrid-columnHeaders': {
+                        height: '70px !important',
+                        padding: '0 !important', 
+                        minHeight: '70px !important', // Ajoute aussi minHeight
+                      },
                     
                     // Styles spécifiques pour forcer l'affichage de l'icône personnalisée
                     '& .custom-menu-icon': {
@@ -352,6 +329,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                       opacity: '1 !important',
                       visibility: 'visible !important'
                     },
+                   
                     '& .MuiDataGrid-menuIcon': {
                       width: 'auto !important',
                       visibility: 'visible !important',
@@ -365,6 +343,9 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                     },
 
                     //couleurs des lignes
+                    '& .opened-row': {
+                      backgroundColor: '#D4C7B5',
+                    },
 
                     '& .even-row': {
                       backgroundColor: '#F5F2EE', // Gris clair pour les lignes paires
@@ -372,16 +353,34 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
                     '& .odd-row': {
                       backgroundColor: 'white', // Blanc pour les lignes impaires
                     },
+                     '& .MuiDataGrid-row:hover': {
+                      backgroundColor: '#D4C7B5 !important',
+                    },
                     
                     // Supprimer les bordures entre les lignes
                     '& .MuiDataGrid-row': {
                       borderBottom: 'none !important',
                     },
-                    
 
-                    
-                    // NOUVEAU : Changer l'arrière-plan
-                    backgroundColor: '#f0f0f0', 
+                    //barre de scroll
+                    '& .MuiDataGrid-virtualScroller': {
+                        overflowY: 'scroll !important', // Force l'apparition du scroll
+                        minHeight: '100px', // Hauteur minimale pour déclencher le scroll
+                        '&::-webkit-scrollbar': {
+                          width: '8px',
+                          height: '8px'
+                        },
+                        '&::-webkit-scrollbar-thumb': {
+                          backgroundColor: '#D4C7B5 !important',
+                          borderRadius: '4px'
+                        },
+                        '&::-webkit-scrollbar-track': {
+                          backgroundColor: '#F5F2EE !important'
+                        }
+                      },
+                      '& .MuiDataGrid-main': {
+                        overflow: 'hidden !important' // Contient le tout
+                      }
                   }}
             />
       </Box>

@@ -41,6 +41,8 @@
 .boutton-search:hover {
   background-color: white !important;
   color: #D4C7B5 !important;
+  opacity: 0.85; /* 15% de transparence = 85% d'opacité */
+  box-shadow: none !important;
 }
 
 .bouton-actualiser {
@@ -58,6 +60,11 @@
    align-items: center !important;
    box-shadow: none !important; 
   
+}
+
+.bouton-actualiser:hover {
+  opacity: 0.85; /* 15% de transparence = 85% d'opacité */
+  box-shadow: none !important;
 }
 
 .logo-header {
@@ -100,6 +107,11 @@
   border: none !important;
   margin-right: 40px !important;
   background-color: #D4C7B5 !important;
+  box-shadow: none !important;
+}
+
+.bouton-utilisateur:hover {
+opacity: 0.85; /* 15% de transparence = 85% d'opacité */
   box-shadow: none !important;
 }
 
