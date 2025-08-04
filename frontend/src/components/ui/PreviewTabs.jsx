@@ -8,7 +8,7 @@ import FicheClient from './FicheClient.jsx';
 import '../../assets/style.css';
 import '../../assets/previewtabs.css';
 
-export default function PreviewTabs({ openedRowRef, quoteId }) {
+export default function PreviewTabs({ openedRowRef, quoteId, status }) {
   
   
   const [activeTab, setActiveTab] = useState(0);
@@ -35,7 +35,7 @@ export default function PreviewTabs({ openedRowRef, quoteId }) {
 
   return (
     <Box className = "preview-selected">
-        <EditButton openedRowRef={openedRowRef}  quoteId={quoteId} />
+        <EditButton openedRowRef={openedRowRef}  quoteId={quoteId} status={status} />
          
        
         <FicheClient reference={openedRowRef} className="fiche-info"/>

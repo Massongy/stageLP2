@@ -46,6 +46,11 @@ export default function Dashboard() {
     quote.reference_id_SI?.toString() === openedRowRef
   )?.id || null;
   
+    const status = tableData?.find(quote => 
+    quote.reference_id_SI === openedRowRef || 
+    quote.reference_id_SI?.toString() === openedRowRef
+  )?.status || null;
+  
   const handlePreview = (row) => {
     const reference = row.reference_id_SI; // Utiliser reference_id_SI
     setSelectedReference(reference);
@@ -134,7 +139,7 @@ useEffect(() => {
               height: '100%',
               
             }}>
-              <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} />
+              <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} status={status}/>
             </Box>
           </div>
         </div>

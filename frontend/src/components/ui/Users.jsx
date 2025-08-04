@@ -126,12 +126,25 @@ export default function Users({
       <div className="d-none d-lg-block">
         {/* Liste des utilisateurs existants */}
         {datausers.map((user, i) => (
-          <Box key={i} className="info-admin" sx={{ 
-            display: 'grid',
-            gridTemplateColumns: '1fr 1.5fr 1fr auto',
-            gap: '16px',
-            alignItems: 'center'
-          }}>
+          <Box sx={{
+  display: 'grid',
+  gridTemplateColumns: '1fr 1.5fr 1fr 80px',
+  width: 'calc(100% - 32px)', // Compense les paddings
+  margin: '0 auto', // Centrage parfait
+  padding: '0 16px', // Padding symétrique
+  boxSizing: 'border-box',
+  position: 'relative',
+  '&::before': { // Guide visuel (à supprimer après vérification)
+    content: '""',
+    position: 'absolute',
+    left: '16px',
+    right: '16px',
+    top: 0,
+    bottom: 0,
+    border: '1px dashed rgba(0,0,255,0.3)',
+    pointerEvents: 'none'
+  }
+}}>
             {/* Colonne 1: Nom & Prénom */}
             <Box className="container-infos">
               <Box className="container-infos-1">Nom et Prénom :</Box>
@@ -151,48 +164,72 @@ export default function Users({
               <Box className="container-infos-1">
                 {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
               </Box>
+              
               <Box className="container-infos-2">
-                {isCurrentProfile ? (
-                  <Button 
-                  disableRipple
-                  className="container-infos-2" sx={{
-                      all: 'unset',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
+                  {isCurrentProfile ? (
+                    <Button 
+                    disableRipple
+                    className="container-infos-2" sx={{
+                        all: 'unset',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        
+                      }}
                       
-                    }}
-                    
-                    onClick={() => handlePasswordClick(user)}
-                  >
-                    
-                    Modifier
-                  </Button>
-                ) : (
-                  user.groups
-                )}
-              </Box>
-            </Box>
+                      onClick={() => handlePasswordClick(user)}
+                    >
+                      
+                      Modifier
+                    </Button>
+                  ) : (
+                    user.groups
+                  )}
+                </Box>
             
+            </Box>
             {/* Colonne 4: Icônes */}
-            {!isCurrentProfile && (
-              <Box sx={{ 
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '8px',
-                paddingRight: '16px'
-              }}>
-                <Button onClick={() => handleEdit(user)} sx={{ minWidth: '40px' }}>
-                  <FontAwesomeIcon icon={faCircleCheck} className="icon"/>
-                </Button>
-                <Button onClick={() => handleDelete(user.id)} sx={{ minWidth: '40px' }}>
-                  <FontAwesomeIcon icon={faTrash} className="icon"/>
-                </Button>
-              </Box>
-            )}
-          </Box>
-        ))}
+            <Box sx={{ 
+  display: 'flex',
+  justifyContent: 'flex-end',
+  width: '80px', // Largeur fixe pour stabilité
+  marginLeft: '0px !important', // Force l'alignement à droite
+    paddingRight: '0px !important' // Suppression padding parasite
+}}>
+  {isCurrentProfile ? (
+    /* Vrai bloc invisible (sans boutons fonctionnels) */
+    <Box sx={{ 
+      visibility: 'hidden',
+      display: 'flex',
+      gap: '8px'
+    }}>
+      <Button sx={{ minWidth: '40px' }} disabled>
+        <FontAwesomeIcon icon={faCircleCheck} />
+      </Button>
+      <Button sx={{ minWidth: '40px' }} disabled>
+        <FontAwesomeIcon icon={faTrash} />
+      </Button>
+    </Box>
+  ) : (
+    /* Bloc actif */
+    <Box sx={{ display: 'flex', gap: '8px' }}>
+      <Button 
+        onClick={() => handleEdit(user)} 
+        sx={{ minWidth: '40px' }}
+      >
+        <FontAwesomeIcon icon={faCircleCheck} className="icon"/>
+      </Button>
+      <Button 
+        onClick={() => handleDelete(user.id)} 
+        sx={{ minWidth: '40px' }}
+      >
+        <FontAwesomeIcon icon={faTrash} className="icon"/>
+      </Button>
+    </Box>
+  )}
+</Box>
+        </Box>))}
 
         {/* Ligne de création */}
        {isCreating && (
@@ -330,17 +367,11 @@ export default function Users({
           onSaveNewUser();
         }}
         className="bouton-créer-utilisateur"
-       sx={{
-        minWidth: '20px',
-    '&:focus, &:active': {
-      backgroundColor: '#90A5C8 !important',
-      boxShadow: 'none !important',
-      outline: 'none !important',
-    },
-  }}
+       
+  
         disabled={!creationData.groups?.[0]}
       >
-         <span className="custom-add-utilisateur-icon">+</span>
+         <FontAwesomeIcon icon="fa-solid fa-pencil" />
       </Button>
       <Button 
         variant="outlined" 

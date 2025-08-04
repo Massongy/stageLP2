@@ -73,16 +73,18 @@ font-family:inherit !important;
 }
 
 .bouton {
- height: 47px;
- 
-  border: none;
-  outline: none;
-  text-align: center;
-  border-radius: 25px;
-  font-weight: 500;
-  text-transform: uppercase;
-  border:none;
-  font-size: 1rem;
+ height: 47px !important;
+  border: none !important;
+  outline: none !important;
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center !important;
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  border:none !important;
+  font-size: 1rem !important;
   box-shadow: none !important; /* Suppression de l'ombre */
 
 }
@@ -198,46 +200,48 @@ fieldset {
   opacity: 0.85; /* 15% de transparence = 85% d'opacité */
   box-shadow: none !important;
 }
+
+/*boite dialogue confirmation pour edition*/
+
 .boite-dialogue .MuiDialog-paper {
-  border: 1px solid #D4C7B5;
-  border-radius: 0;
-  width: 33%;
-  height: auto;
-  min-height: 356px;
-  max-width: none;
-  padding: 0; /* Désactive le padding par défaut de MUI */
-
+  min-width: 400px;
+  text-align: center;
+  padding: 20px;
 }
 
+/* Style du titre */
 .boite-dialogue .MuiDialogTitle-root {
-  font-size: 16px !important; 
-  font-weight: 600 !important;
+  border-radius: 0 !important;
+  padding: 16px 24px !important;
+  font-size: 16px;
+  font-weight: 600;
   color: #656565;
-  
-}
-
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centre horizontalement */
-  gap: 10px; /* Espace entre les éléments */
-  padding: 50px; /* Padding général */
-  padding-bottom: 24px; /* Réduit légèrement en bas */
-}
-
-.dialog-title {
-  text-align: center; /* Centre le texte */
+  background: transparent;
+  margin: 0 auto;
   width: 100%;
-  margin-bottom: 10px;
-  margin-top: 20px !important; 
-  
 }
 
+/* Conteneur des actions - colonne centrée */
 .dialog-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  width: 100%;
+  gap: 16px;
+  padding: 16px 0;
 }
 
+/* Style des boutons */
+.dialog-actions .MuiButton-root {
+  width: 200px;
+  margin: 4px 0;
+}
+
+.bouton-confirmer {
+  background-color:#90A5C8 !important;
+  color: white !important;
+}
+
+.bouton-annuler {
+  border: 1px solid #90A5C8 !important;
+  color: #90A5C8 !important;
+}

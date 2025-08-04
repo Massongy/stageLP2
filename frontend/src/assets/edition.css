@@ -8,10 +8,16 @@
 
 .bouton-fermer-edition {
  text-decoration: none !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 67%;
+  width: 50%;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    color: white;
+    background-color: #90A5C8 !important;
+    font-size: 1.042vw !important;
+    font-weight: 600 !important;
+    width: auto !important;
+  padding: 0 16px;
+  white-space: nowrap;
     
     
 }
@@ -21,8 +27,6 @@
    width: 48%;
      margin-left: auto;
   margin-right: auto;
-    
-    
     
 }
 .titre-edition {

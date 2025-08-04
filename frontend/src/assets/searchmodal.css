@@ -46,9 +46,10 @@ display: flex !important;
   fill: none !important;
 }
 
-.dialog-content {
+.dialog-content-search-modal {
 
     display: flex !important;
+    flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
     margin-top: 70px;

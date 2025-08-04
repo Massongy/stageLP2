@@ -34,6 +34,7 @@
     align-items: center;
     
     
+    
 }
 
 .titre-info-admin-gestion-compte {
@@ -75,7 +76,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+
 }
 
 .titre-info-utilisateur-gestion-compte{
@@ -246,9 +247,6 @@ border: none !important;
 }
 
 
-
-
-
 .bouton-créer-utilisateur {
 
 background-color: #90A5C8 !important;
@@ -257,7 +255,7 @@ height: 20px!important;
 border-radius: 50% !important;
 }
 
-//bouton créer utilisateur activé
+/*bouton créer utilisateur activé*/
 
 .css-1bwbtj5-MuiButtonBase-root-MuiButton-root {
   background-color: #90A5C8 !important;

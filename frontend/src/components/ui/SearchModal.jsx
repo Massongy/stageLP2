@@ -81,7 +81,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
         </IconButton>
       </DialogTitle>
 
-      <DialogContent className="dialog-content">
+      <DialogContent className="dialog-content-search-modal">
         <Box className="dialog-content-box1-search-modal">
           <TextField className="dialog-content-textfield"
             fullWidth

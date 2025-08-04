@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { Alert, Snackbar } from '@mui/material';
+
 import Box from '@mui/material/Box';
 import { Button, Dialog, DialogTitle, DialogActions } from '@mui/material';
 import Users from '../components/ui/Users.jsx';
@@ -10,9 +12,15 @@ import { useMyUsers } from '../hooks/useMyUsers';
 import { useDeleteUser } from '../hooks/useDeleteUser';
 import { useEditUser } from '../hooks/useEditUser';
 import useCurrentUser from '../hooks/useCurrentUser.jsx';
+import ConfirmDeleteDialog from '../components/ui/ConfirmDeleteDialog.jsx';
 import LoadingButton from '../components/ui/LoadingButton.jsx';
 
 function UserManagement() {
+const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+const [userToDelete, setUserToDelete] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+const [snackbarMessage, setSnackbarMessage] = useState('');
+const [snackbarSeverity, setSnackbarSeverity] = useState('info'); 
   const [isCreating, setIsCreating] = useState(false);
 const [newUser, setNewUser] = useState({
   first_name: '',
@@ -130,10 +138,16 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
     if (editUserId) {
       editUser(editUserId, dataToSend)
         .then(result => {
-          alert(result ? 'Utilisateur mis à jour !' : 'Erreur mise à jour');
+          setSnackbarMessage(result ? 'Utilisateur mis à jour !' : 'Erreur lors de la mise à jour');
+        setSnackbarSeverity(result ? 'success' : 'error');
+        setOpenSnackbar(true);
           usersRefetch(); // Rafraîchit la liste des utilisateurs
         })
-        .catch(err => alert('Erreur: ' + err.message))
+        .catch(err => {
+        setSnackbarMessage('Erreur: ' + err.message);
+        setSnackbarSeverity('error');
+        setOpenSnackbar(true);
+      })
         .finally(() => {
           setShowForm(false);
           setEditUserId(null);
@@ -150,8 +164,10 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
   
   try {
     await createUser(pendingData);
-    alert('Utilisateur créé avec succès');
-    setShowEmailConfirmation(false);
+setSnackbarMessage('Utilisateur créé avec succès');
+    setSnackbarSeverity('success');
+    setOpenSnackbar(true);
+        setShowEmailConfirmation(false);
     setShowEmailConfirmation(false);
     setShowForm(false);
     setIsCreating(false);
@@ -159,9 +175,10 @@ const [currentUserGroup, setCurrentUserGroup] = useState(null);
     
     
   } catch (err) {
-    console.error(err);
-    alert('Erreur lors de la création: ' + err.message);
-  } finally {
+   setSnackbarMessage('Erreur lors de la création: ' + err.message);
+    setSnackbarSeverity('error');
+    setOpenSnackbar(true);
+    } finally {
     setIsCreatingUser(false); // Désactive le loader
   }
 };
@@ -174,17 +191,33 @@ useEffect(() => {
   useEffect(() => {
   console.log('Valeur de showForm:', showForm);
 }, [showForm]);
-  const handleDelete = (userId) => {
-    if (!window.confirm('Êtes-vous sûr ?')) return;
-    deleteUser(userId)
-       .then(success => {
-      if (success) {
-        alert('Utilisateur supprimé');
-        usersRefetch(); // Rafraîchit la liste des utilisateurs
-      }
-    })
-      .catch(err => alert('Erreur: ' + err.message));
-  };
+  
+const handleDelete = (userId) => {
+  const user = users.find(u => u.id === userId);
+  setUserToDelete(user);
+  setDeleteDialogOpen(true);
+};
+
+const handleUserDelete = async () => {
+  if (!userToDelete) return;
+  
+  try {
+    const success = await deleteUser(userToDelete.id);
+    if (success) {
+      setSnackbarMessage('Utilisateur supprimé avec succès');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+      usersRefetch();
+    }
+  } catch (err) {
+    setSnackbarMessage('Erreur lors de la suppression: ' + err.message);
+    setSnackbarSeverity('error');
+    setOpenSnackbar(true);
+  } finally {
+    setUserToDelete(null);
+  }
+};
+
 
   const handleCreationChange = (e) => {
   const { name, value } = e.target;
@@ -284,17 +317,26 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
       </Row>
 
       {/* Row 2: Informations compte administrateur */}
-      <Row className="mt-3">
+      <Row className="justify-content-center">
         <Col xs={12}>
-          <Box className="info-admin-gestion-compte p-3">
-            <Box className="titre2 mb-3">Informations de mon compte administrateur</Box>
-            <Users 
-              datausers={dataadmin}
-              isCurrentProfile={true}
-              currentUserGroup={currentUserGroup}
-              
-            />
-          </Box>
+          
+            <Box className="titre2 text-center text-md-start">Informations de mon compte administrateur</Box>
+        </Col>
+      </Row>
+            
+      <Row className="mt-2">
+        <Col xs={12}>
+                <Box className="info-admin-gestion-compte p-3">
+                
+                <Users 
+                  datausers={dataadmin}
+                  isCurrentProfile={true}
+                  currentUserGroup={currentUserGroup}
+                  
+                />
+
+
+              </Box>
         </Col>
       </Row>
 
@@ -305,10 +347,11 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
         </Col>
       </Row>
 
+
       {/* Row 4: Liste des utilisateurs */}
       <Row className="mt-2">
         <Col xs={12}>
-          <Box className="info-utilisateur-gestion-compte p-3">
+          <Box className="info-admin-gestion-compte p-3">
             <Users
               datausers={activeUsers}
               handleEdit={handleEdit}
@@ -455,6 +498,39 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
 </DialogActions>
         </div>
       </Dialog>
+      <Snackbar
+  open={openSnackbar}
+  autoHideDuration={4000}
+  onClose={() => setOpenSnackbar(false)}
+  anchorOrigin={{
+    vertical: 'top',
+    horizontal: 'center',
+  }}
+  sx={{
+    '& .MuiPaper-root': {
+      minWidth: '300px',
+      fontSize: '1.1rem',
+      textAlign: 'center'
+    }
+  }}
+>
+  <Alert
+    severity={snackbarSeverity}
+    sx={{ width: '100%' }}
+    onClose={() => setOpenSnackbar(false)}
+  >
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+<ConfirmDeleteDialog
+  open={deleteDialogOpen}
+  onClose={() => setDeleteDialogOpen(false)}
+  onConfirm={() => {
+    handleUserDelete();
+    setDeleteDialogOpen(false);
+  }}
+  userData={userToDelete}
+/>
     </Container>
   );
 }

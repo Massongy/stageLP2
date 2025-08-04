@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useLockQuote}  from '../../hooks/useLockQuote';
 import LoadingButton from './LoadingButton';
 
-const EditButton = ({ openedRowRef, quoteId }) => {
+const EditButton = ({ openedRowRef, quoteId, status }) => {
+  console.log("statut :", status)
   const { quoteLock } = useLockQuote();
   const navigate = useNavigate();
 
   const handleClick = async () => {
     try {
       await quoteLock(quoteId);
-      navigate(`/edition/${openedRowRef}`);
+      navigate(`/edition/${openedRowRef}/${status}`);
     } catch (err) {
       console.error('Erreur lors du verrouillage:', err);
     }

@@ -143,6 +143,24 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   // Récupération des données quotes avec le hook useQuotesQuotes
   const { quotes: tableData, loading: quotesLoading, error: quotesError } = useQuotesQuotes();
   const { reference } = useParams();
+  const {status} =useParams();
+  const STATUS_MAPPING = {
+    4: 'En cours',
+    6: 'Sans intérêt',
+    7: 'A traiter'
+  };
+
+  const getStatusValueOptions = () => {
+    // Récupérer tous les statuts uniques présents dans les données
+    const uniqueStatusesInData = [...new Set(filteredData.map(item => item.status).filter(status => status != null))];
+    
+    // Créer les options seulement pour les statuts qui existent dans les données
+    return uniqueStatusesInData.map(status => ({
+      value: Number(status),
+      label: STATUS_MAPPING[status] || `Statut ${status}`
+    }));
+  };
+
   const selectedQuote = tableData?.find(quote => 
     quote.reference_id_SI === reference || 
     quote.reference_id_SI?.toString() === reference
@@ -201,7 +219,6 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 }, [selectedQuote]);
 
-console.log('Valeur initiale du commentaire:', commentaire);
 
   const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
   const [message, setMessage] = useState(null);
@@ -272,9 +289,9 @@ console.log('Valeur initiale du commentaire:', commentaire);
       setTimeout(() => navigate('/'), 2000);
     } else {
       if (shouldSend) {
-        setMessage('Données envoyées et demande envoyée avec succès !');
+        setMessage('Données enregistrées et demande envoyée avec succès !');
       } else {
-        setMessage('Données envoyées avec succès !');
+        setMessage('Données enregistrées avec succès !');
       }
       setMessageType('success');
       setTimeout(() => navigate('/'), 2000);
@@ -351,6 +368,7 @@ const handleConfirmSansInteret = async () => {
   }
 };
 
+
   // Affichage des erreurs de chargement des quotes
   useEffect(() => {
     if (quotesError) {
@@ -407,6 +425,7 @@ const formatCustomDate = (dateString) => {
     return dateString;
   }
 };
+console.log("statut", status);
 
   // Affichage du composant
   return (
@@ -417,28 +436,31 @@ const formatCustomDate = (dateString) => {
           <Col xs={3} className="d-flex justify-content-start align-items-center">
             <Button
               variant="contained"
-              className="bouton-editer bouton-fermer-edition"
+              className="bouton bouton-fermer-edition"
               disabled={isLoading}
               onClick={handleCloseClick}
             >
               Fermer
             </Button>
-            <Button
-  variant="contained"
-  className="bouton-editer bouton-fermer-edition"
-  disabled={isLoading}
-  onClick={() => setConfirmSansInteretOpen(true)} // Ouvre la popup au lieu d'envoyer directement
-  style={{ marginLeft: '10px' }}
->
-  sans intérêt
-</Button>
+            {Number(status) !== 6 && (<Button
+              variant="contained"
+              className="bouton bouton-fermer-edition"
+              disabled={isLoading}
+              onClick={() => setConfirmSansInteretOpen(true)} // Ouvre la popup au lieu d'envoyer directement
+              style={{ marginLeft: '10px' }}
+            >
+              sans intérêt
+            </Button>)}
 
           </Col>
-          <Col xs={6} className="d-flex justify-content-center align-items-center">
+          <Col xs={6} className="d-flex flex-column justify-content-center align-items-center">
             <div className="titre1 titre-edition">{`Demande ${reference}`}</div>
+            
+            <div className="titre2 titre-edition">{` ${STATUS_MAPPING[status] || `Statut ${status}`}`}</div>
+            
           </Col>
-          <Col xs={3}></Col>
         </Row>
+        
 
         {/* Ligne Information de la demande */}
         <Row className="mb-3">
@@ -485,23 +507,27 @@ const formatCustomDate = (dateString) => {
         {message && (
           <Row className="mb-3">
             <Col xs={12}>
-              <Alert
-                severity={messageType === 'success' ? 'success' : 'error'}
-                onClose={() => setMessage(null)}
-                className="custom-alert"
-              >
-                {message}
-              </Alert>
+               <Alert
+    severity={messageType} // 'success' ou 'error'
+    sx={{
+      backgroundColor: messageType === 'success' ? '#f6ffed' : '#fff2f0',
+      border: messageType === 'success' ? '1px solid #b7eb8f' : '1px solid #ffccc7',
+      color: messageType === 'success' ? '#52c41a' : '#ff4d4f'
+    }}
+    onClose={() => setMessage(null)}
+  >
+    {message}
+  </Alert>
             </Col>
           </Row>
         )}
 
         {/* Ligne Bouton Enregistrer */}
         <Row className="mb-3">
-          <Col xs={12} className="d-flex justify-content-center bouton-enregistrer">
+          <Col xs={12} className="d-flex justify-content-center ">
             <Button 
               variant="contained"
-              className="bouton-editer bouton-enregistrer-edition"
+              className="bouton bouton-enregistrer bouton-editer "
               onClick={handleEnregistrer}
               disabled={isLoading}
               startIcon={isLoading ? <CircularProgress size={20} /> : null}
@@ -513,92 +539,54 @@ const formatCustomDate = (dateString) => {
       </Container>
 
       {/* Boîte de dialogue de confirmation de fermeture */}
-      <Dialog open={confirmOpen} onClose={handleCancelClose} className="boite-dialogue">
-        <div className="dialog-content">
-          <DialogTitle className="dialog-title">
-            Vous êtes sur le point de fermer la demande N° {reference}, sans avoir enregistré vos modifications, souhaitez-vous confirmer cette action ?
-          </DialogTitle>
-          <DialogActions className="dialog-actions">
-            <Button 
-              className="bouton-confirmer" 
-              onClick={handleConfirmClose} 
-              variant="contained"
-            >
-              Confirmer
-            </Button>
-            <Button className=" bouton-annuler"
-            onClick={handleCancelClose}>
-              Annuler
-            </Button>
-          </DialogActions>
-        </div>
-      </Dialog>
-
-      <Dialog 
-  open={confirmSansInteretOpen} 
-  onClose={() => setConfirmSansInteretOpen(false)}
-  className="boite-dialogue"
->
-  <DialogTitle>Confirmation</DialogTitle>
-  <DialogContent>
-    <Typography>
-      Êtes-vous sûr de vouloir marquer cette demande comme "sans intérêt" ?
-    </Typography>
-  </DialogContent>
-  <DialogActions>
-    <Button 
-      onClick={() => setConfirmSansInteretOpen(false)}
-      className="bouton-annuler"
-    >
-      Annuler
-    </Button>
-    <Button 
-      onClick={handleConfirmSansInteret}
-      className="bouton-confirmer"
-      variant="contained"
-    >
+      {/* Première boîte de dialogue */}
+<Dialog open={confirmOpen} onClose={handleCancelClose} className="boite-dialogue">
+  <DialogTitle className="dialog-title">
+    Vous êtes sur le point de fermer la demande N° {reference}...
+  </DialogTitle>
+  <DialogActions className="dialog-actions">
+    <Button className="bouton-confirmer" onClick={handleConfirmClose} variant="contained">
       Confirmer
+    </Button>
+    <Button className="bouton-annuler" onClick={handleCancelClose}>
+      Annuler
     </Button>
   </DialogActions>
 </Dialog>
 
-      {/* Nouvelle boîte de dialogue d'enregistrement */}
-      <Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
-        <div className="dialog-content">
-          <DialogTitle className="dialog-title">
-            Que souhaitez-vous faire ?
-          </DialogTitle>
-          
-          <DialogActions className="dialog-actions">
-            
-            <Button 
-              className="bouton-confirmer" 
-              onClick={handleSaveAndSend} 
-              variant="contained"
-              disabled={isLoading}
-            >
-              Enregistrer et clôturer
-            </Button>
+{/* Deuxième boîte de dialogue */}
+<Dialog open={confirmSansInteretOpen} onClose={() => setConfirmSansInteretOpen(false)} className="boite-dialogue">
+  <DialogTitle className="dialog-title">
+    Êtes-vous sûr de vouloir marquer cette demande comme "sans intérêt" ?
+  </DialogTitle>
+  <DialogActions className="dialog-actions">
+    <Button className="bouton-confirmer" onClick={handleConfirmSansInteret} variant="contained">
+      Confirmer
+    </Button>
+    <Button className="bouton-annuler" onClick={() => setConfirmSansInteretOpen(false)}>
+      Annuler
+    </Button>
+    
+  </DialogActions>
+</Dialog>
 
-            <Button 
-              className="bouton-confirmer" 
-              onClick={handleSaveAndReturnLater} 
-              variant="contained"
-              disabled={isLoading}
-            >
-              Enregistrer et revenir plus tard
-            </Button>
-            <Button 
-              className="bouton-annuler"
-              onClick={handleCancelSave}
-              disabled={isLoading}
-            >
-              Annuler
-            </Button>
-          
-          </DialogActions>
-        </div>
-      </Dialog>
+{/* Troisième boîte de dialogue */}
+<Dialog open={saveDialogOpen} onClose={handleCancelSave} className="boite-dialogue">
+  <DialogTitle className="dialog-title">
+    Que souhaitez-vous faire ?
+  </DialogTitle>
+  <DialogActions className="dialog-actions">
+    <Button className="bouton-confirmer" onClick={handleSaveAndSend} variant="contained" disabled={isLoading}>
+      Enregistrer et clôturer
+    </Button>
+    <Button className="bouton-confirmer" onClick={handleSaveAndReturnLater} variant="contained" disabled={isLoading}>
+      Enregistrer et revenir plus tard
+    </Button>
+    <Button className="bouton-annuler" onClick={handleCancelSave} disabled={isLoading}>
+      Annuler
+    </Button>
+  </DialogActions>
+</Dialog>
     </>
   );
 }

@@ -54,7 +54,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
       setMessage('Transfert effectué avec succès');
       setMessageType('success');
       setOpenSnackbar(true);
-      window.location.reload();
+      refetchQuotes()
     } catch (error) {
       setMessage(`Erreur lors du transfert : ${error.message}`);
       setMessageType('error');
@@ -230,12 +230,11 @@ useEffect(() => {
         autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'center',
           horizontal: 'center',
         }}
       >
         <Alert
-          onClose={() => setOpenSnackbar(false)}
           severity={messageType}
           sx={{ width: '100%' }}
         >

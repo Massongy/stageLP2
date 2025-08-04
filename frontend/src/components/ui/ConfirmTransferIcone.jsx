@@ -17,6 +17,8 @@ export default function ConfirmTransferIcon({ row, onConfirm }) {
   PaperProps={{
     sx: {
       textAlign: 'center', // centre le contenu global
+    borderRadius: '12px',
+          padding: '16px'
     }
   }}
 >
@@ -60,7 +62,7 @@ export default function ConfirmTransferIcon({ row, onConfirm }) {
         onConfirm(row.id);
       }}
     >
-      Oui
+      Confirmer
     </Button>
   </DialogActions>
 </Dialog>

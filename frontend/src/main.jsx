@@ -43,7 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   }
               />
               <Route
-                 path="/edition/:reference"
+                 path="/edition/:reference/:status"
                  element={
                      <PrivateRoute>
                         <Edition />
