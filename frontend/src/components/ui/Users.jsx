@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Modal, TextField, Typography, Alert } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { useChangePassword } from '../../hooks/useChangePassword'; // Ajustez le chemin selon votre structure
 
@@ -121,32 +122,18 @@ export default function Users({
   };
   
   return (
-    <div className="container-gestion-compte">
+    <div className="users">
       {/* Version desktop - 4 colonnes */}
       <div className="d-none d-lg-block">
         {/* Liste des utilisateurs existants */}
         {datausers.map((user, i) => (
-          <Box sx={{
-  display: 'grid',
-  gridTemplateColumns: '1fr 1.5fr 1fr 80px',
-  width: 'calc(100% - 32px)', // Compense les paddings
-  margin: '0 auto', // Centrage parfait
-  padding: '0 16px', // Padding symétrique
-  boxSizing: 'border-box',
-  position: 'relative',
-  '&::before': { // Guide visuel (à supprimer après vérification)
-    content: '""',
-    position: 'absolute',
-    left: '16px',
-    right: '16px',
-    top: 0,
-    bottom: 0,
-    border: '1px dashed rgba(0,0,255,0.3)',
-    pointerEvents: 'none'
-  }
-}}>
+          
+        <Box className="utilisateur"
+              key={i}
+                        
+           >
             {/* Colonne 1: Nom & Prénom */}
-            <Box className="container-infos">
+            <Box className="container-infos" >
               <Box className="container-infos-1">Nom et Prénom :</Box>
               <Box className="container-infos-2">
                 {user.last_name} {user.first_name}
@@ -154,13 +141,13 @@ export default function Users({
             </Box>
             
             {/* Colonne 2: Email */}
-            <Box className="container-infos">
+            <Box className="container-infos" >
               <Box className="container-infos-1">Email :</Box>
               <Box className="container-infos-2">{user.email}</Box>
             </Box>
             
             {/* Colonne 3: Rôle ou Mot de passe */}
-            <Box className="container-infos">
+            <Box className="container-infos" > 
               <Box className="container-infos-1">
                 {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
               </Box>
@@ -190,58 +177,31 @@ export default function Users({
             
             </Box>
             {/* Colonne 4: Icônes */}
-            <Box sx={{ 
-  display: 'flex',
-  justifyContent: 'flex-end',
-  width: '80px', // Largeur fixe pour stabilité
-  marginLeft: '0px !important', // Force l'alignement à droite
-    paddingRight: '0px !important' // Suppression padding parasite
-}}>
-  {isCurrentProfile ? (
-    /* Vrai bloc invisible (sans boutons fonctionnels) */
-    <Box sx={{ 
-      visibility: 'hidden',
-      display: 'flex',
-      gap: '8px'
-    }}>
-      <Button sx={{ minWidth: '40px' }} disabled>
-        <FontAwesomeIcon icon={faCircleCheck} />
-      </Button>
-      <Button sx={{ minWidth: '40px' }} disabled>
-        <FontAwesomeIcon icon={faTrash} />
-      </Button>
-    </Box>
-  ) : (
-    /* Bloc actif */
-    <Box sx={{ display: 'flex', gap: '8px' }}>
-      <Button 
-        onClick={() => handleEdit(user)} 
-        sx={{ minWidth: '40px' }}
-      >
-        <FontAwesomeIcon icon={faCircleCheck} className="icon"/>
-      </Button>
-      <Button 
-        onClick={() => handleDelete(user.id)} 
-        sx={{ minWidth: '40px' }}
-      >
-        <FontAwesomeIcon icon={faTrash} className="icon"/>
-      </Button>
-    </Box>
-  )}
-</Box>
-        </Box>))}
+            <Box className="boite-icones" >
+            {!isCurrentProfile  && (
+              /* Bloc actif */
+              <Box >
+                <Button className="bouton-icone"
+                  onClick={() => handleEdit(user)} 
+                  sx={{ minWidth: '40px' }}
+                >
+                  <FontAwesomeIcon icon={faPen} className="icon"/>
+                </Button>
+                <Button className="bouton-icone"
+                  onClick={() => handleDelete(user.id)} 
+                  sx={{ minWidth: '40px' }}
+                >
+                  <FontAwesomeIcon icon={faTrash} className="icon"/>
+                </Button>
+              </Box>
+            )}
+          </Box>
+            
+      </Box>))}
 
         {/* Ligne de création */}
        {isCreating && (
-          <Box className="info-admin" sx={{ 
-            display: 'grid',
-            gridTemplateColumns: '1fr 1.5fr 1fr auto',
-            gap: '16px',
-            alignItems: 'center',
-            padding: '8px',
-            borderRadius: '4px',
-            marginBottom: '8px'
-          }}>
+          <Box className="utilisateur">
             {/* Colonne 1: Nom & Prénom */}
             
            
@@ -287,71 +247,71 @@ export default function Users({
             </Box>
             
             {/* Colonne 3: Rôle */}
-            {/* Colonne 3: Rôle - CORRIGÉ */}
-    <Box className="container-infos">
-      <Box className="container-infos-1">Rôle :</Box>
-      <Box className="container-infos-2 " sx={{ 
-  position: 'relative',
-  zIndex: 1300, // Z-index très élevé
-  '& select': {
-    backgroundColor: '#fff', // Fond blanc obligatoire
-    '& option': {
-      backgroundColor: '#fff !important', // Important pour forcer le style
-      color: '#000 !important',
-      display: 'block !important'
-    }
-  }
-}}>
-  <select
-    name="groups"
-    value={creationData.groups?.[0] || ''}
-    onChange={(e) => {
-      
-      onCreationChange({
-        target: {
-          name: 'groups',
-          value: e.target.value ? [e.target.value] : []
-        }
-      });
-    }}
-    className="border-0"
-    style={{
-      width: '100%',
-      padding: '4px',
-      borderRadius: '4px',
-      backgroundColor: '#fff',
-      cursor: 'pointer',
-      appearance: 'menulist',
-      WebkitAppearance: 'menulist',
-      MozAppearance: 'menulist'
-    }}
-  >
-    <option value="">Sélectionner...</option>
-    {availableRoles.length > 0 ? (
-      availableRoles.map(role => (
-        <option 
-          key={role.value} 
-          value={role.value}
-          style={{
-            backgroundColor: '#fff',
-            color: '#000',
-            padding: '8px'
-          }}
-        >
-          {role.label}
-        </option>
-      ))
-    ) : (
-      <option value="" disabled>Aucun rôle disponible</option>
-    )}
-  </select>
-</Box>
-    </Box>
+            
+         <Box className="container-infos">
+            <Box className="container-infos-1">Rôle :</Box>
+            
+            <Box className="container-infos-2 " sx={{ 
+                  position: 'relative',
+                  zIndex: 1300, // Z-index très élevé
+                  '& select': {
+                    backgroundColor: '#fff', // Fond blanc obligatoire
+                    '& option': {
+                      backgroundColor: '#fff !important', // Important pour forcer le style
+                      color: '#000 !important',
+                      display: 'block !important'
+                    }
+                  }
+                }}>
+              <select
+                name="groups"
+                value={creationData.groups?.[0] || ''}
+                onChange={(e) => {
+                  
+                  onCreationChange({
+                    target: {
+                      name: 'groups',
+                      value: e.target.value ? [e.target.value] : []
+                    }
+                  });
+                }}
+                className="border-0"
+                style={{
+                  width: '100%',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  backgroundColor: '#fff',
+                  cursor: 'pointer',
+                  appearance: 'menulist',
+                  WebkitAppearance: 'menulist',
+                  MozAppearance: 'menulist'
+                }}
+              >
+                <option value="">Sélectionner...</option>
+                {availableRoles.length > 0 ? (
+                  availableRoles.map(role => (
+                    <option 
+                      key={role.value} 
+                      value={role.value}
+                      style={{
+                        backgroundColor: '#fff',
+                        color: '#000',
+                        padding: '8px'
+                      }}
+                    >
+                      {role.label}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>Aucun rôle disponible</option>
+                )}
+              </select>
+        </Box>
+            </Box>
     
     {/* Colonne 4: Actions  */}
-    <Box sx={{ 
-      display: 'flex', 
-      gap: '8px',
+    <Box className="boite-icones" sx={{ 
+    
       '& button': {
         pointerEvents: 'auto' // Force les événements de clic
       }
@@ -366,13 +326,16 @@ export default function Users({
           e.stopPropagation();
           onSaveNewUser();
         }}
+
+        sx={{ minWidth: '40px' }}
         className="bouton-créer-utilisateur"
        
   
         disabled={!creationData.groups?.[0]}
       >
-         <FontAwesomeIcon icon="fa-solid fa-pencil" />
+         <FontAwesomeIcon icon={faCircleCheck} className="icon" />
       </Button>
+      
       <Button 
         variant="outlined" 
         color="error" 
@@ -381,9 +344,10 @@ export default function Users({
           e.stopPropagation();
           onCancelCreation();
         }}
-        sx={{ minWidth: '40px' }}
+        sx={{ minWidth: '40px', border: 'none !important' }}
+        className="bouton-icone"
       >
-        <FontAwesomeIcon icon={faTrash} />
+        <FontAwesomeIcon icon={faTrash}  className="icon"/>
       </Button>
     </Box>
   </Box>

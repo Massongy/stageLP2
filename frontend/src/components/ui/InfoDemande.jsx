@@ -84,8 +84,8 @@ export default function InfoDemande({ data, onDataChange }) {
   const isEditable = (key) => editableFields.includes(key);
 
   return (
-    <Box className="container-fluid">
-      <div className="row">
+    <Box className="row">
+      
         {Object.entries(localFields)
           .filter(([key]) => allowedFields.includes(key))
           .map(([key, value]) => (
@@ -197,7 +197,7 @@ export default function InfoDemande({ data, onDataChange }) {
               </Box>
             </div>
           ))}
-      </div>
+      
     </Box>
   );
 }

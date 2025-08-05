@@ -486,10 +486,8 @@ console.log("statut", status);
         </Row>
 
         <Row className="mb-4">
-          <Col xs={12} className="d-flex">
-            <div className="d-flex flex-wrap">
+          <Col xs={12} className="d-flex flex-wrap">
               <QuestionsScoring onDataChange={handleQuestionDataChange} questionsData={questionnaireQuestions} reponsesData={questionnaireResponses} questionnaireData={questionnaireData}/>
-            </div>
           </Col>
         </Row>
 
@@ -508,16 +506,16 @@ console.log("statut", status);
           <Row className="mb-3">
             <Col xs={12}>
                <Alert
-    severity={messageType} // 'success' ou 'error'
-    sx={{
-      backgroundColor: messageType === 'success' ? '#f6ffed' : '#fff2f0',
-      border: messageType === 'success' ? '1px solid #b7eb8f' : '1px solid #ffccc7',
-      color: messageType === 'success' ? '#52c41a' : '#ff4d4f'
-    }}
-    onClose={() => setMessage(null)}
-  >
-    {message}
-  </Alert>
+                severity={messageType} // 'success' ou 'error'
+                sx={{
+                  backgroundColor: messageType === 'success' ? '#f6ffed' : '#fff2f0',
+                  border: messageType === 'success' ? '1px solid #b7eb8f' : '1px solid #ffccc7',
+                  color: messageType === 'success' ? '#52c41a' : '#ff4d4f'
+                }}
+                onClose={() => setMessage(null)}
+              >
+                {message}
+              </Alert>
             </Col>
           </Row>
         )}

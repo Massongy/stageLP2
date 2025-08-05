@@ -281,19 +281,19 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
     }] : [];
 
     return (
-       <Container fluid className="container-gestion-compte">
+     <Container fluid className="container-gestion-compte">
       {/* Row 1: Titre principal */}
       <Row className="justify-content-center">
         <Col xs={12}>
-          <Box className="titre1 text-center text-md-start">Gestion du compte</Box>
+          <Box className="titre1 text-center">Gestion du compte</Box>
         </Col>
       </Row>
 
       {/* Row 2: Informations compte administrateur */}
       <Row className="mt-3">
         <Col xs={12}>
-          <Box className="info-admin-gestion-compte p-3">
-            <Box className="titre2 mb-3">Informations de mon compte utilisateur</Box>
+          <Box className="info-admin-gestion-compte">
+            <Box className="titre2 text-center mb-3">Informations de mon compte utilisateur</Box>
             <Users 
               datausers={dataadmin}
               isCurrentProfile={true}
@@ -310,48 +310,30 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
   return (
     <Container fluid className="container-gestion-compte">
       {/* Row 1: Titre principal */}
-      <Row className="justify-content-center">
-        <Col xs={12}>
-          <Box className="titre1 text-center text-md-start">Gestion du compte</Box>
-        </Col>
-      </Row>
-
-      {/* Row 2: Informations compte administrateur */}
-      <Row className="justify-content-center">
-        <Col xs={12}>
+      
+          <Box className="titre1 text-center mb-4">Gestion du compte</Box>
+       
+      {/* Row 2:titre compte administrateur */}
+   
           
-            <Box className="titre2 text-center text-md-start">Informations de mon compte administrateur</Box>
-        </Col>
-      </Row>
-            
-      <Row className="mt-2">
-        <Col xs={12}>
-                <Box className="info-admin-gestion-compte p-3">
-                
+            <Box className="titre2 text-center text-md-start mb-3">Informations de mon compte administrateur</Box>
+        
+      {/* Row 3: Informations compte administrateur */}
+    
                 <Users 
                   datausers={dataadmin}
                   isCurrentProfile={true}
                   currentUserGroup={currentUserGroup}
-                  
                 />
+       
+      {/* Row 4: Titre "Mes utilisateurs" */}
+      
+          <Box className="titre2 text-center text-md-start mt-5 mb-3">Mes utilisateurs</Box>
+       
 
 
-              </Box>
-        </Col>
-      </Row>
-
-      {/* Row 3: Titre "Mes utilisateurs" */}
-      <Row className="mt-4">
-        <Col xs={12}>
-          <Box className="titre2">Mes utilisateurs</Box>
-        </Col>
-      </Row>
-
-
-      {/* Row 4: Liste des utilisateurs */}
-      <Row className="mt-2">
-        <Col xs={12}>
-          <Box className="info-admin-gestion-compte p-3">
+      {/* Row 5: Liste des utilisateurs */}
+    
             <Users
               datausers={activeUsers}
               handleEdit={handleEdit}
@@ -363,31 +345,28 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
               onSaveNewUser={saveNewUser}
               onCancelCreation={cancelCreation}
             />
-          </Box>
-        </Col>
-      </Row>
+          
+      
 
-      {/* Row 5: Boutons d'action */}
-      <Row className="mt-3 mb-4">
-        <Col xs={12}>
+      
           {editUserId ? (
-            <Box className="d-flex flex-column flex-md-row align-items-center">
+            <Box className="d-flex flex-column flex-md-row align-items-center ">
                 
-                <span className="text-center text-md-start titre3 ">Modifier les informations de mon utilisateur dans le formulaire ci-dessous</span>
+                <span className="text-center text-md-start titre2 mt-5">Modifier les informations de mon utilisateur ci-dessous</span>
             </Box>
                   ) : (
             <Button 
+            disableRipple
                 onClick={handleAdd} 
-                className="custom-add-button w-100 w-md-auto"
+                className="custom-add-button w-100 w-md-auto mt-5 mb-5"
             >
               <span className="custom-add-icon">+</span>
               <span className="custom-add-text">Ajouter un utilisateur</span>
             </Button>
           )}
-        </Col>
-      </Row>
+       
 
-      {/* Row 6: Formulaire (si affiché) */}
+      {/* Row 7: Formulaire (si affiché) */}
       {showForm  && (
         <Row className="mt-3" ref={formRef}>
           <Col xs={12}>
@@ -462,13 +441,13 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
               )}
 
               <div className="d-flex flex-column flex-sm-row gap-2">
-                <LoadingButton type="submit" className="bouton-edition-utilisateur">
+                <LoadingButton type="submit" className="bouton bouton-edition-utilisateur">
                    {editUserId ? 'Mettre à jour' : 'Créer'}
                 </LoadingButton>
                 <LoadingButton 
                   type="button" 
                   onClick={handleCancel} 
-                  className="bouton-annuler-edition-utilisateur"
+                  className="bouton bouton-annuler-edition-utilisateur"
                 >
                   Annuler
                 </LoadingButton>
@@ -488,13 +467,13 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
   <LoadingButton
   onClick={handleConfirmCreate}
   isLoading={isCreatingUser}
-  className="bouton-confirmer"
+  className="bouton bouton-confirmer"
 >
   Confirmer
 </LoadingButton>
-<Button onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser}>
+<LoadingButton onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser} className="bouton bouton-annuler">
   Annuler
-</Button>
+</LoadingButton>
 </DialogActions>
         </div>
       </Dialog>

@@ -5,6 +5,7 @@
     justify-content: center;
     margin-top: 40px;
     background-color: white;
+    width: 100%;
     
 }
 
@@ -12,10 +13,6 @@
 .titre-gestion-compte {
     display:flex;
     color: #D4C7B5;
-    text-transform: uppercase;
-    margin: 62px;
-    font-size: 25px;
-    font-weight: 500;
 
 }
 .container-infos {
@@ -23,6 +20,7 @@
     display: flex;
     color: #656565;
     margin: 10px 42px !important; 
+    width: 200px;
     
 }
 
@@ -57,15 +55,20 @@
     display: flex;
     flex-direction:column;
     margin: 42px;
+    height: auto;
+ 
 }
 .container-infos-1 {
     font-weight: 500 !important;
 }
 .container-infos-2 {
+  
     background-color: #F5F2EE;
     padding: 8px;
     width: 100%;
      display: flex ;
+     height: auto;
+     overflow:hidden;
 
 }
 
@@ -192,6 +195,15 @@ html {
 
  
 }
+.icon:hover {
+  opacity: 0.8;
+}
+
+.boite-icones {
+   display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .icon-small-screen{
   color: #D4C7B5;
@@ -249,19 +261,37 @@ border: none !important;
 
 .bouton-créer-utilisateur {
 
-background-color: #90A5C8 !important;
-width: 20px!important;
-height: 20px!important;
-border-radius: 50% !important;
+background-color: white !important;
+
 }
 
 /*bouton créer utilisateur activé*/
 
-.css-1bwbtj5-MuiButtonBase-root-MuiButton-root {
-  background-color: #90A5C8 !important;
- width: 20px !important;
- height: 20px!important;
- border-radius: 50% !important;
 
 
+.css-oupj7a-MuiButtonBase-root-MuiButton-root{
+
+
+box-shadow: none !important;
+
+}
+
+.users{
+
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  
+}
+
+.utilisateur {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  
+}
+
+.bouton-icone:hover {
+box-shadow: none !important;
+background-color: transparent !important;
 }
