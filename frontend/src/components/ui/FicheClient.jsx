@@ -17,8 +17,8 @@ export default function FicheClient({reference}) {
 //récupération des données avec le hook useQuotesQuotes
   const { quotes:tableData, loading, error } = useQuotesQuotes();
    const selectedQuote = tableData?.find(quote => 
-      quote.reference_id_SI === reference || 
-      quote.reference_id_SI?.toString() === reference
+      quote.reference === reference || 
+      quote.reference?.toString() === reference
     );
    const selectedQuoteId = selectedQuote?.id || null;
   const { questionnaire, loading: loadingQuestionnaire, error: errorQuestionnaire } = useGetQuestionnaireId(selectedQuoteId);
@@ -138,8 +138,4 @@ export default function FicheClient({reference}) {
   );
 }
 
-// 📌 Ajout des propTypes
-FicheClient.propTypes = {
-  reference: PropTypes.number.isRequired,
- 
-};
+

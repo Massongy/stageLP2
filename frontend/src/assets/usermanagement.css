@@ -19,8 +19,9 @@
 
     display: flex;
     color: #656565;
-    margin: 10px 42px !important; 
-    width: 200px;
+    margin: 10px !important; 
+    width: 100%;
+   
     
 }
 
@@ -68,12 +69,12 @@
     width: 100%;
      display: flex ;
      height: auto;
-     overflow:hidden;
+      overflow: hidden;
+    text-overflow: ellipsis !important;
+   
+    display: inline-block;
 
 }
-
-
-
 
 .info-utilisateur-gestion-compte {
     display: flex;
@@ -132,16 +133,7 @@
   background-color: white;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+
 
 html {
   scroll-behavior: smooth;
@@ -217,18 +209,9 @@ html {
   justify-content: center;
 }
 
-/* Animation du loader */
-.MuiCircularProgress-root {
-  color: white;
-  margin-right: 8px;
-}
 
-.input-formulaire-edition {
-background-color: #F5F2EE !important;
-border-radius: 0% !important;
-border: none !important;
 
-}
+
 
 .bouton-edition-utilisateur {
   border: none;
@@ -275,23 +258,61 @@ background-color: white !important;
 box-shadow: none !important;
 
 }
+/* Bouton activé */
+
+.bouton-créer-utilisateur:not(:disabled) .icone-creation {
+  color: #90A5C8 !important; /* Icône blanche quand bouton activé */
+}
+
 
 .users{
 
   display: flex;
-  flex-direction: row;
-  width: 80%;
+  flex-direction: column;
+  width: 100% !important;
+  
   
 }
 
 .utilisateur {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 280px 350px 250px 120px ;
+  gap: 20px;
+  align-items: center;
+  
   
 }
 
 .bouton-icone:hover {
 box-shadow: none !important;
 background-color: transparent !important;
+}
+
+
+/* forumlaire edition*/
+
+
+
+.input-formulaire-edition {
+  display: flex;
+  
+  align-items: center;
+  background-color: #F5F2EE !important;
+  border-radius: 0% !important;
+  border: none !important;
+  height: 45px; /* Réduction de la hauteur */
+
+
+}
+.input-formulaire-edition.input-multiline {
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  padding: 10px 15px;
+  gap: 5px;}
+
+.custom-input-edition {
+  
+  height: 32px; /* Réduction de la hauteur */
+  
 }

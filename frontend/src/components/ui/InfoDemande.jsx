@@ -12,13 +12,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/fr';
 
 export default function InfoDemande({ data, onDataChange }) {
-  // Key mapping (renames keys for display)
+  
   const keyMap = {
     call_count: "Nombre d'appels",
     date_first_call: "Date du 1er appel",
     date_last_call: "Date du dernier appel",
     weeknumber: "Semaine N°",
-    reference_id_SI: "Référence",
+    reference: "Référence",
     customer_email: "Email",
     lastname: "Nom",
     firstname: "Prénom",
@@ -81,7 +81,41 @@ export default function InfoDemande({ data, onDataChange }) {
     handleFieldChange("Nombre d'appels", newCount);
   };
 
+  // Fonction pour valider et formater les inputs spéciaux
+  const handleSpecialInputChange = (key, value) => {
+    let processedValue = value;
+
+    if (key === "Numéro de téléphone") {
+      // Ne garder que les chiffres pour le numéro de téléphone
+      processedValue = value.replace(/\D/g, '');
+    } else if (key === "Semaine N°") {
+      // Ne garder que les chiffres pour le numéro de semaine
+      processedValue = value.replace(/\D/g, '');
+      // Optionnel: limiter entre 1 et 53 (nombre max de semaines dans une année)
+      const weekNum = parseInt(processedValue);
+      if (weekNum > 53) {
+        processedValue = '53';
+      }
+    }
+
+    handleFieldChange(key, processedValue);
+  };
+
+  // Fonction pour déterminer le type d'input
+  const getInputType = (key) => {
+    if (key === "Email") return "email";
+    if (key === "Numéro de téléphone" || key === "Semaine N°") return "tel";
+    return "text";
+  };
+
+  // Fonction pour déterminer le pattern de validation
+  const getInputPattern = (key) => {
+    if (key === "Numéro de téléphone" || key === "Semaine N°") return "[0-9]*";
+    return undefined;
+  };
+
   const isEditable = (key) => editableFields.includes(key);
+  
 
   return (
     <Box className="row">
@@ -186,11 +220,27 @@ export default function InfoDemande({ data, onDataChange }) {
                     ) : (
                       <TextField className="champ"
                         value={value || ''}
-                        onChange={(e) => handleFieldChange(key, e.target.value)}
+                        onChange={(e) => {
+                          // Utiliser la fonction spéciale pour les champs validés
+                          if (key === "Numéro de téléphone" || key === "Semaine N°") {
+                            handleSpecialInputChange(key, e.target.value);
+                          } else {
+                            handleFieldChange(key, e.target.value);
+                          }
+                        }}
+                        type={getInputType(key)}
+                        inputProps={{ 
+                          pattern: getInputPattern(key),
+                          inputMode: key === "Numéro de téléphone" || key === "Semaine N°" ? "numeric" : undefined
+                        }}
                         fullWidth
                         disabled={!isEditable(key)}
-                      
-                        
+                        placeholder={
+                          key === "Email" ? "exemple@email.com" :
+                          key === "Numéro de téléphone" ? "0123456789" :
+                          key === "Semaine N°" ? "1-53" :
+                          undefined
+                        }
                       />
                     )}
                 </Box>

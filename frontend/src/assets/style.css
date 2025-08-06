@@ -245,3 +245,44 @@ fieldset {
   border: 1px solid #90A5C8 !important;
   color: #90A5C8 !important;
 }
+
+/*mot de passe oublié / réinitilisation*/
+
+.mot-de-passe-oublie {
+display: flex;
+  flex-direction: column;
+  align-items: center;   /* centrage horizontal */
+  justify-content: center; /* centrage vertical */
+  min-height: 100vh;     /* occupe toute la hauteur */
+  text-align: center;
+  gap: 20px;
+
+}
+
+.bouton-reinit-mot-de-passe {
+
+  background-color: #D4C7B5 !important;
+  height: 50px !important;
+  margin-top: 20px !important;
+}
+
+.input-mot-de-passe-oublie {
+ 
+  height: 50px;
+  width: 100%;
+ 
+padding: 0 1em;
+  box-sizing: border-box;
+  border: 1px solid #D4C7B5;
+  border-radius: 0px;
+  font-size: 1rem;
+  margin-bottom: 20px; 
+  outline: none;
+}
+
+
+/* Animation du loader */
+.MuiCircularProgress-root {
+  color: white;
+  margin-right: 8px;
+}

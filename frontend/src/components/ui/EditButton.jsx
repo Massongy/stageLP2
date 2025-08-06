@@ -5,7 +5,6 @@ import { useLockQuote}  from '../../hooks/useLockQuote';
 import LoadingButton from './LoadingButton';
 
 const EditButton = ({ openedRowRef, quoteId, status }) => {
-  console.log("statut :", status)
   const { quoteLock } = useLockQuote();
   const navigate = useNavigate();
 

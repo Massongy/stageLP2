@@ -99,7 +99,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
        
       },
       {
-        field: 'reference_id_SI',
+        field: 'reference',
         headerName: 'Référence',
         headerAlign: 'center',
         width: '130',
@@ -202,7 +202,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
         align: 'center',
         renderHeader: () => <FontAwesomeIcon icon={faCircleInfo} className="icone-datatable icone-datatable-info" />,
         renderCell: (params) => (
-          <PreviewButtonCell row={params.row} isOpen={params.row.reference_id_SI === openedRowRef} onToggle={onPreview} />
+          <PreviewButtonCell row={params.row} isOpen={params.row.reference === openedRowRef} onToggle={onPreview} />
         ),
           width: '80',
         sortable: false,
@@ -217,11 +217,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
 
 const containerRef = React.useRef();
 
-useEffect(() => {
-  if (containerRef.current) {
-    console.log('Largeur conteneur:', containerRef.current.offsetWidth);
-  }
-}, []);
+
 
   return (
     <>
@@ -230,7 +226,7 @@ useEffect(() => {
         autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{
-          vertical: 'center',
+          vertical: 'top',
           horizontal: 'center',
         }}
       >
@@ -247,7 +243,7 @@ useEffect(() => {
           sx={{ 
             display: 'flex',
              width: '100%', 
-          height: '400px', // Hauteur fixe ou dynamique
+          height: '800px', 
             overflow: 'hidden',
           }}>
         
@@ -265,7 +261,7 @@ useEffect(() => {
                   hideFooter={true}
                   getRowClassName={(params) => {
                       // Vérifie si cette ligne est ouverte
-                      const isRowOpen = params.row.reference_id_SI === openedRowRef;
+                      const isRowOpen = params.row.reference === openedRowRef;
                       if (isRowOpen) {
                         return 'opened-row';
                       }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoadingButton from '../components/ui/LoadingButton';
+import '../assets/style.css';
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -30,17 +31,18 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div>
-      <h2>Mot de passe oublié</h2>
+    <div className="mot-de-passe-oublie">
+      <h2 className="texte2">Mot de passe oublié</h2>
       <form onSubmit={handleSubmit}>
         <input
+        className="input-mot-de-passe-oublie"
           type="email"
           placeholder="Entrez votre e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <LoadingButton type="submit" isLoading={isLoading} >
+        <LoadingButton type="submit" className="bouton bouton-reinit-mot-de-passe" isLoading={isLoading} >
           Envoyer le lien de réinitialisation
         </LoadingButton>
       </form>

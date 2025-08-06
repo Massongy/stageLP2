@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import '../assets/style.css';
+
 
 function ResetPasswordPage() {
   const { uidb64, token } = useParams();
@@ -27,7 +29,7 @@ function ResetPasswordPage() {
         setTimeout(() => navigate('/login'), 2000);
       } else {
         const data = await response.json();
-        setError(data.detail || 'Erreur lors de la réinitialisation');
+        setError(data.detail || 'Erreur lors de la réinitialisation. Vérifiez le format du mot de passe.');
       }
     } catch (e) {
       setError('Erreur réseau');
@@ -35,14 +37,15 @@ function ResetPasswordPage() {
   };
 
   return (
-    <div>
-      <h2>Réinitialiser le mot de passe</h2>
+    <div className="mot-de-passe-oublie">
+      <h2 className="texte2">Réinitialiser le mot de passe</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success ? (
         <p style={{ color: 'green' }}>{success}</p>
       ) : (
         <form onSubmit={handleSubmit}>
           <input
+          className="input-mot-de-passe-oublie"
             type="password"
             placeholder="Nouveau mot de passe"
             value={newPassword}
@@ -50,13 +53,14 @@ function ResetPasswordPage() {
             required
           />
           <input
+          className="input-mot-de-passe-oublie"
             type="password"
             placeholder="Confirmer le mot de passe"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button type="submit">Changer le mot de passe</button>
+          <button type="submit" className="bouton bouton-reinit-mot-de-passe">Changer le mot de passe</button>
         </form>
       )}
     </div>

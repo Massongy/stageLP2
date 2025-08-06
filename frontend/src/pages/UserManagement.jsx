@@ -182,15 +182,7 @@ setSnackbarMessage('Utilisateur créé avec succès');
     setIsCreatingUser(false); // Désactive le loader
   }
 };
-useEffect(() => {
-    if (!showForm) {
-      // Action à effectuer lorsque le formulaire est masqué
-      console.log('Le formulaire est maintenant masqué');
-    }
-  }, [showForm]);
-  useEffect(() => {
-  console.log('Valeur de showForm:', showForm);
-}, [showForm]);
+
   
 const handleDelete = (userId) => {
   const user = users.find(u => u.id === userId);
@@ -273,7 +265,7 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
 
 
 
-    if (!hasFullRights) {
+if (!hasFullRights) {
     const myProfile = user ? [{
       email: user.email,
       first_name: user.first_name,
@@ -298,7 +290,6 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
               datausers={dataadmin}
               isCurrentProfile={true}
               currentUserGroup={currentUserGroup}
-              
             />
           </Box>
         </Col>
@@ -310,99 +301,96 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
   return (
     <Container fluid className="container-gestion-compte">
       {/* Row 1: Titre principal */}
-      
-          <Box className="titre1 text-center mb-4">Gestion du compte</Box>
+      <Box className="titre1 text-center mb-4">Gestion du compte</Box>
        
-      {/* Row 2:titre compte administrateur */}
-   
-          
-            <Box className="titre2 text-center text-md-start mb-3">Informations de mon compte administrateur</Box>
+      {/* Row 2: titre compte administrateur */}
+      <Box className="titre2 text-center text-md-start mb-3">Informations de mon compte administrateur</Box>
         
-      {/* Row 3: Informations compte administrateur */}
-    
-                <Users 
-                  datausers={dataadmin}
-                  isCurrentProfile={true}
-                  currentUserGroup={currentUserGroup}
-                />
+      {/* Row 3: Informations compte administrateur - Structure en colonnes */}
+      <Box className="mb-5">
+        <Users 
+          datausers={dataadmin}
+          isCurrentProfile={true}
+          currentUserGroup={currentUserGroup}
+        />
+      </Box>
        
       {/* Row 4: Titre "Mes utilisateurs" */}
-      
-          <Box className="titre2 text-center text-md-start mt-5 mb-3">Mes utilisateurs</Box>
-       
+      <Box className="titre2 text-center text-md-start mt-5 mb-3">Mes utilisateurs</Box>
 
+      {/* Row 5: Liste des utilisateurs - Structure en colonnes */}
+      <Box>
+        <Users
+          datausers={activeUsers}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+          isCreating={isCreating}
+          currentUserGroup={currentUserGroup}
+          creationData={newUser}
+          onCreationChange={handleCreationChange}
+          onSaveNewUser={saveNewUser}
+          onCancelCreation={cancelCreation}
+        />
+      </Box>
 
-      {/* Row 5: Liste des utilisateurs */}
-    
-            <Users
-              datausers={activeUsers}
-              handleEdit={handleEdit}
-              handleDelete={handleDelete}
-              isCreating={isCreating}
-              currentUserGroup={currentUserGroup}
-              creationData={newUser}
-              onCreationChange={handleCreationChange}
-              onSaveNewUser={saveNewUser}
-              onCancelCreation={cancelCreation}
-            />
-          
-      
-
-      
+      {/* Row 6: Bouton d'ajout ou titre de modification */}
+      <Box className="row mt-4">
+        <Col xs={12}>
           {editUserId ? (
-            <Box className="d-flex flex-column flex-md-row align-items-center ">
-                
-                <span className="text-center text-md-start titre2 mt-5">Modifier les informations de mon utilisateur ci-dessous</span>
+            <Box className="d-flex flex-column flex-md-row align-items-center">
+              <span className="text-center text-md-start titre2 mt-5">Modifier les informations de mon utilisateur ci-dessous</span>
             </Box>
-                  ) : (
+          ) : (
             <Button 
-            disableRipple
-                onClick={handleAdd} 
-                className="custom-add-button w-100 w-md-auto mt-5 mb-5"
+              disableRipple
+              onClick={handleAdd} 
+              className="custom-add-button w-100 w-md-auto mt-5 mb-5"
             >
               <span className="custom-add-icon">+</span>
               <span className="custom-add-text">Ajouter un utilisateur</span>
             </Button>
           )}
-       
+        </Col>
+      </Box>
 
       {/* Row 7: Formulaire (si affiché) */}
-      {showForm  && (
-        <Row className="mt-3" ref={formRef}>
+      {showForm && (
+        <Box className="row mt-3" ref={formRef}>
           <Col xs={12}>
             <form onSubmit={handleSubmit} className="p-3 border-0 rounded-0 user-form">
-              <div className="row">
-                <div className="col-12 col-md-6 mb-3 ">
+              <div >
+                <div className="col-12 col-md-6 mb-3 form-control border-0 shadow-none input-formulaire-edition">
                   <input 
                     name="first_name" 
                     placeholder="Prénom" 
                     value={formData.first_name} 
                     onChange={handleChange} 
                     required 
-                    className="form-control border-0 shadow-none input-formulaire-edition"
+                    className="custom-input-edition"
+                    
                   />
                 </div>
-                <div className="col-12 col-md-6 mb-3">
+                <div className="col-12 col-md-6 mb-3 form-control border-0 shadow-none input-formulaire-edition" >
                   <input 
                     name="last_name" 
                     placeholder="Nom" 
                     value={formData.last_name} 
                     onChange={handleChange} 
                     required 
-                    className="form-control border-0 shadow-none input-formulaire-edition"
+                    className="custom-input-edition"
+                   
                   />
                 </div>
-              </div>
-              
-              <div className="row">
-                <div className="col-12 mb-3">
+            
+                <div className="col-12 mb-3 form-control border-0 shadow-none input-formulaire-edition">
                   <input 
                     name="email" 
                     placeholder="Email" 
                     value={formData.email} 
                     onChange={handleChange} 
                     required 
-                    className="form-control border-0 shadow-none input-formulaire-edition"
+                    className="custom-input-edition"
+                   
                   />
                 </div>
               </div>
@@ -433,10 +421,10 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
               )}
 
               {editUserId && formData.groups.length > 0 && (
-                <div className="alert alert-info input-formulaire-edition">
-                  <strong className="titre3">Groupe actuel :</strong> <span className="text-muted texte2">{availableGroups.find(g => formData.groups.includes(g.id))?.name || 'Groupe inconnu'}</span>
-                  <br/>
-                  <small className="text-muted texte2"><i>Les groupes ne peuvent pas être modifiés lors de l'édition.</i></small>
+                <div className="alert alert-info input-formulaire-edition input-multiline">
+                  <div><strong className="titre3">Groupe actuel :  </strong> {availableGroups.find(g => formData.groups.includes(g.id))?.name || 'Groupe inconnu'} </div>
+                  
+                  <div className="text-muted texte2"><i> Les groupes ne peuvent pas être modifiés lors de l'édition.</i></div>
                 </div>
               )}
 
@@ -454,7 +442,7 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
               </div>
             </form>
           </Col>
-        </Row>
+        </Box>
       )}
 
       <Dialog open={showEmailConfirmation} onClose={handleCancel} className="boite-dialogue">
@@ -464,54 +452,55 @@ const hasFullRights = user?.permissions && ['add_user'].every(p => user.permissi
           </DialogTitle>
           
           <DialogActions className="dialog-actions">
-  <LoadingButton
-  onClick={handleConfirmCreate}
-  isLoading={isCreatingUser}
-  className="bouton bouton-confirmer"
->
-  Confirmer
-</LoadingButton>
-<LoadingButton onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser} className="bouton bouton-annuler">
-  Annuler
-</LoadingButton>
-</DialogActions>
+            <LoadingButton
+              onClick={handleConfirmCreate}
+              isLoading={isCreatingUser}
+              className="bouton bouton-confirmer"
+            >
+              Confirmer
+            </LoadingButton>
+            <LoadingButton onClick={() => setShowEmailConfirmation(false)} disabled={isCreatingUser} className="bouton bouton-annuler">
+              Annuler
+            </LoadingButton>
+          </DialogActions>
         </div>
       </Dialog>
+
       <Snackbar
-  open={openSnackbar}
-  autoHideDuration={4000}
-  onClose={() => setOpenSnackbar(false)}
-  anchorOrigin={{
-    vertical: 'top',
-    horizontal: 'center',
-  }}
-  sx={{
-    '& .MuiPaper-root': {
-      minWidth: '300px',
-      fontSize: '1.1rem',
-      textAlign: 'center'
-    }
-  }}
->
-  <Alert
-    severity={snackbarSeverity}
-    sx={{ width: '100%' }}
-    onClose={() => setOpenSnackbar(false)}
-  >
-    {snackbarMessage}
-  </Alert>
-</Snackbar>
-<ConfirmDeleteDialog
-  open={deleteDialogOpen}
-  onClose={() => setDeleteDialogOpen(false)}
-  onConfirm={() => {
-    handleUserDelete();
-    setDeleteDialogOpen(false);
-  }}
-  userData={userToDelete}
-/>
+        open={openSnackbar}
+        autoHideDuration={4000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        sx={{
+          '& .MuiPaper-root': {
+            minWidth: '300px',
+            fontSize: '1.1rem',
+            textAlign: 'center'
+          }
+        }}
+      >
+        <Alert
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+          onClose={() => setOpenSnackbar(false)}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
+      <ConfirmDeleteDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={() => {
+          handleUserDelete();
+          setDeleteDialogOpen(false);
+        }}
+        userData={userToDelete}
+      />
     </Container>
   );
 }
-
 export default UserManagement;

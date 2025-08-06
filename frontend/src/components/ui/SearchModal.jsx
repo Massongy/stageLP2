@@ -26,8 +26,8 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
     // Recherche par nom ou référence
     const results = tableData?.filter(item => {
       const searchLower = searchTerm.toLowerCase();
-      // Recherche par référence - utiliser reference_id_SI pour la recherche
-      const refMatch = item.reference_id_SI?.toString().toLowerCase().includes(searchLower);
+      // Recherche par référence - utiliser referencepour la recherche
+      const refMatch = item.reference?.toString().toLowerCase().includes(searchLower);
       // Recherche par nom (adaptez selon vos champs)
       const nameMatch = item.lastname?.toLowerCase().includes(searchLower) || 
                        item.client?.toLowerCase().includes(searchLower);
@@ -40,7 +40,7 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
   };
 
  const handleSelectResult = (item) => {
-  onSearch(item.reference_id_SI);
+  onSearch(item.reference);
   // Notifier le Header qu'un résultat a été sélectionné
   if (window.notifyResultSelected) {
     window.notifyResultSelected();
@@ -123,14 +123,14 @@ const SearchModal = ({ open, onClose, onSearch, tableData }) => {
                       }}
                       onClick={() => handleSelectResult(item)}
                     >
-                      <Typography class="titre3">
+                      <Typography className="titre3">
 
                         Référence : 
                         </Typography>
-                        <Typography class="texte2">{item.reference_id_SI}
+                        <Typography className="texte2">{item.reference}
                       </Typography >
                       {(item.nom || item.name || item.client || item.lastname) && (
-                        <Typography class="texte1">
+                        <Typography className="texte1">
                           {item.nom || item.name || item.client || item.lastname}
                         </Typography>
                       )}

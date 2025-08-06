@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Box } from '@mui/material';
 import DataTable from '../components/ui/DataTable.jsx';
 import PreviewTabs from '../components/ui/PreviewTabs.jsx';
@@ -19,15 +19,18 @@ export default function Dashboard() {
 
   // Récupération des données avec le hook useQuotesQuotes
   const { quotes: tableData, loading, error, refetch } = useQuotesQuotes();
+  
+  //filtrage pour passer les données à la fonction de recherche
+  const filteredDataSearch = useMemo(() => {
+  return tableData?.filter(item => item.status !== 5) || [];
+}, [tableData]);
 
   // Callbacks stables pour useSearch
   const setFilterModelCallback = useCallback((newFilterModel) => {
   setFilterModel(newFilterModel); // Ne créez pas de nouvel objet ici
   }, []);
 
-// Ajoutez ce useEffect pour debug :
-  useEffect(() => {
-  }, [filterModel]);
+
   
   const setOpenedRowRefCallback = useCallback((ref) => {
       setOpenedRowRef(ref);
@@ -42,17 +45,17 @@ export default function Dashboard() {
   } = useSearch(tableData, setFilterModelCallback, setOpenedRowRefCallback);
 
   const quoteId = tableData?.find(quote => 
-    quote.reference_id_SI === openedRowRef || 
-    quote.reference_id_SI?.toString() === openedRowRef
+    quote.reference === openedRowRef || 
+    quote.reference?.toString() === openedRowRef
   )?.id || null;
   
     const status = tableData?.find(quote => 
-    quote.reference_id_SI === openedRowRef || 
-    quote.reference_id_SI?.toString() === openedRowRef
+    quote.reference === openedRowRef || 
+    quote.reference?.toString() === openedRowRef
   )?.status || null;
   
   const handlePreview = (row) => {
-    const reference = row.reference_id_SI; // Utiliser reference_id_SI
+    const reference = row.reference; 
     setSelectedReference(reference);
     setOpenedRowRef(prev => (prev === reference ? null : reference));
   };
@@ -74,8 +77,8 @@ export default function Dashboard() {
       return filterModel.items.every((filter) => {
         // Récupérer la valeur du champ à filtrer
         let rowValue;
-        if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
-          rowValue = row.reference_id_SI?.toString();
+        if (filter.field === 'reference') { // Revenir à reference
+          rowValue = row.reference?.toString();
         } else {
           rowValue = row[filter.field]?.toString().toLowerCase();
         }
@@ -84,8 +87,8 @@ export default function Dashboard() {
 
         if (filter.operator === 'equals') {
           
-          // Pour reference_id_SI, comparaison stricte
-          if (filter.field === 'reference_id_SI') { // Revenir à reference_id_SI
+          // Pour reference, comparaison stricte
+          if (filter.field === 'reference') { // Revenir à reference
             return rowValue === filterValue;
           }
           
@@ -150,7 +153,7 @@ useEffect(() => {
         open={searchModalOpen}
         onClose={closeSearchModal}
         onSearch={performSearch}
-        tableData={tableData}
+        tableData={filteredDataSearch}
       />
     </Box>
   );

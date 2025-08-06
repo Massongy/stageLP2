@@ -48,7 +48,7 @@ function formatDataInfoForApi(blocInfoData, commentaire) {
     date_first_call: blocInfoData["Date du 1er appel"],
     date_last_call: blocInfoData["Date du dernier appel"],
     idEtablissement: blocInfoData.idEtablissement,      
-    reference_id_SI: parseInt(blocInfoData.Référence),
+    reference: parseInt(blocInfoData.Référence),
     status: parseInt(blocInfoData.status),
     comment: commentaire || ""               
   };
@@ -162,8 +162,8 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   };
 
   const selectedQuote = tableData?.find(quote => 
-    quote.reference_id_SI === reference || 
-    quote.reference_id_SI?.toString() === reference
+    quote.reference === reference || 
+    quote.reference?.toString() === reference
   );
 
   // récupération des données questions du questionnaire avec le hook useQuestionnaireQuestions
@@ -210,8 +210,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
     
   }
 }, [questionnaire, dateQuestionId, reponseDateId]);
-              console.log('Valeurs initiales de questionnaireData:', questionnaireData);
-
+              
   const [commentaire, setCommentaire] = useState("");
  useEffect(() => {
   if (selectedQuote && selectedQuote.comment) {
@@ -425,7 +424,7 @@ const formatCustomDate = (dateString) => {
     return dateString;
   }
 };
-console.log("statut", status);
+
 
   // Affichage du composant
   return (
@@ -521,7 +520,7 @@ console.log("statut", status);
         )}
 
         {/* Ligne Bouton Enregistrer */}
-        <Row className="mb-3">
+        <Row className="mb-5">
           <Col xs={12} className="d-flex justify-content-center ">
             <Button 
               variant="contained"
