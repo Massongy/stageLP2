@@ -5,11 +5,11 @@ import { TextField, Card, CardHeader, CardContent, CardActions, Typography, Box,
 import '../../assets/style.css';
 import '../../assets/commentaire.css';
 
-export default function Commentaire({value, onChange, editable = true}) {
+export default function Commentaire({value, onChange, editable = true, label}) {
   return (
     <Box className="bloc-titre-champ champ-commentaire">
         <Typography className="titre3">
-          Commentaire :
+          {label || 'Commentaire :'}
         </Typography>
       
         {editable ? (

@@ -26,7 +26,7 @@ export default function ConfirmTransferIcon({ row, onConfirm }) {
 
   <DialogContent>
     <Typography>
-      Souhaitez-vous confirmer le transfert pour la référence&nbsp;{row.reference_id_SI}&nbsp;?
+      Souhaitez-vous confirmer le transfert pour la référence&nbsp;{row.reference}&nbsp;?
     </Typography>
   </DialogContent>
 

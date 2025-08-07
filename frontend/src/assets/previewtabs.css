@@ -162,14 +162,10 @@
     text-align: center;
 }
 
-.retour-commentaire {
-
-    background-color: #F5F2EE;
-    width: 717px;
-    height: 80px;
+.container-commentaires {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
 }
 
-.retour-commentaire-text{
-    font-style: italic;
-    padding: 13px;
-}

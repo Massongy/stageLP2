@@ -35,7 +35,7 @@ import dayjs from 'dayjs';
 export default function Edition() {
 
   // Fonction pour formater les données info demande selon l'API
-function formatDataInfoForApi(blocInfoData, commentaire) {
+function formatDataInfoForApi(blocInfoData, commentaireDemande) {
   return {
     order_id: blocInfoData.order_id,                    
     reference: blocInfoData.reference,
@@ -50,7 +50,7 @@ function formatDataInfoForApi(blocInfoData, commentaire) {
     idEtablissement: blocInfoData.idEtablissement,      
     reference: parseInt(blocInfoData.Référence),
     status: parseInt(blocInfoData.status),
-    comment: commentaire || ""               
+    comment: commentaireDemande || ""               
   };
 
 }
@@ -211,13 +211,19 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 }, [questionnaire, dateQuestionId, reponseDateId]);
               
-  const [commentaire, setCommentaire] = useState("");
+  const [commentaireDemande, setCommentaireDemande] = useState("");
  useEffect(() => {
   if (selectedQuote && selectedQuote.comment) {
-    setCommentaire(selectedQuote.comment);
+    setCommentaireDemande(selectedQuote.comment);
   }
 }, [selectedQuote]);
 
+/*const [commentaireEchange, setCommentaireEchange] = useState("");
+ useEffect(() => {
+  if (selectedQuote && selectedQuote.comment) {
+    setCommentaireEchange(selectedQuote.comment);
+  }
+}, [selectedQuote]); */
 
   const [reponsesData, setReponsesData] = useState(questionnaireResponses || []); 
   const [message, setMessage] = useState(null);
@@ -228,9 +234,13 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
 
   const [confirmSansInteretOpen, setConfirmSansInteretOpen] = useState(false);
 
-  const handleCommentaireChange = (newValue) => {
-    setCommentaire(newValue);
+  const handleCommentaireDemandeChange = (newValue) => {
+    setCommentaireDemande(newValue);
   };
+
+  /*const handleCommentaireEchangeChange = (newValue) => {
+    setCommentaireEchange(newValue);
+  }; */
 
   const handleInfoDatachange = setBlocInfoData;
   const handleQuestionDataChange = useCallback((newData) => {
@@ -268,7 +278,7 @@ function formatDataQuestionnaireForApi(questionnaireData, selectedQuote) {
   }
 
   try {
-    const dataInfoToSend = formatDataInfoForApi(blocInfoData, commentaire);
+    const dataInfoToSend = formatDataInfoForApi(blocInfoData, commentaireDemande);
     const questionnaireDataToSend = formatDataQuestionnaireForApi(questionnaireData, selectedQuote);     
    
     // 1. Mise à jour du devis avec le statut si fourni
@@ -490,12 +500,22 @@ const formatCustomDate = (dateString) => {
           </Col>
         </Row>
 
-        {/* Ligne Commentaire */}
+        {/* Ligne Commentaires */}
         <Row className="mb-4">
-          <Col xs={12} className="d-flex">
+          <Col xs={6} className="d-flex">
             <Commentaire 
-              value={commentaire}
-              onChange={handleCommentaireChange} 
+              value={commentaireDemande}
+              onChange={handleCommentaireDemandeChange} 
+              label={"Commentaire précisant la demande du client"}
+            />
+            </Col>
+          <Col xs={6} className="d-flex">
+
+            {/*props à modifier lorsqu'on aura le libellé du champ commentaire demande */}
+            <Commentaire 
+              value={commentaireDemande}
+              onChange={handleCommentaireDemandeChange} 
+              label={"Commentaire précisant l'échange avec le client"}
             />
           </Col>
         </Row>

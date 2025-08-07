@@ -128,9 +128,14 @@ export default function FicheClient({reference}) {
       </Box>
 
 
-        <Box>
+        <Box className="container-commentaires">
+
             <Commentaire className="champ" value={selectedQuote?.comment || " "} 
-                    onChange={() => {}} editable = {false}/>
+                    onChange={() => {}} editable = {false} label={"Commentaire précisant la demande"}/>
+       
+        {/*valeur de la prop value à changer selon la clé du champ */}
+            <Commentaire className="champ" value={selectedQuote?.comment || " "} 
+                    onChange={() => {}} editable = {false} label={"Commentaire précisant l'échange"}/>
         </Box>
         </CardContent>
         

@@ -59,13 +59,25 @@ export default function InfoDemande({ data, onDataChange }) {
     "Date du 1er appel", "Date du dernier appel"
   ];
 
+  const [emailError, setEmailError] = useState('');
+const validateEmail = (value) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(value);
+};
   const handleFieldChange = (key, value) => {
-    setIsEditing(true);
-    const updatedFields = { ...localFields, [key]: value };
-    setLocalFields(updatedFields);
-    onDataChange?.(updatedFields);
-  };
+  setIsEditing(true);
+  const updatedFields = { ...localFields, [key]: value };
+  setLocalFields(updatedFields);
+  onDataChange?.(updatedFields);
 
+  if (key === 'Email') {
+    if (!validateEmail(value)) {
+      setEmailError('Format d’email invalide');
+    } else {
+      setEmailError('');
+    }
+  }
+};
   const handleDateChange = (key, dateValue) => {
     handleFieldChange(key, dateValue ? dateValue + 'T00:00:00' : '');
   };
@@ -176,6 +188,7 @@ export default function InfoDemande({ data, onDataChange }) {
                         inputProps={{ min: 0 }}
                         disabled={!isEditable(key)}
                         variant="outlined"
+                        
                         sx={{
                           mx: 1,
                           flex: '1 1 auto',
@@ -218,30 +231,52 @@ export default function InfoDemande({ data, onDataChange }) {
                
 
                     ) : (
-                      <TextField className="champ"
-                        value={value || ''}
-                        onChange={(e) => {
-                          // Utiliser la fonction spéciale pour les champs validés
-                          if (key === "Numéro de téléphone" || key === "Semaine N°") {
-                            handleSpecialInputChange(key, e.target.value);
-                          } else {
-                            handleFieldChange(key, e.target.value);
-                          }
-                        }}
-                        type={getInputType(key)}
-                        inputProps={{ 
-                          pattern: getInputPattern(key),
-                          inputMode: key === "Numéro de téléphone" || key === "Semaine N°" ? "numeric" : undefined
-                        }}
-                        fullWidth
-                        disabled={!isEditable(key)}
-                        placeholder={
-                          key === "Email" ? "exemple@email.com" :
-                          key === "Numéro de téléphone" ? "0123456789" :
-                          key === "Semaine N°" ? "1-53" :
-                          undefined
-                        }
-                      />
+                      <TextField
+  className="champ"
+  value={value || ''}
+  onChange={(e) => {
+    if (key === "Numéro de téléphone" || key === "Semaine N°") {
+      handleSpecialInputChange(key, e.target.value);
+    } else {
+      handleFieldChange(key, e.target.value);
+    }
+  }}
+  type={getInputType(key)}
+  inputProps={{
+    pattern: getInputPattern(key),
+    inputMode:
+      key === "Numéro de téléphone" || key === "Semaine N°"
+        ? "numeric"
+        : undefined,
+  }}
+  fullWidth
+  disabled={!isEditable(key)}
+  placeholder={
+    key === "Email"
+      ? "exemple@email.com"
+      : key === "Numéro de téléphone"
+      ? "0123456789"
+      : key === "Semaine N°"
+      ? "1-53"
+      : undefined
+  }
+  // Ajout de la validation email uniquement pour le champ Email
+  error={key === "Email" && Boolean(emailError)}
+  helperText={key === "Email" ? emailError : undefined}
+  sx={{
+    '& p.MuiFormHelperText-root': {
+      position: 'absolute',
+      top: '-25px', // Ajuste cette valeur selon tes besoins
+      left: 0,
+      color: 'red',
+      backgroundColor: 'rgba(255, 0, 0, 0.1)', // Fond rouge clair
+      padding: '2px 4px',
+      borderRadius: '4px',
+      fontSize: '0.75rem',
+    }
+  }}
+/>
+
                     )}
                 </Box>
               </Box>

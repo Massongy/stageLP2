@@ -6,6 +6,7 @@ box-shadow: none !important;
   
 }
 
+
 /* Styles spécifiques aux navigateurs basés sur WebKit */
 .MuiDataGrid-virtualScroller::-webkit-scrollbar {
   width: 8px;
@@ -52,7 +53,7 @@ box-shadow: none !important;
 }
 
 .MuiDataGrid-columnHeaderTitle {
-  font-size:larger !important;
+  font-size: 17px !important;
 }
 
 .th-cell {
