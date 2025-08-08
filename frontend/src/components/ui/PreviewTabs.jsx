@@ -2,7 +2,6 @@ import React, { useState, useEffect, use } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
 import EditButton from './EditButton.jsx';
 import FicheClient from './FicheClient.jsx';
 import '../../assets/style.css';

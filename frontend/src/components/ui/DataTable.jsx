@@ -145,7 +145,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
       {
   field: 'status',
   headerName: 'Statut',
-   renderHeader: (params) => ( <Box component="span" sx={{ display: 'inline-flex', alignItems: 'flex-end', gap: 1, color: '#656565', fontSize: '17px' }}>
+   renderHeader: (params) => ( <Box className="en-tete-colonne-statut" component="span" >
       Statut
       <StatusFilterButton 
         statusOptions={statusOptions}
@@ -221,7 +221,7 @@ export default function DataTable({data, onPreview, openedRowRef, filterModel, o
       >
         <Alert
           severity={messageType}
-          sx={{ width: '100%' }}
+          className="alert"sx={{ width: '100%' }}
         >
           {message}
         </Alert>

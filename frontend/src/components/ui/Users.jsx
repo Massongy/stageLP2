@@ -154,13 +154,7 @@ export default function Users({
                   {isCurrentProfile ? (
                     <Button 
                     disableRipple
-                    className="container-infos-2" sx={{
-                        all: 'unset',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer', 
-                      }}
+                    className="container-infos-2" 
                       onClick={() => handlePasswordClick(user)}
                     >
                       Modifier
@@ -178,13 +172,13 @@ export default function Users({
               <Box >
                 <Button className="bouton-icone"
                   onClick={() => handleEdit(user)} 
-                  sx={{ minWidth: '40px' }}
+                  
                 >
                   <FontAwesomeIcon icon={faPen} className="icon"/>
                 </Button>
                 <Button className="bouton-icone"
                   onClick={() => handleDelete(user.id)} 
-                  sx={{ minWidth: '40px' }}
+                  
                 >
                   <FontAwesomeIcon icon={faTrash} className="icon"/>
                 </Button>
@@ -194,505 +188,331 @@ export default function Users({
             
          </Box>))}
 
-        {/* Ligne de création */}
        {isCreating && (
-          <Box className="utilisateur">
-            {/* Colonne 1: Nom & Prénom */}
-            
-            <Box className="container-infos">
-              <Box className="container-infos-1">Nom et Prénom :</Box>
-              <Box className="container-infos-2">
-                <input 
-                  name="last_name" 
-                  value={creationData.last_name} 
-                  onChange={onCreationChange}
-                  placeholder="Nom"
-                  className="form-control-sm border-0"
-                  style={{ width: '100%', marginBottom: '6px',}}
-                  disabled={isCurrentProfile}
-                />
-                <input 
-                  name="first_name" 
-                  value={creationData.first_name} 
-                  onChange={onCreationChange}
-                  placeholder="Prénom"
-                  className="form-control-sm border-0"
-                  style={{ width: '100%' }}
-                  disabled={isCurrentProfile}
-                />
-              </Box>
-            </Box>
-            
-            {/* Colonne 2: Email */}
-            <Box className="container-infos">
-              <Box className="container-infos-1">Email :</Box>
-              <Box className="container-infos-2">
-                <input 
-                  name="email" 
-                  value={creationData.email} 
-                  onChange={onCreationChange}
-                  placeholder="Email"
-                  className="form-control-sm border-0"
-                  style={{ width: '100%' }}
-                  disabled={isCurrentProfile}
-                />
-              </Box>
-            </Box>
-            
-            {/* Colonne 3: Rôle */}
-            
-         <Box className="container-infos">
-            <Box className="container-infos-1">Rôle :</Box>
-            
-            <Box className="container-infos-2 " sx={{ 
-                  position: 'relative',
-                  zIndex: 1300, // Z-index très élevé
-                  '& select': {
-                    backgroundColor: '#fff', // Fond blanc obligatoire
-                    '& option': {
-                      backgroundColor: '#fff !important', // Important pour forcer le style
-                      color: '#000 !important',
-                      display: 'block !important'
-                    }
-                  }
-                }}>
-              <select
-                name="groups"
-                value={creationData.groups?.[0] || ''}
-                onChange={(e) => {
-                  
-                  onCreationChange({
-                    target: {
-                      name: 'groups',
-                      value: e.target.value ? [e.target.value] : []
-                    }
-                  });
-                }}
-                className="border-0"
-                style={{
-                  width: '100%',
-                  padding: '4px',
-                  borderRadius: '4px',
-                  backgroundColor: '#fff',
-                  cursor: 'pointer',
-                  appearance: 'menulist',
-                  WebkitAppearance: 'menulist',
-                  MozAppearance: 'menulist'
-                }}
-              >
-                <option value="">Sélectionner...</option>
-                {availableRoles.length > 0 ? (
-                  availableRoles.map(role => (
-                    <option 
-                      key={role.value} 
-                      value={role.value}
-                      style={{
-                        backgroundColor: '#fff',
-                        color: '#000',
-                        padding: '8px'
-                      }}
-                    >
-                      {role.label}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled>Aucun rôle disponible</option>
-                )}
-              </select>
-        </Box>
-            </Box>
-          
-          {/* Colonne 4: Actions  */}
-          <Box className="boite-icones" sx={{ 
-          
-            '& button': {
-              pointerEvents: 'auto' // Force les événements de clic
-            }
-          }}>
-
-      
+  <Box className="utilisateur">
+    {/* Colonne 1: Nom & Prénom */}
+    <Box className="container-infos">
+      <Box className="container-infos-1">Nom et Prénom :</Box>
+      <Box className="container-infos-2">
+        <input 
+          name="last_name" 
+          value={creationData.last_name} 
+          onChange={onCreationChange}
+          placeholder="Nom"
+          className="form-control-sm border-0 input-nom"
+          disabled={isCurrentProfile}
+        />
+        <input 
+          name="first_name" 
+          value={creationData.first_name} 
+          onChange={onCreationChange}
+          placeholder="Prénom"
+          className="form-control-sm border-0 input-prenom"
+          disabled={isCurrentProfile}
+        />
+      </Box>
+    </Box>
+    
+    {/* Colonne 2: Email */}
+    <Box className="container-infos">
+      <Box className="container-infos-1">Email :</Box>
+      <Box className="container-infos-2">
+        <input 
+          name="email" 
+          value={creationData.email} 
+          onChange={onCreationChange}
+          placeholder="Email"
+          className="form-control-sm border-0 input-email"
+          disabled={isCurrentProfile}
+        />
+      </Box>
+    </Box>
+    
+    {/* Colonne 3: Rôle */}
+    <Box className="container-infos">
+      <Box className="container-infos-1">Rôle :</Box>
+      <Box className="container-infos-2 select-role-container">
+        <select
+          name="groups"
+          value={creationData.groups?.[0] || ''}
+          onChange={(e) => onCreationChange({
+            target: { name: 'groups', value: e.target.value ? [e.target.value] : [] }
+          })}
+          className="border-0 select-role"
+        >
+          <option value="">Sélectionner...</option>
+          {availableRoles.map(role => (
+            <option key={role.value} value={role.value} className="role-option">
+              {role.label}
+            </option>
+          ))}
+        </select>
+      </Box>
+    </Box>
+    
+    {/* Colonne 4: Actions */}
+    <Box className="boite-icones">
       <Button 
         variant="contained" 
         color="success" 
         size="small"
-        onClick={(e) => {
-          e.stopPropagation();
-          onSaveNewUser();
-        }}
-
-        sx={{ minWidth: '40px' }}
+        onClick={(e) => { e.stopPropagation(); onSaveNewUser(); }}
         className="bouton-créer-utilisateur"
-       
-  
         disabled={!creationData.groups?.[0]}
       >
-         <FontAwesomeIcon icon={faCircleCheck} className="icon icone-creation" />
+        <FontAwesomeIcon icon={faCircleCheck} className="icon icone-creation" />
       </Button>
       
       <Button 
         variant="outlined" 
         color="error" 
         size="small"
-        onClick={(e) => {
-          e.stopPropagation();
-          onCancelCreation();
-        }}
-        sx={{ minWidth: '40px', border: 'none !important' }}
-        className="bouton-icone"
+        onClick={(e) => { e.stopPropagation(); onCancelCreation(); }}
+        className="bouton-icone bouton-supprimer"
       >
-        <FontAwesomeIcon icon={faTrash}  className="icon"/>
+        <FontAwesomeIcon icon={faTrash} className="icon" />
       </Button>
     </Box>
   </Box>
 )}
+
       </div>
 
-      {/* Version mobile - inchangée */}
+      {/* Version mobile */}
       <div className="d-block d-lg-none">
-        {datausers.map((user, i) => (
-          <div key={i} className="info-admin-mobile mb-4 p-3" style={{
-            backgroundColor: 'white',
-            borderRadius: '4px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}>
-            <div className="row mb-2">
-              <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Nom :</div>
-              <div className="col-8 container-infos-2" style={{ 
-                backgroundColor: '#F5F2EE', 
-                padding: '8px',
-                color: '#656565'
-              }}>
-                {user.last_name}
-              </div>
-            </div>
-            <div className="row mb-2">
-              <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Prénom :</div>
-              <div className="col-8 container-infos-2" style={{ 
-                backgroundColor: '#F5F2EE', 
-                padding: '8px',
-                color: '#656565'
-              }}>
-                {user.first_name}
-              </div>
-            </div>
-            <div className="row mb-2">
-              <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Email :</div>
-              <div className="col-8 container-infos-2" style={{ 
-                backgroundColor: '#F5F2EE', 
-                padding: '8px',
-                color: '#656565'
-              }}>
-                {user.email}
-              </div>
-            </div>
-            <div className="row mb-2">
-              <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>
-                {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
-              </div>
-              <div className="col-8 container-infos-2" style={{ 
-                backgroundColor: '#F5F2EE', 
-                padding: '8px',
-                color: '#656565'
-              }}>
-                {isCurrentProfile ? (
-                  <Button 
-                    variant="outlined" 
-                    size="small"
-                    onClick={() => handlePasswordClick(user)}
-                    sx={{ 
-                      textTransform: 'none',
-                      fontSize: '12px',
-                      padding: '4px 8px'
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faEdit} style={{ marginRight: '4px' }} />
-                    Modifier
-                  </Button>
-                ) : (
-                  user.groups
-                )}
-              </div>
-            </div>
-            {!isCurrentProfile && (
-              <div className="d-flex justify-content-end mt-2">
-                <Button 
-                  className="me-2" 
-                  style={{ 
-                    color: '#656565',
-                    border: 'none',
-                    minWidth: '40px'
-                  }}
-                  variant="outlined" 
-                  size="small"
-                  onClick={() => handleEdit(user)}
-                >
-                  <FontAwesomeIcon  icon={faPen}   className="icon-small-screen"/>
-                </Button>
-                <Button 
-                  style={{ 
-                    color: '#656565',
-                    minWidth: '40px',
-                    border: 'none',
-                  }}
-                  variant="outlined" 
-                  size="small"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  <FontAwesomeIcon icon={faTrash} className="icon-small-screen"/>
-                </Button>
-              </div>
-            )}
-            
-           
+  {datausers.map((user, i) => (
+    <div key={i} className="info-admin-mobile mb-4 p-3 mobile-user-card">
+      <div className="row mb-2">
+        <div className="col-4 container-infos-1 mobile-info-label">Nom :</div>
+        <div className="col-8 container-infos-2 mobile-info-value">
+          {user.last_name}
         </div>
+      </div>
+      <div className="row mb-2">
+        <div className="col-4 container-infos-1 mobile-info-label">Prénom :</div>
+        <div className="col-8 container-infos-2 mobile-info-value">
+          {user.first_name}
+        </div>
+      </div>
+      <div className="row mb-2">
+        <div className="col-4 container-infos-1 mobile-info-label">Email :</div>
+        <div className="col-8 container-infos-2 mobile-info-value">
+          {user.email}
+        </div>
+      </div>
+      <div className="row mb-2">
+        <div className="col-4 container-infos-1 mobile-info-label">
+          {isCurrentProfile ? "Mot de passe :" : "Rôle :"}
+        </div>
+        <div className="col-8 container-infos-2 mobile-info-value">
+          {isCurrentProfile ? (
+            <Button 
+              variant="outlined" 
+              size="small"
+              onClick={() => handlePasswordClick(user)}
+              className="mobile-edit-btn"
+            >
+              <FontAwesomeIcon icon={faEdit} className="mobile-btn-icon" />
+              Modifier
+            </Button>
+          ) : (
+            user.groups
+          )}
+        </div>
+      </div>
+      {!isCurrentProfile && (
+        <div className="d-flex justify-content-end mt-2 mobile-actions">
+          <Button 
+            variant="outlined" 
+            size="small"
+            onClick={() => handleEdit(user)}
+            className="mobile-action-btn me-2"
+          >
+            <FontAwesomeIcon icon={faPen} className="mobile-btn-icon" />
+          </Button>
+          <Button 
+            variant="outlined" 
+            size="small"
+            onClick={() => handleDelete(user.id)}
+            className="mobile-action-btn"
+          >
+            <FontAwesomeIcon icon={faTrash} className="mobile-btn-icon" />
+          </Button>
+        </div>
+      )}
+    </div>
 
         ))}
 
         {/* Formulaire de création - version mobile */}
   {isCreating && (
-    <div className="info-admin-mobile mb-4 p-3" style={{
-      backgroundColor: 'white',
-      borderRadius: '4px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    }}>
-      <div className="row mb-2">
-        <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Nom :</div>
-        <div className="col-8">
-          <input 
-            name="last_name" 
-            value={creationData.last_name} 
-            onChange={onCreationChange}
-            placeholder="Nom"
-            className="form-control-sm"
-            style={{ width: '100%' }}
-          />
-        </div>
-      </div>
-      
-      <div className="row mb-2">
-        <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Prénom :</div>
-        <div className="col-8">
-          <input 
-            name="first_name" 
-            value={creationData.first_name} 
-            onChange={onCreationChange}
-            placeholder="Prénom"
-            className="form-control-sm"
-            style={{ width: '100%' }}
-          />
-        </div>
-      </div>
-      
-      <div className="row mb-2">
-        <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Email :</div>
-        <div className="col-8">
-          <input 
-            name="email" 
-            value={creationData.email} 
-            onChange={onCreationChange}
-            placeholder="Email"
-            className="form-control-sm"
-            style={{ width: '100%' }}
-          />
-        </div>
-      </div>
-      
-      <div className="row mb-2">
-        <div className="col-4 container-infos-1" style={{ color: '#656565', fontWeight: '500' }}>Rôle :</div>
-        <div className="col-8">
-          <select
-            name="groups"
-            value={creationData.groups?.[0] || ''}
-            onChange={(e) => onCreationChange({
-              target: {
-                name: 'groups',
-                value: e.target.value ? [e.target.value] : []
-              }
-            })}
-            className="form-control-sm"
-            style={{ width: '100%' }}
-          >
-            <option value="">Sélectionner...</option>
-            {availableRoles.map(role => (
-              <option key={role.value} value={role.value}>
-                {role.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      
-      <div className="d-flex justify-content-end mt-3">
-        <Button 
-          variant="contained" 
-          color="success"
-          size="small"
-          onClick={onSaveNewUser}
-          disabled={!creationData.groups?.[0]}
-          className="me-2"
-          sx={{ 
-            minWidth: '40px',
-            backgroundColor: 'white',
-            '&:not(:disabled)': {
-              backgroundColor: '#90A5C8 !important',
-              '& .icon': {
-                color: 'white !important'
-              }
-            }
-          }}
-        >
-          <FontAwesomeIcon icon={faCircleCheck} className="icon" />
-        </Button>
-        <Button 
-          variant="outlined" 
-          color="error"
-          size="small"
-          onClick={onCancelCreation}
-          sx={{ 
-            minWidth: '40px',
-            border: 'none !important'
-          }}
-        >
-          <FontAwesomeIcon icon={faTrash} className="icon" />
-        </Button>
-      </div>
+    <div className="info-admin-mobile creation-form-card">
+  <div className="row mb-2 form-input-row">
+    <div className="col-4 form-label">Nom :</div>
+    <div className="col-8">
+      <input 
+        name="last_name" 
+        value={creationData.last_name} 
+        onChange={onCreationChange}
+        placeholder="Nom"
+        className="form-control-sm form-input"
+      />
     </div>
+  </div>
+  
+  <div className="row mb-2 form-input-row">
+    <div className="col-4 form-label">Prénom :</div>
+    <div className="col-8">
+      <input 
+        name="first_name" 
+        value={creationData.first_name} 
+        onChange={onCreationChange}
+        placeholder="Prénom"
+        className="form-control-sm form-input"
+      />
+    </div>
+  </div>
+  
+  <div className="row mb-2 form-input-row">
+    <div className="col-4 form-label">Email :</div>
+    <div className="col-8">
+      <input 
+        name="email" 
+        value={creationData.email} 
+        onChange={onCreationChange}
+        placeholder="Email"
+        className="form-control-sm form-input"
+      />
+    </div>
+  </div>
+  
+  <div className="row mb-2 form-input-row">
+    <div className="col-4 form-label">Rôle :</div>
+    <div className="col-8">
+      <select
+        name="groups"
+        value={creationData.groups?.[0] || ''}
+        onChange={(e) => onCreationChange({
+          target: {
+            name: 'groups',
+            value: e.target.value ? [e.target.value] : []
+          }
+        })}
+        className="form-control-sm form-select"
+      >
+        <option value="">Sélectionner...</option>
+        {availableRoles.map(role => (
+          <option key={role.value} value={role.value}>
+            {role.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  </div>
+  
+  <div className="form-actions">
+    <Button 
+      variant="contained" 
+      color="success"
+      size="small"
+      onClick={onSaveNewUser}
+      disabled={!creationData.groups?.[0]}
+      className="form-submit-btn"
+    >
+      <FontAwesomeIcon icon={faCircleCheck} className="form-btn-icon" />
+    </Button>
+    <Button 
+      variant="outlined" 
+      color="error"
+      size="small"
+      onClick={onCancelCreation}
+      className="form-cancel-btn"
+    >
+      <FontAwesomeIcon icon={faTrash} className="form-btn-icon" />
+    </Button>
+  </div>
+</div>
   )}
 </div>
      
 
      {/* Modal pour changer le mot de passe */}
-      <Modal
-        open={passwordModal}
-        onClose={handlePasswordCancel}
-        aria-labelledby="password-modal-title"
-        aria-describedby="password-modal-description"
+     <Modal
+  open={passwordModal}
+  onClose={handlePasswordCancel}
+  aria-labelledby="password-modal-title"
+  aria-describedby="password-modal-description"
+>
+  <Box className="password-modal-box">
+    <Typography id="password-modal-title" className="titre2">
+      Modification du mot de passe
+    </Typography>
+             
+    {error && (
+      <Alert severity="error" className="password-modal-alert">
+        {error}
+      </Alert>
+    )}
+             
+    {success && (
+      <Alert severity="success" className="password-modal-alert">
+        Mot de passe modifié avec succès !
+      </Alert>
+    )}
+             
+    <Box component="form" onSubmit={handlePasswordSubmit} className="password-form-container">
+      <InputLabel className="titre3">
+        Ancien mot de passe :
+      </InputLabel>
+      <TextField
+        fullWidth
+        type="password"
+        name="currentPassword"
+        value={passwordData.currentPassword}
+        onChange={handlePasswordInputChange}
+        className="password-textfield"
+      />
+
+      <InputLabel className="titre3">
+        Nouveau mot de passe :
+      </InputLabel>
+      <TextField
+        fullWidth
+        type="password"
+        name="newPassword"
+        value={passwordData.newPassword}
+        onChange={handlePasswordInputChange}
+        className="password-textfield"
+      />
+
+      <InputLabel className="titre3">
+        Confirmez le nouveau mot de passe :
+      </InputLabel>
+      <TextField
+        fullWidth
+        type="password"
+        name="confirmPassword"
+        value={passwordData.confirmPassword}
+        onChange={handlePasswordInputChange}
+        className="password-textfield"
+      />
+    </Box>
+             
+    <Box className="password-buttons-container">
+      <Button
+        variant="contained"
+        onClick={handlePasswordSubmit}
+        disabled={!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || loading}
+        className="bouton bouton-confirmer password-button"
       >
-        <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '50%',
-        height: 'auto',
-        bgcolor: 'background.paper',
-        border: '1px solid #D4C7B5;',
-        p: 4,
-        pt: '50px',
-        pb: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 3,
-        boxSizing: 'border-box'
-         }}>
-        <Typography id="password-modal-title" className="titre2">
-          Modification du mot de passe
-        </Typography>
-        
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            Mot de passe modifié avec succès !
-          </Alert>
-        )}
-        
-        <Box component="form" onSubmit={handlePasswordSubmit} sx={{
-          width: '100%',
-          maxWidth: '400px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          mt: 2,
-          flexGrow: 1
-          }}>
-        <InputLabel className="titre3">
-          Ancien mot de passe :
-        </InputLabel>
-        <TextField
-          fullWidth
-          type="password"
-          name="currentPassword"
-          value={passwordData.currentPassword}
-          onChange={handlePasswordInputChange}
-          sx={{ 
-            backgroundColor: '#F5F2EE',
-            '& .MuiInputBase-root': {
-              height: '40px' // Hauteur réduite pour les champs
-            }
-          }}
-        />
-
-        <InputLabel className="titre3">
-          Nouveau mot de passe :
-        </InputLabel>
-        <TextField
-          fullWidth
-          type="password"
-          name="newPassword"
-          value={passwordData.newPassword}
-          onChange={handlePasswordInputChange}
-          sx={{ 
-            backgroundColor: '#F5F2EE',
-            '& .MuiInputBase-root': {
-              height: '40px'
-            }
-          }}
-        />
-
-          <InputLabel className="titre3">
-            Confirmez le nouveau mot de passe :
-          </InputLabel>
-          <TextField
-            fullWidth
-            type="password"
-            name="confirmPassword"
-            value={passwordData.confirmPassword}
-            onChange={handlePasswordInputChange}
-            sx={{ 
-              backgroundColor: '#F5F2EE',
-              '& .MuiInputBase-root': {
-                height: '40px'
-              }
-            }}
-          />
-        </Box>
-        
-        <Box sx={{ 
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 2,
-          width: '50%'
-        }}>
-     
-        <Button 
-          variant="contained" 
-          onClick={handlePasswordSubmit}
-          disabled={!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || loading}
-          className="bouton bouton-confirmer"
-          sx={{
-            height: '50px !important', // Hauteur augmentée pour les boutons
-            width: '100%'
-          }}
-        >
-          {loading ? 'Modification...' : 'Confirmer'}
-        </Button>
-       
-        <Button 
-          variant="outlined" 
-          onClick={handlePasswordCancel}
-          className="bouton bouton-annuler"
-          sx={{
-            height: '50px !important', // Hauteur augmentée pour les boutons
-          width: '100%'
-        }}
-        >
+        {loading ? 'Modification...' : 'Confirmer'}
+      </Button>
+             
+      <Button
+        variant="outlined"
+        onClick={handlePasswordCancel}
+        className="bouton bouton-annuler password-button"
+      >
         Annuler
       </Button>
     </Box>

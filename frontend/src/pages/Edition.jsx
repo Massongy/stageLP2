@@ -1,6 +1,6 @@
 import React, { useState, useEffect,useCallback } from 'react';
 import {
-  Button,
+ 
   Alert,
   CircularProgress,
   Dialog,
@@ -18,6 +18,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import InfoDemande from '../components/ui/InfoDemande.jsx';
 import Commentaire from '../components/ui/Commentaire.jsx';
 import QuestionsScoring from '../components/ui/QuestionsScoring.jsx';
+import LoadingButton from '../components/ui/LoadingButton';
 import '../assets/edition.css';
 import '../assets/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -443,15 +444,15 @@ const formatCustomDate = (dateString) => {
         {/* Première ligne : Bouton Fermer à gauche, Titre centré */}
         <Row className="ligne-1-edition mb-3">
           <Col xs={3} className="d-flex justify-content-start align-items-center">
-            <Button
+            <LoadingButton
               variant="contained"
               className="bouton bouton-fermer-edition"
               disabled={isLoading}
               onClick={handleCloseClick}
             >
               Fermer
-            </Button>
-            {Number(status) !== 6 && (<Button
+            </LoadingButton>
+            {Number(status) !== 6 && (<LoadingButton
               variant="contained"
               className="bouton bouton-fermer-edition"
               disabled={isLoading}
@@ -459,7 +460,7 @@ const formatCustomDate = (dateString) => {
               style={{ marginLeft: '10px' }}
             >
               sans intérêt
-            </Button>)}
+            </LoadingButton>)}
 
           </Col>
           <Col xs={6} className="d-flex flex-column justify-content-center align-items-center">
@@ -525,16 +526,12 @@ const formatCustomDate = (dateString) => {
           <Row className="mb-3">
             <Col xs={12}>
                <Alert
-                severity={messageType} // 'success' ou 'error'
-                sx={{
-                  backgroundColor: messageType === 'success' ? '#f6ffed' : '#fff2f0',
-                  border: messageType === 'success' ? '1px solid #b7eb8f' : '1px solid #ffccc7',
-                  color: messageType === 'success' ? '#52c41a' : '#ff4d4f'
-                }}
-                onClose={() => setMessage(null)}
-              >
-                {message}
-              </Alert>
+                  severity={messageType}
+                  className={`custom-alert-${messageType}`}
+                  onClose={() => setMessage(null)}
+                >
+                  {message}
+                </Alert>
             </Col>
           </Row>
         )}
@@ -542,7 +539,7 @@ const formatCustomDate = (dateString) => {
         {/* Ligne Bouton Enregistrer */}
         <Row className="mb-5">
           <Col xs={12} className="d-flex justify-content-center ">
-            <Button 
+            <LoadingButton 
               variant="contained"
               className="bouton bouton-enregistrer bouton-editer "
               onClick={handleEnregistrer}
@@ -550,7 +547,7 @@ const formatCustomDate = (dateString) => {
               startIcon={isLoading ? <CircularProgress size={20} /> : null}
             >
               {isLoading ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
+            </LoadingButton>
           </Col>
         </Row>
       </Container>
@@ -562,12 +559,12 @@ const formatCustomDate = (dateString) => {
     Vous êtes sur le point de fermer la demande N° {reference}...
   </DialogTitle>
   <DialogActions className="dialog-actions">
-    <Button className="bouton-confirmer" onClick={handleConfirmClose} variant="contained">
+    <LoadingButton className="bouton-confirmer" onClick={handleConfirmClose} variant="contained">
       Confirmer
-    </Button>
-    <Button className="bouton-annuler" onClick={handleCancelClose}>
+    </LoadingButton>
+    <LoadingButton className="bouton-annuler" onClick={handleCancelClose}>
       Annuler
-    </Button>
+    </LoadingButton>
   </DialogActions>
 </Dialog>
 
@@ -577,12 +574,12 @@ const formatCustomDate = (dateString) => {
     Êtes-vous sûr de vouloir marquer cette demande comme "sans intérêt" ?
   </DialogTitle>
   <DialogActions className="dialog-actions">
-    <Button className="bouton-confirmer" onClick={handleConfirmSansInteret} variant="contained">
+    <LoadingButton className="bouton-confirmer" onClick={handleConfirmSansInteret} variant="contained">
       Confirmer
-    </Button>
-    <Button className="bouton-annuler" onClick={() => setConfirmSansInteretOpen(false)}>
+    </LoadingButton>
+    <LoadingButton className="bouton-annuler" onClick={() => setConfirmSansInteretOpen(false)}>
       Annuler
-    </Button>
+    </LoadingButton>
     
   </DialogActions>
 </Dialog>
@@ -593,15 +590,15 @@ const formatCustomDate = (dateString) => {
     Que souhaitez-vous faire ?
   </DialogTitle>
   <DialogActions className="dialog-actions">
-    <Button className="bouton-confirmer" onClick={handleSaveAndSend} variant="contained" disabled={isLoading}>
+    <LoadingButton className="bouton-confirmer" onClick={handleSaveAndSend} variant="contained" disabled={isLoading}>
       Enregistrer et clôturer
-    </Button>
-    <Button className="bouton-confirmer" onClick={handleSaveAndReturnLater} variant="contained" disabled={isLoading}>
+    </LoadingButton>
+    <LoadingButton className="bouton-confirmer" onClick={handleSaveAndReturnLater} variant="contained" disabled={isLoading}>
       Enregistrer et revenir plus tard
-    </Button>
-    <Button className="bouton-annuler" onClick={handleCancelSave} disabled={isLoading}>
+    </LoadingButton>
+    <LoadingButton className="bouton-annuler" onClick={handleCancelSave} disabled={isLoading}>
       Annuler
-    </Button>
+    </LoadingButton>
   </DialogActions>
 </Dialog>
     </>

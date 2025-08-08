@@ -1,13 +1,12 @@
-
+/* === STYLES GÉNÉRAUX === */
 .datatable {
   border: none !important;
-box-shadow: none !important;
- background-color: white !important;
-  
+  box-shadow: none !important;
+  background-color: white !important;
 }
 
-
-/* Styles spécifiques aux navigateurs basés sur WebKit */
+/* === SCROLLBARS === */
+/* WebKit (Chrome, Safari, Edge) */
 .MuiDataGrid-virtualScroller::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -26,64 +25,59 @@ box-shadow: none !important;
   background-color: #D4C7B5;
 }
 
-/* Règle de secours pour Firefox */
+/* Firefox fallback */
 @supports not selector(::-webkit-scrollbar) {
   .MuiDataGrid-virtualScroller {
-   
     scrollbar-color: #D4C7B5 #F5F2EE;
   }
 }
 
-
-
-.MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within {
-  outline: none !important;
+/* === SUPPRESSION DES BORDURES === */
+.MuiDataGrid-root,
+.MuiDataGrid-cell,
+.MuiDataGrid-columnHeader,
+.MuiDataGrid-row {
+  border: none !important;
+  border-color: transparent !important;
+  --DataGrid-t-color-border-base: transparent !important;
+  --DataGrid-rowBorderColor: transparent !important;
 }
 
-.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
-  outline: none !important;
-}
-
+/* === SUPPRESSION DES SÉPARATEURS DE COLONNES === */
 .MuiDataGrid-root .MuiDataGrid-columnSeparator {
   display: none;
 }
 
-.MuiDataGrid-root .MuiDataGrid-columnHeaders .MuiDataGrid-columnSeparator {
-  display: none;
+/* === SUPPRESSION DES FOCUS OUTLINES === */
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within,
+.MuiDataGrid-root .MuiDataGrid-cell:focus-within {
+  outline: none !important;
 }
 
+/* === TYPOGRAPHIE === */
 .MuiDataGrid-columnHeaderTitle {
   font-size: 17px !important;
 }
 
 .th-cell {
-
-color: #656565;
-
-
+  color: #656565;
 }
 
 .MuiDataGrid-cell {
   font-weight: bold;
-  font-size:larger;
+  font-size: larger;
 }
 
-
-
+/* === ICÔNES === */
 .icone-datatable {
-
-    font-size: 20px;
-    
-    
+  font-size: 20px;
 }
 
 .icone-datatable-info {
-    color: #D4C7B5;
+  color: #D4C7B5;
 }
 
-
-
-/* Force l'affichage PERMANENT de toutes les icônes */
+/* Force l'affichage permanent des icônes de menu */
 .MuiDataGrid-root .MuiDataGrid-menuIcon,
 .MuiDataGrid-root .MuiDataGrid-iconButtonContainer {
   visibility: visible !important;
@@ -91,23 +85,19 @@ color: #656565;
   opacity: 1 !important;
 }
 
-/* Force le remplacement de l'icône native */
+/* Affiche l'icône personnalisée */
 .MuiDataGrid-menuIcon .custom-menu-icon {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* Supprime le style par défaut */
+/* Cache l'icône native */
 .MuiDataGrid-menuIcon svg:not(.custom-menu-icon) {
   display: none !important;
 }
 
-/* Suppression totale du tooltip */
-.MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"] {
-  position: relative !important;
-}
-
+/* === SUPPRESSION COMPLÈTE DES TOOLTIPS === */
 .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"]::after,
 .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button[aria-label="Menu"]::before,
 .MuiTooltip-popper[role="tooltip"],
@@ -123,18 +113,23 @@ color: #656565;
   font-size: 0 !important;
 }
 
-.MuiDataGrid-root,
-.MuiDataGrid-cell,
-.MuiDataGrid-columnHeader,
-.MuiDataGrid-row {
-  border-color: transparent !important;
-  --DataGrid-t-color-border-base: transparent !important;
-  --DataGrid-rowBorderColor: transparent !important;
+/* === EN-TÊTE COLONNE STATUT === */
+.en-tete-colonne-statut {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #656565;
+  font-size: 17px;
 }
 
-.MuiDataGrid-cell {
-  border: none !important;
- 
-}
 
- 
+
+/* Suppression spécifique des séparateurs redimensionnables */
+.MuiDataGrid-root .MuiDataGrid-columnSeparator--resizable {
+  display: none !important;
+  cursor: default !important;
+  touch-action: auto !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

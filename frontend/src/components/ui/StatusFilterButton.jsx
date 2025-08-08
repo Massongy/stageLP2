@@ -28,14 +28,12 @@ const StatusFilterButton = ({ statusOptions, currentFilter, onFilterChange }) =>
       <IconButton
         onClick={handleClick}
         size="small"
-        sx={{ 
-          padding: '4px',
-          color: isFiltered ? '#1976d2' : '#666'
-        }}
+       
+        
       >
         <FontAwesomeIcon 
           icon={faAngleDown} 
-          sx={{ color: '#656565' }}
+         
         />
       </IconButton>
       

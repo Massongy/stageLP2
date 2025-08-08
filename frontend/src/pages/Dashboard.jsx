@@ -112,49 +112,43 @@ useEffect(() => {
 
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <div className="container-fluid">
-        <div className="row row g-0">
-          {/* Tableau - Prend toute la largeur sur mobile, 8 colonnes sur desktop */}
-          <div className="col-12 col-lg-8 mb-3 mb-lg-0">
-            <Box sx={{ 
-              width: '100%',
-              '& .MuiDataGrid-root': {
-                borderRadius: 1,
-                border: 'none',
-              }
-            }}>
-              <DataTable
-                data={filteredData}
-                onPreview={handlePreview}
-                openedRowRef={openedRowRef}
-                filterModel={filterModel}
-                onFilterModelChange={setFilterModelCallback}
-                disableRowSelectionOnClick
-              />
-            </Box>
-          </div>
-          
-          {/* Preview - Passe en dessous sur mobile, 4 colonnes sur desktop */}
-          <div className="col-12 col-lg-4">
-            <Box sx={{ 
-              width: '100%',
-              height: '100%',
-              
-            }}>
-              <PreviewTabs openedRowRef={openedRowRef} quoteId={quoteId} status={status}/>
-            </Box>
-          </div>
-        </div>
+    <Box className="dashboard-container">
+  <div className="container-fluid">
+    <div className="row g-0">
+      {/* Tableau - Prend toute la largeur sur mobile, 8 colonnes sur desktop */}
+      <div className="col-12 col-lg-8 mb-3 mb-lg-0">
+        <Box className="dashboard-datatable-box">
+          <DataTable
+            data={filteredData}
+            onPreview={handlePreview}
+            openedRowRef={openedRowRef}
+            filterModel={filterModel}
+            onFilterModelChange={setFilterModelCallback}
+            disableRowSelectionOnClick
+          />
+        </Box>
       </div>
-
-      {/* Modal de recherche */}
-      <SearchModal
-        open={searchModalOpen}
-        onClose={closeSearchModal}
-        onSearch={performSearch}
-        tableData={filteredDataSearch}
-      />
-    </Box>
+                 
+      {/* Preview - Passe en dessous sur mobile, 4 colonnes sur desktop */}
+      <div className="col-12 col-lg-4">
+        <Box className="dashboard-preview-box">
+          <PreviewTabs 
+            openedRowRef={openedRowRef} 
+            quoteId={quoteId} 
+            status={status}
+          />
+        </Box>
+      </div>
+    </div>
+  </div>
+       
+  {/* Modal de recherche */}
+  <SearchModal
+    open={searchModalOpen}
+    onClose={closeSearchModal}
+    onSearch={performSearch}
+    tableData={filteredDataSearch}
+  />
+</Box>
   );
 }

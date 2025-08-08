@@ -474,17 +474,11 @@ if (!hasFullRights) {
           vertical: 'top',
           horizontal: 'center',
         }}
-        sx={{
-          '& .MuiPaper-root': {
-            minWidth: '300px',
-            fontSize: '1.1rem',
-            textAlign: 'center'
-          }
-        }}
+        className="custom-snackbar"
       >
         <Alert
           severity={snackbarSeverity}
-          sx={{ width: '100%' }}
+          className="custom-snackbar-alert"
           onClose={() => setOpenSnackbar(false)}
         >
           {snackbarMessage}

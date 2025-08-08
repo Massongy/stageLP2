@@ -201,6 +201,32 @@ fieldset {
   box-shadow: none !important;
 }
 
+
+/* Container principal du dashboard */
+.dashboard-container {
+  width: 100%;
+}
+
+/* Box contenant le DataGrid */
+.dashboard-datatable-box {
+  width: 100%;
+}
+
+.dashboard-datatable-box .MuiDataGrid-root {
+  border-radius: 4px !important;
+  border: none !important;
+}
+
+/* Box contenant le preview */
+.dashboard-preview-box {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+
 /*boite dialogue confirmation pour edition*/
 
 .boite-dialogue .MuiDialog-paper {
@@ -312,4 +338,36 @@ padding: 0 1em;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+/*messages d'alert */
+.custom-alert-success {
+  background-color: #f6ffed !important;
+  border: 1px solid #b7eb8f !important;
+  color: #52c41a !important;
+}
+
+.custom-alert-error {
+  background-color: #fff2f0 !important;
+  border: 1px solid #ffccc7 !important;
+  color: #ff4d4f !important;
+}
+
+/*snackbar alert */
+/* Styles pour la Snackbar */
+.custom-snackbar .MuiPaper-root {
+  min-width: 300px !important;
+  font-size: 1.1rem !important;
+  text-align: center !important;
+}
+
+/* Styles pour les Alert dans Snackbar */
+.custom-snackbar .MuiPaper-root {
+  min-width: 300px !important;
+  font-size: 1.1rem !important;
+  text-align: center !important;
+}
+
+.custom-snackbar-alert {
+  width: 100% !important;
 }
