@@ -1,0 +1,12 @@
+# -------------------------
+# Base dependencies (common)
+# -------------------------
+
+Django>=4.2,<5.0                 # Framework web principal
+djangorestframework               # Toolkit pour créer des API REST
+djangorestframework-simplejwt     # Authentification JWT pour API
+psycopg2-binary                   # Driver PostgreSQL
+django-cors-headers               # Gestion des CORS pour autoriser ton front
+drf-yasg                           # Documentation automatique Swagger/OpenAPI pour tes API
+requests                           # Librairie HTTP pour requêtes externes
+django-environ                     # Gestion des variables d'environnement (.env)

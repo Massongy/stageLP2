@@ -1,0 +1,11 @@
+# Include base dependencies
+-r base.txt
+
+# -------------------------
+# Production-only dependencies
+# -------------------------
+
+dj-database-url                     # Lit DATABASE_URL fourni par Render
+whitenoise[brotli]                  # Sert les fichiers statiques en prod
+gunicorn                            # Serveur WSGI pour déployer Django
+uvicorn                             # Serveur ASGI optionnel (pour async ou DRF)
