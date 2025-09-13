@@ -14,12 +14,15 @@ COPY requirements/ ./requirements/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements/prod.txt
 
-# Copier entrypoint.sh
+# Copier entrypoint.sh et le rendre exécutable
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Copier le reste du projet
 COPY . .
 
-# Lancer via entrypoint
-CMD ["/entrypoint.sh"]
+# Définir l'entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Définir la commande finale (Gunicorn sur le port 8000)
+CMD ["gunicorn", "qualilead_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
