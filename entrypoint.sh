@@ -25,3 +25,6 @@ if not User.objects.filter(email="$DJANGO_SUPERUSER_EMAIL").exists():
 EOF
 
 echo "✅ Préparation terminée"
+
+# IMPORTANT: Exécuter la commande passée en argument (CMD du Dockerfile)
+exec "$@"
