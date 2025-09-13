@@ -24,6 +24,4 @@ if not User.objects.filter(email="$DJANGO_SUPERUSER_EMAIL").exists():
     )
 EOF
 
-echo "✅ Préparation terminée, lancement de la commande finale..."
-# Exécuter la commande finale (CMD) passée au container
-exec "$@"
+echo "✅ Préparation terminée"
