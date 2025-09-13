@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 
-# Éviter les fichiers pyc + activer logs directs
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Éviter les fichiers pyc + logs directs
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Répertoire de travail
 WORKDIR /app
@@ -21,11 +21,8 @@ RUN chmod +x /entrypoint.sh
 # Copier le reste du projet
 COPY . .
 
-# IMPORTANT: Définir le module de settings pour la production
-ENV DJANGO_SETTINGS_MODULE=qualilead_backend.settings.prod
-
 # Définir l'entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Définir la commande finale (Gunicorn sur le port 8000)
-CMD ["gunicorn", "qualilead_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Définir la commande finale : Gunicorn sur le port 8000
+CMD ["gunicorn", "qualilead_backend.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--log-level", "info"]
