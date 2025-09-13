@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 
 # Éviter les fichiers pyc + activer logs directs
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Répertoire de travail
 WORKDIR /app
@@ -20,6 +20,9 @@ RUN chmod +x /entrypoint.sh
 
 # Copier le reste du projet
 COPY . .
+
+# IMPORTANT: Définir le module de settings pour la production
+ENV DJANGO_SETTINGS_MODULE=qualilead_backend.settings.prod
 
 # Définir l'entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
