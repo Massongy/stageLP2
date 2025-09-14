@@ -12,7 +12,7 @@ export const useGetQuestionnaireId = (quote_id) => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`/api/questionnaire/questionnaires/${quote_id}/`);
+            const response = await authFetch(`/questionnaire/questionnaires/${quote_id}/`);
             
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);

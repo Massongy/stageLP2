@@ -11,7 +11,7 @@ export const useEditUser = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`/api/users/update/${userId}/`, {
+            const response = await authFetch(`/users/update/${userId}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

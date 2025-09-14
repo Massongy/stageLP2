@@ -12,7 +12,7 @@ export const useQuestionnaireReponses = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch('/api/questionnaire/reponses/');
+            const response = await authFetch('/questionnaire/reponses/');
             
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);

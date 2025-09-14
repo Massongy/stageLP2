@@ -1,7 +1,17 @@
-FROM node:20-alpine AS build
+FROM node:20-alpine
+
 WORKDIR /app
-COPY package.json ./
-COPY index.html ./
+
+# Copie package.json uniquement (pour installation isolée)
+COPY package.json .
+
+# Supprime node_modules et lockfile AVANT installation
+RUN rm -rf node_modules package-lock.json \
+    && npm cache clean --force \
+    && npm install
+
+# Puis copie le reste du projet
 COPY . .
-RUN npm install
+
+# Lancer Vite
 CMD ["npm", "run", "dev"]

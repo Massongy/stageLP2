@@ -12,7 +12,7 @@ export const useChangePassword = () => {
             setError(null);
             setSuccess(false);
 
-            const response = await authFetch(`/api/users/change-password/`, {
+            const response = await authFetch(`/users/change-password/`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

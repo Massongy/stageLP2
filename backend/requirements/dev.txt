@@ -1,3 +1,10 @@
+# Include base dependencies
 -r base.txt
-ipython
-django-debug-toolbar
+
+# -------------------------
+# Development-only dependencies
+# -------------------------
+
+ipython                             # Terminal interactif pratique
+django-debug-toolbar                # Barre de debug dans le navigateur
+django-extensions                   # Outils supplémentaires pour dev (ex: shell_plus, graph_models)

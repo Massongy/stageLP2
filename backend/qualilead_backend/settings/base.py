@@ -96,16 +96,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.options.net'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'Qualilead <admin.web@options.net>'
+_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=4),     # ⏱ token d’accès
+    "ACCESS_TEMAILOKEN_LIFETIME": timedelta(hours=4),     # ⏱ token d’accès
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),    # 🔄 token de rafraîchissement
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,

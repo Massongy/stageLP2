@@ -1,10 +1,28 @@
 FROM python:3.12-slim
+
+# Éviter les fichiers pyc + logs directs
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+
+# Répertoire de travail
 WORKDIR /app
-COPY requirements/base.txt .
+
+# Copier tous les fichiers requirements
+COPY requirements/ ./requirements/
+
+# Installer les dépendances
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements/prod.txt
+
+# Copier entrypoint.sh et le rendre exécutable
 COPY entrypoint.sh /entrypoint.sh
-RUN pip install --upgrade pip && pip install -r base.txt
-COPY . .
 RUN chmod +x /entrypoint.sh
-CMD ["gunicorn", "qualilead_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+# Copier le reste du projet
+COPY . .
+
+# Définir l'entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Définir la commande finale : Gunicorn sur le port 8000
+CMD ["gunicorn", "qualilead_backend.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--log-level", "info"]

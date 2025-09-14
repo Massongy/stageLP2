@@ -11,7 +11,7 @@ export const useCreateUser = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch('/api/users/users/', {
+            const response = await authFetch('/users/users/', {
                 method: 'POST',
                
                 body: JSON.stringify(userData)

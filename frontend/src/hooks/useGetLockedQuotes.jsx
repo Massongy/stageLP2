@@ -12,7 +12,7 @@ export const useGetLockedQuotes = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`/api/quotes/quote-lock/`);
+            const response = await authFetch(`/quotes/quote-lock/`);
             
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);

@@ -11,7 +11,7 @@ export const useDeleteUser = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`/api/users/delete/${userId}/`, {
+            const response = await authFetch(`/users/delete/${userId}/`, {
                 method: 'DELETE',
                            });
              const responseText = await response.text();

@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '',
-})
+  baseURL: 'https://stagelp2.onrender.com/api', // ou juste '/' selon tes routes backend
+});
 
-export default api
+export default api;

@@ -11,7 +11,7 @@ export const useUnlockQuote = () => {
       setLoading(true);
       setError(null);
 
-      const response = await authFetch(`/api/quotes/quote-lock/${quoteId}/`, {
+      const response = await authFetch(`/quotes/quote-lock/${quoteId}/`, {
         method: 'DELETE',
       });
 

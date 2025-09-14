@@ -11,7 +11,7 @@ export const useLockQuote = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`api/quotes/quote-lock/`, {
+            const response = await authFetch(`/quotes/quote-lock/`, {
                 method: 'POST',
                  headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ quote_id: id })

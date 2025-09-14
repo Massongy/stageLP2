@@ -11,7 +11,7 @@ export const useEditQuote = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch(`/api/quotes/quotes/${quoteId}/`, {
+            const response = await authFetch(`/quotes/quotes/${quoteId}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

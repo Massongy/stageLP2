@@ -12,7 +12,7 @@ export const useMyUsers = () => {
             setLoading(true);
             setError(null);
             
-            const response = await authFetch('/api/users/my-users/');
+            const response = await authFetch('/users/my-users/');
             
             if (!response.ok) {
                 throw new Error(`Erreur HTTP: ${response.status}`);
