@@ -30,4 +30,6 @@ if not User.objects.filter(email="$DJANGO_SUPERUSER_EMAIL").exists():
 EOF
 
 echo "✅ Préparation terminée, lancement de Gunicorn..."
-exec "$@"
+
+exec gunicorn qualilead_backend.wsgi:application --bind 0.0.0.0:${PORT} --workers 2 --log-level info
+
