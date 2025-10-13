@@ -55,16 +55,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'qualilead_backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'qualilead'),
-        'USER': os.getenv('POSTGRES_USER', 'qualilead'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'qualilead'),
-        'HOST': 'db',
-        'PORT': 5432,
+import dj_database_url
+
+# Configuration de la base de données
+if os.getenv('DATABASE_URL'):
+    # Utilise DATABASE_URL si définie (pour Neon/Production)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+        )
     }
-}
+else:
+    # Configuration Docker locale
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'qualilead'),
+            'USER': os.getenv('POSTGRES_USER', 'qualilead'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'qualilead'),
+            'HOST': 'db',
+            'PORT': 5432,
+        }
+    }
 
 AUTH_USER_MODEL = 'users.User'
 
